@@ -92,7 +92,7 @@
 const SUPABASE_URL = 'https://kouwlhuazgugzmrxpprf.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvdXdsaHVhemd1Z3ptcnhwcHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTcwNzcsImV4cCI6MjA4OTQ5MzA3N30.no3mpNpuiOVXeM9aN2UZn4d_OWj6r_2VR8OZ6bbSetM';
 const ADMIN_PASSWORD = 'beautyglanz2024';
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let allBookings = [];
 let currentFilter = 'all';
@@ -126,7 +126,7 @@ async function loadBookings() {
   document.getElementById('loadingState').classList.remove('hidden');
   document.getElementById('bookingsTable').classList.add('hidden');
   document.getElementById('emptyState').classList.add('hidden');
-  const { data, error } = await supabase
+  const { data, error } = await supabaseClient
     .from('bookings')
     .select('*')
     .order('created_at', { ascending: false });
@@ -199,7 +199,7 @@ function renderTable() {
 }
 
 async function updateStatus(id, status) {
-  const { error } = await supabase.from('bookings').update({ status }).eq('id', id);
+  const { error } = await supabaseClient.from('bookings').update({ status }).eq('id', id);
   if (!error) {
     const booking = allBookings.find(b => b.id === id);
     if (booking) booking.status = status;
@@ -210,7 +210,7 @@ async function updateStatus(id, status) {
 
 async function deleteBooking(id) {
   if (!confirm('Buchung wirklich löschen?')) return;
-  const { error } = await supabase.from('bookings').delete().eq('id', id);
+  const { error } = await supabaseClient.from('bookings').delete().eq('id', id);
   if (!error) {
     allBookings = allBookings.filter(b => b.id !== id);
     updateStats();

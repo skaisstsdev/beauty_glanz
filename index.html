@@ -442,10 +442,10 @@ setTimeout(hidePreloader, 2500);
 
 const SUPABASE_URL = 'https://kouwlhuazgugzmrxpprf.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvdXdsaHVhemd1Z3ptcnhwcHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTcwNzcsImV4cCI6MjA4OTQ5MzA3N30.no3mpNpuiOVXeM9aN2UZn4d_OWj6r_2VR8OZ6bbSetM';
-let supabase;
+let supabaseClient;
 let emailjsReady = false;
 function ensureSDKs() {
-  if (!supabase && window.supabase) { supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
+  if (!supabaseClient && window.supabase) { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY); }
   if (!emailjsReady && window.emailjs) { emailjs.init('m8z17diP3z4clm47h'); emailjsReady = true; }
 }
 try { ensureSDKs(); } catch(e) { console.warn('SDK init deferred:', e); }
@@ -758,7 +758,7 @@ async function bookingSubmit(e) {
   btn.disabled = true;
 
   try { ensureSDKs(); } catch(err) { console.warn('SDK late init:', err); }
-  if (!supabase || !emailjsReady) {
+  if (!supabaseClient || !emailjsReady) {
     alert(currentLang === 'de' ? 'Buchungssystem blockiert (evtl. durch Adblocker / Tracking-Schutz). Bitte deaktivieren Sie diesen oder kontaktieren Sie uns direkt per E-Mail/Telefon.' : currentLang === 'ru' ? 'Система бронирования заблокирована (возможно блокировщиком рекламы). Отключите его или свяжитесь с нами напрямую по email/телефону.' : 'Booking system blocked (possibly by an adblocker). Please disable it or contact us directly via email/phone.');
     btn.textContent = originalText;
     btn.disabled = false;
@@ -779,7 +779,7 @@ async function bookingSubmit(e) {
     return;
   }
   try {
-    const { error } = await supabase.from('bookings').insert([{
+    const { error } = await supabaseClient.from('bookings').insert([{
       service: svcText,
       date: date,
       time: time,
