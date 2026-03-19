@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Beauty Glanz</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="supabase.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  body { font-family: 'DM Sans', sans-serif; background: #F5EFE8; }
+  h1,h2 { font-family: 'Playfair Display', serif; }
+  .status-pending { background: #FEF3C7; color: #92400E; }
+  .status-confirmed { background: #D1FAE5; color: #065F46; }
+  .status-cancelled { background: #FEE2E2; color: #991B1B; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+  <div class="bg-white rounded-3xl shadow-xl p-10 w-full max-w-sm text-center">
+    <div style="font-family:'Playfair Display',serif; font-size:24px; color:#C4826A; margin-bottom:4px;">Beauty Glanz</div>
+    <div style="color:#888; font-size:13px; margin-bottom:28px;">Admin Panel</div>
+    <input id="passwordInput" type="password" placeholder="Passwort"
+      class="w-full border border-gray-200 rounded-xl px-4 py-3 mb-4 text-sm focus:outline-none focus:border-[#C4826A]"
+      onkeydown="if(event.key==='Enter')checkPassword()">
+    <button onclick="checkPassword()"
+      class="w-full bg-[#1C1410] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#C4826A] transition-colors">
+      Einloggen
+    </button>
+    <div id="loginError" class="text-red-500 text-sm mt-3 hidden">Falsches Passwort</div>
+  </div>
+</div>
+
+<div id="adminPanel" class="hidden">
+  <div class="bg-[#1C1410] text-white px-6 py-4 flex items-center justify-between">
+    <div>
+      <span style="font-family:'Playfair Display',serif; font-size:20px; color:#C4826A;">Beauty Glanz</span>
+      <span class="text-white/40 ml-2 text-sm">Admin</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span id="totalCount" class="text-white/60 text-sm"></span>
+      <a href="/" class="text-white/50 hover:text-white text-sm transition-colors">← Сайт</a>
+      <button onclick="logout()" class="text-white/50 hover:text-white text-sm transition-colors">Logout</button>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="grid grid-cols-3 gap-4 mb-8">
+      <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
+        <div id="statPending" class="text-3xl font-bold text-yellow-600">—</div>
+        <div class="text-sm text-gray-500 mt-1">Ausstehend</div>
+      </div>
+      <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
+        <div id="statConfirmed" class="text-3xl font-bold text-green-600">—</div>
+        <div class="text-sm text-gray-500 mt-1">Bestätigt</div>
+      </div>
+      <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
+        <div id="statCancelled" class="text-3xl font-bold text-red-500">—</div>
+        <div class="text-sm text-gray-500 mt-1">Storniert</div>
+      </div>
+    </div>
+
+    <div class="flex flex-wrap gap-3 mb-6">
+      <button onclick="filterStatus('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-[#1C1410] text-white">Alle</button>
+      <button onclick="filterStatus('pending')" id="filter-pending" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">Ausstehend</button>
+      <button onclick="filterStatus('confirmed')" id="filter-confirmed" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">Bestätigt</button>
+      <button onclick="filterStatus('cancelled')" id="filter-cancelled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">Storniert</button>
+      <button onclick="loadBookings()" class="ml-auto px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]">↻ Aktualisieren</button>
+    </div>
+
+    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+      <div id="loadingState" class="p-12 text-center text-gray-400">Laden...</div>
+      <div id="emptyState" class="p-12 text-center text-gray-400 hidden">Keine Buchungen gefunden</div>
+      <table id="bookingsTable" class="w-full hidden">
+        <thead class="bg-gray-50 border-b border-gray-100">
+          <tr>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Kunde</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Behandlung</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Datum & Zeit</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
+            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Aktionen</th>
+          </tr>
+        </thead>
+        <tbody id="bookingsBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://kouwlhuazgugzmrxpprf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvdXdsaHVhemd1Z3ptcnhwcHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTcwNzcsImV4cCI6MjA4OTQ5MzA3N30.no3mpNpuiOVXeM9aN2UZn4d_OWj6r_2VR8OZ6bbSetM';
+const ADMIN_PASSWORD = 'beautyglanz2024';
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+let allBookings = [];
+let currentFilter = 'all';
+
+function checkPassword() {
+  const val = document.getElementById('passwordInput').value;
+  if (val === ADMIN_PASSWORD) {
+    sessionStorage.setItem('bg_admin', '1');
+    document.getElementById('loginScreen').classList.add('hidden');
+    document.getElementById('adminPanel').classList.remove('hidden');
+    loadBookings();
+  } else {
+    document.getElementById('loginError').classList.remove('hidden');
+  }
+}
+
+function logout() {
+  sessionStorage.removeItem('bg_admin');
+  document.getElementById('loginScreen').classList.remove('hidden');
+  document.getElementById('adminPanel').classList.add('hidden');
+  document.getElementById('passwordInput').value = '';
+}
+
+if (sessionStorage.getItem('bg_admin') === '1') {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('adminPanel').classList.remove('hidden');
+  loadBookings();
+}
+
+async function loadBookings() {
+  document.getElementById('loadingState').classList.remove('hidden');
+  document.getElementById('bookingsTable').classList.add('hidden');
+  document.getElementById('emptyState').classList.add('hidden');
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .order('created_at', { ascending: false });
+  if (error) { console.error(error); return; }
+  allBookings = data || [];
+  updateStats();
+  renderTable();
+}
+
+function updateStats() {
+  document.getElementById('statPending').textContent = allBookings.filter(b => b.status === 'pending').length;
+  document.getElementById('statConfirmed').textContent = allBookings.filter(b => b.status === 'confirmed').length;
+  document.getElementById('statCancelled').textContent = allBookings.filter(b => b.status === 'cancelled').length;
+  document.getElementById('totalCount').textContent = allBookings.length + ' Buchungen gesamt';
+}
+
+function filterStatus(status) {
+  currentFilter = status;
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.classList.remove('bg-[#1C1410]', 'text-white');
+    btn.classList.add('bg-white', 'text-gray-600');
+  });
+  const active = document.getElementById('filter-' + status);
+  active.classList.add('bg-[#1C1410]', 'text-white');
+  active.classList.remove('bg-white', 'text-gray-600');
+  renderTable();
+}
+
+function renderTable() {
+  const filtered = currentFilter === 'all' ? allBookings : allBookings.filter(b => b.status === currentFilter);
+  document.getElementById('loadingState').classList.add('hidden');
+  if (filtered.length === 0) {
+    document.getElementById('emptyState').classList.remove('hidden');
+    document.getElementById('bookingsTable').classList.add('hidden');
+    return;
+  }
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('bookingsTable').classList.remove('hidden');
+  const statusLabels = { pending: 'Ausstehend', confirmed: 'Bestätigt', cancelled: 'Storniert' };
+  document.getElementById('bookingsBody').innerHTML = filtered.map(b => {
+    const date = new Date(b.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    const createdAt = new Date(b.created_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    return `<tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+      <td class="px-5 py-4">
+        <div class="font-semibold text-sm text-gray-900">${b.name}</div>
+        <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A]">${b.phone}</a></div>
+        <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A]">${b.email}</a></div>
+        <div class="text-xs text-gray-300 mt-1">${createdAt}</div>
+      </td>
+      <td class="px-5 py-4">
+        <div class="text-sm text-gray-800">${b.service}</div>
+        ${b.notes ? '<div class="text-xs text-gray-400 mt-1 italic">"' + b.notes + '"</div>' : ''}
+      </td>
+      <td class="px-5 py-4">
+        <div class="text-sm font-semibold text-gray-900">${date}</div>
+        <div class="text-sm text-[#C4826A] font-medium">${b.time}</div>
+      </td>
+      <td class="px-5 py-4">
+        <span class="px-3 py-1 rounded-full text-xs font-semibold status-${b.status}">${statusLabels[b.status] || b.status}</span>
+      </td>
+      <td class="px-5 py-4">
+        <div class="flex gap-2 flex-wrap">
+          ${b.status !== 'confirmed' ? '<button onclick="updateStatus(\'' + b.id + '\',\'confirmed\')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors">✓ Bestätigen</button>' : ''}
+          ${b.status !== 'cancelled' ? '<button onclick="updateStatus(\'' + b.id + '\',\'cancelled\')" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors">✗ Stornieren</button>' : ''}
+          <button onclick="deleteBooking('${b.id}')" class="px-3 py-1.5 bg-gray-50 text-gray-500 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function updateStatus(id, status) {
+  const { error } = await supabase.from('bookings').update({ status }).eq('id', id);
+  if (!error) {
+    const booking = allBookings.find(b => b.id === id);
+    if (booking) booking.status = status;
+    updateStats();
+    renderTable();
+  }
+}
+
+async function deleteBooking(id) {
+  if (!confirm('Buchung wirklich löschen?')) return;
+  const { error } = await supabase.from('bookings').delete().eq('id', id);
+  if (!error) {
+    allBookings = allBookings.filter(b => b.id !== id);
+    updateStats();
+    renderTable();
+  }
+}
+</script>
+</body>
+</html>
