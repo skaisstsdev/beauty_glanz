@@ -10,20 +10,20 @@
 tailwind.config={theme:{extend:{colors:{cream:'#F5EFE8',espresso:'#1C1410',rose:'#C4826A'},fontFamily:{heading:['"Playfair Display"','serif'],body:['"DM Sans"','sans-serif']}}}};
 </script>
 <style>
-body { font-family: 'DM Sans', sans-serif; background: #F5EFE8; color: #1C1410; }
-h1,h2,h3 { font-family: 'Playfair Display', serif; }
+body { font-family: 'DM Sans', sans-serif; background: #F5EFE8; color: #1C1410; overflow-x: hidden; }
+h1,h2,h3 { font-family: 'Playfair Display', serif; word-wrap: break-word; overflow-wrap: break-word; hyphens: auto; }
 </style>
 </head>
-<body class="min-h-screen py-20 px-6">
-  <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-md p-8 md:p-12 rounded-3xl shadow-sm border border-espresso/5">
-    <a href="/" class="inline-flex items-center gap-2 text-rose hover:text-espresso transition-colors text-sm font-bold uppercase tracking-widest mb-10">
-      <span>←</span> Zurück zur Startseite
+<body class="min-h-screen py-12 sm:py-20 px-4 sm:px-6">
+  <div class="max-w-3xl mx-auto bg-white/60 backdrop-blur-md p-6 sm:p-8 md:p-12 rounded-3xl shadow-sm border border-espresso/5">
+    <a href="/" class="inline-flex items-center gap-2 text-rose hover:text-espresso transition-colors text-sm font-bold uppercase tracking-widest mb-8 sm:mb-10">
+      <span>←</span> Zurück
     </a>
-    <h1 class="text-4xl md:text-5xl text-espresso mb-8">Impressum</h1>
+    <h1 class="text-3xl sm:text-4xl md:text-5xl text-espresso mb-8">Impressum</h1>
     
-    <div class="space-y-6 text-espresso/80 leading-relaxed font-body">
+    <div class="space-y-6 text-espresso/80 leading-relaxed font-body text-sm sm:text-base">
       <section>
-        <h2 class="text-xl font-bold text-espresso mb-2">Angaben gemäß § 5 TMG</h2>
+        <h2 class="text-lg sm:text-xl font-bold text-espresso mb-2">Angaben gemäß § 5 TMG</h2>
         <p>
           Beauty Glanz<br>
           Inh. Anna<br>
@@ -33,7 +33,7 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; }
       </section>
 
       <section>
-        <h2 class="text-xl font-bold text-espresso mb-2">Kontakt</h2>
+        <h2 class="text-lg sm:text-xl font-bold text-espresso mb-2">Kontakt</h2>
         <p>
           Telefon: +49 176 75881485<br>
           E-Mail: info@beautyglanz.de
@@ -41,7 +41,7 @@ h1,h2,h3 { font-family: 'Playfair Display', serif; }
       </section>
 
       <section>
-        <h2 class="text-xl font-bold text-espresso mb-2">Verbraucherstreitbeilegung/Universalschlichtungsstelle</h2>
+        <h2 class="text-lg sm:text-xl font-bold text-espresso mb-2">Verbraucherstreit&shy;beilegung</h2>
         <p>
           Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
         </p>
