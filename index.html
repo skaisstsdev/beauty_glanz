@@ -42,7 +42,7 @@ h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif}
 .cat-pill{transition:all .35s ease;border:1px solid #E8DFD4}
 .cat-pill.active{background:#1C1410;color:#F5EFE8;border-color:#1C1410}
 .cat-pill:not(.active):hover{border-color:#C4826A;color:#C4826A}
-.carousel-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-bottom:8px}
+.carousel-track{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding-top:12px;margin-top:-12px;padding-bottom:16px}
 .carousel-track::-webkit-scrollbar{display:none}
 .carousel-card{scroll-snap-align:start;flex-shrink:0}
 .cat-panel{display:none;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
@@ -340,12 +340,12 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
       </div>
       <div class="reveal stagger-3 grid grid-cols-2 gap-4">
         <div class="space-y-4">
-          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg"><img src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg" alt="" class="w-full h-full object-cover"></div>
-          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg"><img src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg" alt="" class="w-full h-full object-cover"></div>
+          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg"><img src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg" alt="" class="w-full h-full object-cover"></div>
+          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg"><img src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg" alt="" class="w-full h-full object-cover"></div>
         </div>
         <div class="space-y-4 pt-8">
-          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg"><img src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg" alt="" class="w-full h-full object-cover"></div>
-          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg"><img src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg" alt="" class="w-full h-full object-cover"></div>
+          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg"><img src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg" alt="" class="w-full h-full object-cover"></div>
+          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg"><img src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg" alt="" class="w-full h-full object-cover"></div>
         </div>
       </div>
     </div>
@@ -797,7 +797,7 @@ function buildGallery(){
         ?`<img src="${img.src}" alt="${cat[currentLang]}" class="w-full h-full object-cover">`
         :`<div class="w-full h-full bg-cream"></div>`;
       return `<div class="carousel-card w-[260px] md:w-[300px] flex-shrink-0" onclick="openLightbox(this)" data-src="${img.src||''}">
-        <div class="relative rounded-2xl overflow-hidden aspect-[3/4] gallery-item shadow-md">
+        <div class="relative rounded-2xl overflow-hidden aspect-square gallery-item shadow-md">
           ${content}
         </div></div>`;
     }).join('');
@@ -1452,12 +1452,12 @@ async function bookingSubmit(e) {
   const l = labels['de'];
 
   document.getElementById('bookingSummary').innerHTML = `
-    <div class="flex justify-between border-b pb-2"><span>${l.svc}</span><span>${svcText}</span></div>
-    <div class="flex justify-between border-b pb-2"><span>${l.date}</span><span>${date}</span></div>
-    <div class="flex justify-between border-b pb-2"><span>${l.time}</span><span>${time}</span></div>
-    <div class="flex justify-between border-b pb-2"><span>${l.name}</span><span>${name}</span></div>
-    <div class="flex justify-between border-b pb-2"><span>${l.phone}</span><span>${phone}</span></div>
-    <div class="flex justify-between"><span>${l.email}</span><span>${email}</span></div>
+    <div class="flex justify-between items-start border-b border-espresso/10 pb-3 gap-6"><span class="font-bold whitespace-nowrap">${l.svc}</span><span class="text-right text-espresso/80 leading-snug">${svcText}</span></div>
+    <div class="flex justify-between items-center border-b border-espresso/10 py-3 gap-6"><span class="font-bold">${l.date}</span><span class="text-right text-espresso/80">${date}</span></div>
+    <div class="flex justify-between items-center border-b border-espresso/10 py-3 gap-6"><span class="font-bold">${l.time}</span><span class="text-right text-espresso/80">${time}</span></div>
+    <div class="flex justify-between items-center border-b border-espresso/10 py-3 gap-6"><span class="font-bold">${l.name}</span><span class="text-right text-espresso/80">${name}</span></div>
+    <div class="flex justify-between items-center border-b border-espresso/10 py-3 gap-6"><span class="font-bold">${l.phone}</span><span class="text-right text-espresso/80">${phone}</span></div>
+    <div class="flex justify-between items-center pt-3 gap-6"><span class="font-bold">${l.email}</span><span class="text-right text-espresso/80 truncate" title="${email}">${email}</span></div>
   `;
 
   document.getElementById('bookingStep1').classList.add('hidden');
