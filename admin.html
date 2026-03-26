@@ -20,28 +20,37 @@
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
   <div class="bg-white rounded-3xl shadow-xl p-10 w-full max-w-sm text-center">
     <div style="font-family:'Playfair Display',serif; font-size:24px; color:#C4826A; margin-bottom:4px;">Beauty Glanz</div>
-    <div style="color:#888; font-size:13px; margin-bottom:28px;">Admin Panel</div>
-    <input id="passwordInput" type="password" placeholder="Passwort"
+    <div style="color:#888; font-size:13px; margin-bottom:28px;" data-de="Admin Panel" data-ru="Панель администратора" data-en="Admin Panel">Admin Panel</div>
+    <input id="passwordInput" type="password" placeholder="Passwort" data-placeholder-de="Passwort" data-placeholder-ru="Пароль" data-placeholder-en="Password"
       class="w-full border border-gray-200 rounded-xl px-4 py-3 mb-4 text-sm focus:outline-none focus:border-[#C4826A]"
       onkeydown="if(event.key==='Enter')checkPassword()">
     <button onclick="checkPassword()"
-      class="w-full bg-[#1C1410] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#C4826A] transition-colors">
+      class="w-full bg-[#1C1410] text-white rounded-xl py-3 text-sm font-semibold hover:bg-[#C4826A] transition-colors" data-de="Einloggen" data-ru="Войти" data-en="Login">
       Einloggen
     </button>
-    <div id="loginError" class="text-red-500 text-sm mt-3 hidden">Falsches Passwort</div>
+    <div id="loginError" class="text-red-500 text-sm mt-3 hidden" data-de="Falsches Passwort" data-ru="Неверный пароль" data-en="Wrong password">Falsches Passwort</div>
+
+    <div class="mt-8 flex justify-center gap-4 text-xs font-semibold text-gray-400">
+      <button onclick="setAdminLang('de')" class="hover:text-[#C4826A]">DE</button>
+      <button onclick="setAdminLang('ru')" class="hover:text-[#C4826A]">RU</button>
+      <button onclick="setAdminLang('en')" class="hover:text-[#C4826A]">EN</button>
+    </div>
   </div>
 </div>
 
 <div id="adminPanel" class="hidden">
-  <div class="bg-[#1C1410] text-white px-6 py-4 flex items-center justify-between">
+  <div class="bg-[#1C1410] text-white px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
     <div>
       <span style="font-family:'Playfair Display',serif; font-size:20px; color:#C4826A;">Beauty Glanz</span>
-      <span class="text-white/40 ml-2 text-sm">Admin</span>
+      <span class="text-white/40 ml-2 text-sm" data-de="Admin" data-ru="Админ" data-en="Admin">Admin</span>
     </div>
-    <div class="flex items-center gap-4">
+    <div class="flex items-center justify-center gap-4 flex-wrap">
+      <select id="adminLangHeader" onchange="setAdminLang(this.value)" class="bg-[#1C1410] text-white/80 border border-white/20 rounded px-2 text-xs h-7 focus:outline-none">
+        <option value="de">DE</option><option value="ru">RU</option><option value="en">EN</option>
+      </select>
       <span id="totalCount" class="text-white/60 text-sm"></span>
-      <a href="/" class="text-white/50 hover:text-white text-sm transition-colors">← Сайт</a>
-      <button onclick="logout()" class="text-white/50 hover:text-white text-sm transition-colors">Logout</button>
+      <a href="/" class="text-white/50 hover:text-white text-sm transition-colors" data-de="← Website" data-ru="← На сайт" data-en="← Website">← Website</a>
+      <button onclick="logout()" class="text-white/50 hover:text-white text-sm transition-colors" data-de="Abmelden" data-ru="Выйти" data-en="Logout">Abmelden</button>
     </div>
   </div>
 
@@ -49,44 +58,80 @@
     <div class="grid grid-cols-3 gap-4 mb-8">
       <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
         <div id="statPending" class="text-3xl font-bold text-yellow-600">—</div>
-        <div class="text-sm text-gray-500 mt-1">Ausstehend</div>
+        <div class="text-sm text-gray-500 mt-1" data-de="Ausstehend" data-ru="В ожидании" data-en="Pending">Ausstehend</div>
       </div>
       <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
         <div id="statConfirmed" class="text-3xl font-bold text-green-600">—</div>
-        <div class="text-sm text-gray-500 mt-1">Bestätigt</div>
+        <div class="text-sm text-gray-500 mt-1" data-de="Bestätigt" data-ru="Подтверждено" data-en="Confirmed">Bestätigt</div>
       </div>
       <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
         <div id="statCancelled" class="text-3xl font-bold text-red-500">—</div>
-        <div class="text-sm text-gray-500 mt-1">Storniert</div>
+        <div class="text-sm text-gray-500 mt-1" data-de="Storniert" data-ru="Отменено" data-en="Cancelled">Storniert</div>
       </div>
     </div>
 
     <div class="flex flex-wrap gap-3 mb-6">
-      <button onclick="filterStatus('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-[#1C1410] text-white">Alle</button>
-      <button onclick="filterStatus('pending')" id="filter-pending" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">Ausstehend</button>
-      <button onclick="filterStatus('confirmed')" id="filter-confirmed" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">Bestätigt</button>
-      <button onclick="filterStatus('cancelled')" id="filter-cancelled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">Storniert</button>
-      <button onclick="loadBookings()" class="ml-auto px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]">↻ Aktualisieren</button>
+      <button onclick="filterStatus('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-[#1C1410] text-white" data-de="Alle" data-ru="Все" data-en="All">Alle</button>
+      <button onclick="filterStatus('pending')" id="filter-pending" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Ausstehend" data-ru="Ожидают" data-en="Pending">Ausstehend</button>
+      <button onclick="filterStatus('confirmed')" id="filter-confirmed" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Bestätigt" data-ru="Подтверждены" data-en="Confirmed">Bestätigt</button>
+      <button onclick="filterStatus('cancelled')" id="filter-cancelled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Storniert" data-ru="Отменены" data-en="Cancelled">Storniert</button>
+      <input type="date" id="dateFilter" onchange="renderTable()" class="ml-2 px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
+      <button onclick="document.getElementById('dateFilter').value=''; renderTable()" class="px-3 py-1.5 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">✕</button>
+      <button onclick="loadBookings()" class="ml-auto px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻ Aktualisieren</button>
     </div>
 
     <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-      <div id="loadingState" class="p-12 text-center text-gray-400">Laden...</div>
-      <div id="emptyState" class="p-12 text-center text-gray-400 hidden">Keine Buchungen gefunden</div>
-      <table id="bookingsTable" class="w-full hidden">
-        <thead class="bg-gray-50 border-b border-gray-100">
-          <tr>
-            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Kunde</th>
-            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Behandlung</th>
-            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Datum & Zeit</th>
-            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</th>
-            <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide">Aktionen</th>
-          </tr>
-        </thead>
-        <tbody id="bookingsBody"></tbody>
-      </table>
+      <div id="loadingState" class="p-12 text-center text-gray-400" data-de="Laden..." data-ru="Загрузка..." data-en="Loading...">Laden...</div>
+      <div id="emptyState" class="p-12 text-center text-gray-400 hidden" data-de="Keine Buchungen gefunden" data-ru="Записи не найдены" data-en="No bookings found">Keine Buchungen gefunden</div>
+      <div class="overflow-x-auto">
+        <table id="bookingsTable" class="w-full hidden whitespace-nowrap">
+          <thead class="bg-gray-50 border-b border-gray-100">
+            <tr>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Kunde</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Behandlung" data-ru="Услуга" data-en="Service">Behandlung</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Datum & Zeit" data-ru="Дата и время" data-en="Date & Time">Datum & Zeit</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Status" data-ru="Статус" data-en="Status">Status</th>
+              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Aktionen" data-ru="Действия" data-en="Actions">Aktionen</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsBody"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
+
+<!-- EDIT MODAL -->
+<div id="editModal" class="hidden fixed inset-0 z-50 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity" onclick="if(event.target===this) closeEditModal()">
+  <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl transform transition-transform">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="font-bold text-xl text-gray-900" data-de="Buchung bearbeiten" data-ru="Изменить запись" data-en="Edit Booking">Buchung bearbeiten</h3>
+      <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-700 transition-colors text-lg leading-none">&times;</button>
+    </div>
+    <input type="hidden" id="editBookingId">
+    <div class="mb-5">
+      <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Datum" data-ru="Дата" data-en="Date">Datum</label>
+      <input type="date" id="editDate" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
+    </div>
+    <div class="mb-8">
+      <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Uhrzeit" data-ru="Время" data-en="Time">Uhrzeit</label>
+      <select id="editTime" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all bg-white cursor-pointer">
+        <option value="09:00">09:00</option><option value="10:00">10:00</option>
+        <option value="11:00">11:00</option><option value="12:00">12:00</option>
+        <option value="13:00">13:00</option><option value="14:00">14:00</option>
+        <option value="15:00">15:00</option><option value="16:00">16:00</option>
+        <option value="17:00">17:00</option><option value="18:00">18:00</option>
+      </select>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeEditModal()" class="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors" data-de="Abbrechen" data-ru="Отмена" data-en="Cancel">Abbrechen</button>
+      <button onclick="saveEdit()" class="flex-1 py-3 rounded-xl bg-[#1C1410] text-sm font-semibold text-white hover:bg-[#C4826A] transition-colors shadow-md" data-de="Speichern" data-ru="Сохранить" data-en="Save">Speichern</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div id="adminToastWrap" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
 <script>
 const SUPABASE_URL = 'https://kouwlhuazgugzmrxpprf.supabase.co';
@@ -96,6 +141,22 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let allBookings = [];
 let currentFilter = 'all';
+
+// TOAST UI
+function showAdminToast(msg) {
+  const wrap = document.getElementById('adminToastWrap');
+  const el = document.createElement('div');
+  el.className = 'bg-[#1C1410] text-white px-5 py-3 rounded-xl shadow-xl text-sm font-medium transform transition-all translate-x-full opacity-0 flex items-center gap-2';
+  el.innerHTML = `<span class="text-green-400">✓</span> ${msg}`;
+  wrap.appendChild(el);
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    el.classList.remove('translate-x-full', 'opacity-0');
+  }));
+  setTimeout(() => {
+    el.classList.add('translate-x-full', 'opacity-0');
+    setTimeout(() => el.remove(), 300);
+  }, 3000);
+}
 
 function checkPassword() {
   const val = document.getElementById('passwordInput').value;
@@ -136,11 +197,56 @@ async function loadBookings() {
   renderTable();
 }
 
+// REAL-TIME
+supabaseClient.channel('custom-all-channel')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, (payload) => {
+    loadBookings();
+  })
+  .subscribe();
+
+// translations dictionary for JS dynamic inserts
+const tDict = {
+  total: { de: '{n} Buchungen gesamt', ru: 'Всего {n} записей', en: '{n} total bookings' },
+  statusLabels: {
+    pending: { de: 'Ausstehend', ru: 'Ожидает', en: 'Pending' },
+    confirmed: { de: 'Bestätigt', ru: 'Подтверждена', en: 'Confirmed' },
+    cancelled: { de: 'Storniert', ru: 'Отменена', en: 'Cancelled' },
+  },
+  btnConfirm: { de: '✓ Bestätigen', ru: '✓ Подтвердить', en: '✓ Confirm' },
+  btnCancel: { de: '✗ Freigeben', ru: '✗ В свободные', en: '✗ Release' },
+  btnEdit: { de: '✎ Bearbeiten', ru: '✎ Изменить', en: '✎ Edit' }
+};
+
+let currentAdminLang = localStorage.getItem('bg_lang') || 'de';
+
+function setAdminLang(l) {
+  currentAdminLang = l;
+  localStorage.setItem('bg_lang', l);
+  document.getElementById('adminLangHeader').value = l;
+  
+  // static text
+  document.querySelectorAll('[data-de]').forEach(el => {
+    if (el.hasAttribute(`data-${l}`)) {
+      el.textContent = el.getAttribute(`data-${l}`);
+    }
+  });
+  // placeholders
+  document.querySelectorAll('[data-placeholder-de]').forEach(el => {
+    if (el.hasAttribute(`data-placeholder-${l}`)) {
+      el.placeholder = el.getAttribute(`data-placeholder-${l}`);
+    }
+  });
+  
+  updateStats();
+  renderTable();
+}
+
 function updateStats() {
   document.getElementById('statPending').textContent = allBookings.filter(b => b.status === 'pending').length;
   document.getElementById('statConfirmed').textContent = allBookings.filter(b => b.status === 'confirmed').length;
   document.getElementById('statCancelled').textContent = allBookings.filter(b => b.status === 'cancelled').length;
-  document.getElementById('totalCount').textContent = allBookings.length + ' Buchungen gesamt';
+  const countRaw = tDict.total[currentAdminLang].replace('{n}', allBookings.length);
+  document.getElementById('totalCount').textContent = countRaw;
 }
 
 function filterStatus(status) {
@@ -156,7 +262,16 @@ function filterStatus(status) {
 }
 
 function renderTable() {
-  const filtered = currentFilter === 'all' ? allBookings : allBookings.filter(b => b.status === currentFilter);
+  const dateFilter = document.getElementById('dateFilter').value;
+  let filtered = allBookings;
+
+  if (currentFilter !== 'all') {
+    filtered = filtered.filter(b => b.status === currentFilter);
+  }
+  if (dateFilter) {
+    filtered = filtered.filter(b => b.date === dateFilter);
+  }
+
   document.getElementById('loadingState').classList.add('hidden');
   if (filtered.length === 0) {
     document.getElementById('emptyState').classList.remove('hidden');
@@ -165,33 +280,42 @@ function renderTable() {
   }
   document.getElementById('emptyState').classList.add('hidden');
   document.getElementById('bookingsTable').classList.remove('hidden');
-  const statusLabels = { pending: 'Ausstehend', confirmed: 'Bestätigt', cancelled: 'Storniert' };
+  
+  const locDict = tDict.statusLabels;
+
   document.getElementById('bookingsBody').innerHTML = filtered.map(b => {
-    const date = new Date(b.date).toLocaleDateString('de-DE', { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
-    const createdAt = new Date(b.created_at).toLocaleDateString('de-DE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-    return `<tr class="border-b border-gray-50 hover:bg-gray-50 transition-colors">
+    let dateStr = new Date(b.date).toLocaleDateString(currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US'), { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    let createdStr = new Date(b.created_at).toLocaleDateString(currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US'), { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    
+    const t = (b.time || '').substring(0,5);
+    const badgeText = locDict[b.status]?.[currentAdminLang] || b.status;
+    
+    return `<tr class="group border-b border-gray-100 hover:bg-gray-50/80 transition-all duration-200">
       <td class="px-5 py-4">
         <div class="font-semibold text-sm text-gray-900">${b.name}</div>
-        <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A]">${b.phone}</a></div>
-        <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A]">${b.email}</a></div>
-        <div class="text-xs text-gray-300 mt-1">${createdAt}</div>
+        <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A] transition-colors">${b.phone}</a></div>
+        <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A] transition-colors">${b.email}</a></div>
+        <div class="text-xs text-gray-300 mt-1">${createdStr}</div>
       </td>
       <td class="px-5 py-4">
-        <div class="text-sm text-gray-800">${b.service}</div>
-        ${b.notes ? '<div class="text-xs text-gray-400 mt-1 italic">"' + b.notes + '"</div>' : ''}
+        <div class="text-sm text-gray-800 font-medium whitespace-break-spaces">${b.service}</div>
+        ${b.notes ? '<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-gray-200 pl-2 whitespace-break-spaces">"' + b.notes + '"</div>' : ''}
       </td>
       <td class="px-5 py-4">
-        <div class="text-sm font-semibold text-gray-900">${date}</div>
-        <div class="text-sm text-[#C4826A] font-medium">${b.time}</div>
+        <div class="text-sm font-semibold text-gray-900">${dateStr}</div>
+        <div class="text-sm text-[#C4826A] font-bold mt-0.5">${t}</div>
       </td>
       <td class="px-5 py-4">
-        <span class="px-3 py-1 rounded-full text-xs font-semibold status-${b.status}">${statusLabels[b.status] || b.status}</span>
+        <span class="px-3 py-1 rounded-full text-xs font-semibold shadow-sm status-${b.status}">${badgeText}</span>
       </td>
       <td class="px-5 py-4">
-        <div class="flex gap-2 flex-wrap">
-          ${b.status !== 'confirmed' ? '<button onclick="updateStatus(\'' + b.id + '\',\'confirmed\')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-medium hover:bg-green-100 transition-colors">✓ Bestätigen</button>' : ''}
-          ${b.status !== 'cancelled' ? '<button onclick="updateStatus(\'' + b.id + '\',\'cancelled\')" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-medium hover:bg-red-100 transition-colors">✗ Stornieren</button>' : ''}
-          <button onclick="deleteBooking('${b.id}')" class="px-3 py-1.5 bg-gray-50 text-gray-500 rounded-lg text-xs font-medium hover:bg-gray-100 transition-colors">🗑</button>
+        <div class="flex gap-2 flex-wrap items-center">
+          ${b.status !== 'confirmed' ? `<button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>` : ''}
+          ${b.status !== 'cancelled' ? `<button onclick="updateStatus('${b.id}','cancelled')" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-all shadow-sm">${tDict.btnCancel[currentAdminLang]}</button>` : ''}
+          <button onclick="openEditModal('${b.id}', '${b.date}', '${t}')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold hover:bg-blue-50 hover:text-blue-600 transition-all shadow-sm opacity-70 group-hover:opacity-100">${tDict.btnEdit[currentAdminLang]}</button>
+          <button onclick="deleteBooking('${b.id}')" class="p-1.5 text-gray-400 hover:bg-gray-200 hover:text-red-500 rounded-lg transition-all opacity-50 group-hover:opacity-100">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
         </div>
       </td>
     </tr>`;
@@ -209,7 +333,8 @@ async function updateStatus(id, status) {
 }
 
 async function deleteBooking(id) {
-  if (!confirm('Buchung wirklich löschen?')) return;
+  const ask = currentAdminLang === 'de' ? 'Buchung wirklich löschen?' : (currentAdminLang === 'ru' ? 'Точно удалить запись?' : 'Delete booking?');
+  if (!confirm(ask)) return;
   const { error } = await supabaseClient.from('bookings').delete().eq('id', id);
   if (!error) {
     allBookings = allBookings.filter(b => b.id !== id);
@@ -217,6 +342,58 @@ async function deleteBooking(id) {
     renderTable();
   }
 }
+
+// EDIT
+function openEditModal(id, date, time) {
+  document.getElementById('editBookingId').value = id;
+  document.getElementById('editDate').value = date;
+  document.getElementById('editTime').value = time;
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.add('hidden');
+}
+
+async function saveEdit() {
+  const id = document.getElementById('editBookingId').value;
+  const newDate = document.getElementById('editDate').value;
+  const newTime = document.getElementById('editTime').value;
+
+  const isTaken = allBookings.some(b => b.id !== id && b.date === newDate && b.time.substring(0,5) === newTime && b.status !== 'cancelled');
+  const txtErr = currentAdminLang === 'de' ? 'Zeit bereits belegt!' : (currentAdminLang === 'ru' ? 'Время уже занято!' : 'Time already taken!');
+  if (isTaken) {
+    alert(txtErr);
+    return;
+  }
+
+  const { error } = await supabaseClient.from('bookings').update({ date: newDate, time: newTime }).eq('id', id);
+  
+  if (error) {
+    if (error.code === '23505' || error.message.includes('duplicate')) {
+      alert(txtErr);
+    } else {
+      const dbErr = currentAdminLang === 'de' ? 'Fehler beim Speichern' : (currentAdminLang === 'ru' ? 'Ошибка сохранения' : 'Save Error');
+      alert(dbErr);
+    }
+  } else {
+    // Local state update
+    const booking = allBookings.find(b => b.id === id);
+    if (booking) {
+      booking.date = newDate;
+      // Add :00 safely
+      booking.time = newTime.length === 5 ? newTime + ':00' : newTime;
+    }
+    renderTable();
+    closeEditModal();
+    const ok = currentAdminLang === 'de' ? 'Gespeichert' : (currentAdminLang === 'ru' ? 'Сохранено' : 'Saved');
+    showAdminToast(ok);
+  }
+}
+// Initialize language on load
+document.addEventListener('DOMContentLoaded', () => {
+  setAdminLang(currentAdminLang);
+});
 </script>
 </body>
 </html>

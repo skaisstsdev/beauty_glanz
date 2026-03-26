@@ -7,8 +7,7 @@
 <meta name="description" content="Beauty Glanz — Professionelle Maniküre, Pediküre, Waxing, Permanent Make-up und mehr von Meisterin Anna.">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
-
+<script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
 <script>
@@ -16,12 +15,16 @@ tailwind.config={theme:{extend:{colors:{cream:'#F5EFE8',espresso:'#1C1410',rose:
 </script>
 <style>
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;overflow-x:hidden;max-width:100vw}
+html{overflow-x:hidden;max-width:100vw}
+html.lenis { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
 body{font-family:'DM Sans',sans-serif;background:#F5EFE8;color:#1C1410;overflow-x:hidden;max-width:100vw}
 h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif}
-.reveal{opacity:0;transform:translateY(40px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.reveal{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.22,1,.36,1),transform 1s cubic-bezier(.22,1,.36,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
-.reveal-left{opacity:0;transform:translateX(-60px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
+.reveal-left{opacity:0;transform:translateX(-60px);transition:opacity 1s cubic-bezier(.22,1,.36,1),transform 1s cubic-bezier(.22,1,.36,1)}
 .reveal-left.visible{opacity:1;transform:translateX(0)}
 .reveal-right{opacity:0;transform:translateX(60px);transition:opacity .8s cubic-bezier(.22,1,.36,1),transform .8s cubic-bezier(.22,1,.36,1)}
 .reveal-right.visible{opacity:1;transform:translateX(0)}
@@ -100,12 +103,25 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
 .booking-step-label{font-family:'DM Sans',sans-serif;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#C4826A;margin-bottom:8px;opacity:.7}
 
 /* Service cards */
-.service-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.service-card{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:.04em;padding:14px 12px;border-radius:14px;border:1px solid #E8DFD4;background:#F5EFE8;color:#1C1410;cursor:pointer;transition:all .2s ease;text-align:left;line-height:1.3}
-.service-card:hover{border-color:#C4826A;background:#F0E8DF;box-shadow:0 2px 12px rgba(196,130,106,.1)}
-.service-card.active{background:#1C1410;color:#F5EFE8;border-color:#1C1410;box-shadow:0 6px 20px rgba(28,20,16,.18)}
-.service-card-price{font-size:11px;font-weight:500;opacity:.55;margin-top:3px;display:block}
+.service-cards-grid{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.service-cards-grid .service-card{flex:1 1 calc(50% - 7px);max-width:calc(50% - 7px);min-width:140px}
+.service-card{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;letter-spacing:.03em;padding:20px 18px;border-radius:16px;border:1.5px solid #E8DFD4;background:#F5EFE8;color:#1C1410;cursor:pointer;transition:all .25s ease;text-align:center;line-height:1.4;display:flex;align-items:center;justify-content:center;min-height:56px;box-sizing:border-box}
+.service-card:hover{border-color:#C4826A;background:#F0E8DF;box-shadow:0 4px 16px rgba(196,130,106,.12);transform:translateY(-2px)}
+.service-card.active{background:#1C1410;color:#F5EFE8;border-color:#1C1410;box-shadow:0 6px 24px rgba(28,20,16,.18)}
+.service-card-price{font-size:12px;font-weight:500;opacity:.55;margin-top:4px;display:block}
 .service-card.active .service-card-price{opacity:.6}
+.svc-panel{display:none;opacity:0;transform:translateY(10px);transition:opacity .4s ease,transform .4s ease}
+.svc-panel.active{display:block;opacity:1;transform:translateY(0)}
+.svc-back{font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:#C4826A;cursor:pointer;background:none;border:none;padding:4px 0;margin-bottom:16px;display:inline-flex;align-items:center;gap:6px;transition:color .2s}
+.svc-back:hover{color:#1C1410}
+.svc-item{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-radius:14px;border:1.5px solid #E8DFD4;background:#F5EFE8;cursor:pointer;transition:all .25s ease;font-family:'DM Sans',sans-serif;font-size:14px;margin-bottom:10px}
+.svc-item:hover{border-color:#C4826A;background:#F0E8DF;transform:translateY(-1px);box-shadow:0 2px 10px rgba(196,130,106,.08)}
+.svc-item.active{background:#1C1410;color:#F5EFE8;border-color:#1C1410;transform:translateY(0)}
+.svc-item .svc-price{font-weight:700;white-space:nowrap;margin-left:16px;font-size:14px}
+.svc-item.active .svc-price{color:#d9a895}
+.svc-breadcrumb{font-family:'DM Sans',sans-serif;font-size:12px;color:#C4826A;letter-spacing:.06em;text-transform:uppercase;margin-bottom:14px;font-weight:600}
+.svc-chosen-badge{margin-top:16px;padding:14px 18px;border-radius:14px;background:#1C1410;color:#F5EFE8;font-family:'DM Sans',sans-serif;font-size:14px;display:flex;justify-content:space-between;align-items:center}
+.svc-chosen-badge .svc-change{font-size:12px;color:#d9a895;cursor:pointer;text-decoration:underline;margin-left:14px}
 
 /* Locked state (steps not yet reached) */
 .booking-block{transition:opacity .35s ease}
@@ -354,10 +370,10 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
       <div class="bg-cream-dark/40 backdrop-blur-sm rounded-3xl p-8 md:p-10 border border-cream-dark/30 shadow-sm">
         <form id="bookingForm" class="space-y-7" onsubmit="bookingSubmit(event)">
 
-          <!-- STEP 1: SERVICE -->
+          <!-- STEP 1: SERVICE (multi-level) -->
           <div>
             <p class="booking-step-label" data-de="Schritt 1 — Behandlung" data-ru="Шаг 1 — Услуга" data-en="Step 1 — Treatment">Schritt 1 — Behandlung</p>
-            <div class="service-cards-grid" id="serviceCardsGrid"></div>
+            <div id="svcPickerWrap"></div>
             <input type="hidden" id="selectedServiceId" value="">
             <input type="hidden" id="selectedServiceName" value="">
           </div>
@@ -444,6 +460,44 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
 
 <div class="section-divider"></div>
 
+<!-- CLINIC -->
+<section id="clinic" class="py-16 md:py-24 bg-cream relative overflow-hidden">
+  <div class="max-w-6xl mx-auto px-6">
+    <p class="reveal text-center font-body text-rose tracking-[0.2em] uppercase text-xs font-bold mb-3" data-de="Unsere Klinik" data-ru="Наша клиника" data-en="Our Clinic">Unsere Klinik</p>
+    <h2 class="reveal stagger-1 text-center font-heading text-4xl md:text-5xl text-espresso mb-12" data-de="Hier entsteht Schönheit" data-ru="Здесь рождается красота" data-en="Where beauty is created">Hier entsteht Schönheit</h2>
+    
+    <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
+      <div class="reveal stagger-2 space-y-6">
+        <h3 class="font-heading text-3xl text-espresso" data-de="Willkommen bei Beauty Glanz" data-ru="Добро пожаловать в Beauty Glanz" data-en="Welcome to Beauty Glanz">Willkommen bei Beauty Glanz</h3>
+        <p class="font-body text-espresso/80 leading-relaxed max-w-lg" data-de="Unser Studio bietet Ihnen einen Ort der Ruhe und Entspannung. Mit modernster Ausstattung und höchstem Komfort sorgen wir dafür, dass Sie sich bei jeder Behandlung rundum wohlfühlen." data-ru="Наша студия предлагает вам место спокойствия и расслабления. С самым современным оборудованием и высоким уровнем комфорта мы заботимся о том, чтобы вы чувствовали себя прекрасно во время каждой процедуры." data-en="Our studio offers you a place of peace and relaxation. With state-of-the-art equipment and maximum comfort, we ensure that you feel completely at ease during every treatment.">Unser Studio bietet Ihnen einen Ort der Ruhe und Entspannung. Mit modernster Ausstattung und höchstem Komfort sorgen wir dafür, dass Sie sich bei jeder Behandlung rundum wohlfühlen.</p>
+        <div class="flex flex-col gap-3 pt-4">
+          <div class="flex items-center gap-3 text-espresso">
+            <div class="w-2 h-2 rounded-full bg-rose flex-shrink-0"></div>
+            <span class="font-body text-base font-medium" data-de="Höchste Hygienestandards" data-ru="Высочайшие стандарты гигиены" data-en="Highest hygiene standards">Höchste Hygienestandards</span>
+          </div>
+          <div class="flex items-center gap-3 text-espresso">
+            <div class="w-2 h-2 rounded-full bg-rose flex-shrink-0"></div>
+            <span class="font-body text-base font-medium" data-de="Entspannende Atmosphäre" data-ru="Расслабляющая атмосфера" data-en="Relaxing atmosphere">Entspannende Atmosphäre</span>
+          </div>
+        </div>
+      </div>
+      <div class="reveal stagger-3 grid grid-cols-2 gap-4">
+        <!-- Clinic Photos -->
+        <div class="space-y-4">
+          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg"><img src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg" alt="" class="w-full h-full object-cover"></div>
+          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg"><img src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg" alt="" class="w-full h-full object-cover"></div>
+        </div>
+        <div class="space-y-4 pt-8">
+          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg"><img src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg" alt="" class="w-full h-full object-cover"></div>
+          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg"><img src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg" alt="" class="w-full h-full object-cover"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
 <!-- FAQ -->
 <section id="faq" class="py-16 md:py-24">
   <div class="max-w-3xl mx-auto px-6">
@@ -460,17 +514,20 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
   <div class="max-w-5xl mx-auto px-6">
     <p class="reveal text-center font-body text-rose tracking-[0.2em] uppercase text-xs font-bold mb-3" data-de="Kontakt" data-ru="Контакт" data-en="Contact">Kontakt</p>
     <h2 class="reveal stagger-1 text-center font-heading text-4xl md:text-5xl text-espresso mb-12" data-de="So finden Sie uns" data-ru="Как нас найти" data-en="How to find us">So finden Sie uns</h2>
-    <div class="grid md:grid-cols-2 gap-10 reveal stagger-2">
-      <div class="bg-cream-dark/40 backdrop-blur-sm rounded-3xl p-8 border border-cream-dark/30 space-y-5">
+    <div class="grid lg:grid-cols-2 gap-8 reveal stagger-2">
+      <!-- 1. Contact Details -->
+      <div class="bg-cream-dark/40 backdrop-blur-sm rounded-3xl p-8 border border-cream-dark/30 flex flex-col justify-center space-y-6">
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">📍</span></div><div><p class="font-body font-bold text-sm mb-0.5" data-de="Adresse" data-ru="Адрес" data-en="Address">Adresse</p><p class="font-body text-sm text-espresso/60">Theaterstraße 3, 34117 Kassel</p></div></div>
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">📞</span></div><div><p class="font-body font-bold text-sm mb-0.5" data-de="WhatsApp / Telefon" data-ru="WhatsApp / Телефон" data-en="WhatsApp / Phone">WhatsApp / Telefon</p><a href="tel:+4917675881485" class="font-body text-sm text-espresso/60 hover:text-rose transition-colors">+49 176 75881485</a></div></div>
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">✉</span></div><div><p class="font-body font-bold text-sm mb-0.5">E-Mail</p><a href="mailto:info@beautyglanz.de" class="font-body text-sm text-espresso/60 hover:text-rose transition-colors">info@beautyglanz.de</a></div></div>
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">📸</span></div><div><p class="font-body font-bold text-sm mb-0.5">Instagram</p><a href="https://instagram.com/beautyglanz_26" target="_blank" class="font-body text-sm text-espresso/60 hover:text-rose transition-colors">@beautyglanz_26</a></div></div>
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">🕐</span></div><div><p class="font-body font-bold text-sm mb-0.5" data-de="Öffnungszeiten" data-ru="Часы работы" data-en="Opening hours">Öffnungszeiten</p><p class="font-body text-sm text-espresso/60" data-de="Mo–Sa: 09:00–19:00" data-ru="Пн–Сб: 09:00–19:00" data-en="Mon–Sat: 09:00–19:00">Mo–Sa: 09:00–19:00</p></div></div>
       </div>
-      <div class="bg-cream-dark/40 rounded-3xl p-3 h-full min-h-[400px]">
+      
+      <!-- 2. Interactive Map -->
+      <div class="bg-cream-dark/40 rounded-3xl p-3 h-full min-h-[300px]">
         <div class="w-full h-full rounded-2xl overflow-hidden shadow-inner relative bg-cream">
-          <iframe src="https://maps.google.com/maps?q=Theaterstra%C3%9Fe%203%2C%2034117%20Kassel&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;min-height:320px" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+          <iframe src="https://maps.google.com/maps?q=Theaterstra%C3%9Fe%203%2C%2034117%20Kassel&t=&z=15&ie=UTF8&iwloc=&output=embed" width="100%" height="100%" style="border:0;min-height:300px" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
         </div>
       </div>
     </div>
@@ -483,8 +540,9 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
     <img src="logo_optimized.png" alt="Beauty Glanz" class="h-10 brightness-0 invert opacity-80">
     <p class="font-body text-sm text-cream/50">&copy; 2026 Beauty Glanz. <span data-de="Alle Rechte vorbehalten." data-ru="Все права защищены." data-en="All rights reserved.">Alle Rechte vorbehalten.</span></p>
     <div class="flex gap-4">
-      <a href="#" class="text-cream/60 hover:text-rose transition-colors text-sm">Instagram</a>
-      <a href="#" class="text-cream/60 hover:text-rose transition-colors text-sm" data-de="Impressum" data-ru="Правовая информация" data-en="Legal Notice">Impressum</a>
+      <a href="https://www.instagram.com/beautyglanz_26" target="_blank" class="text-cream/60 hover:text-rose transition-colors text-sm">Instagram</a>
+      <a href="/impressum.html" class="text-cream/60 hover:text-rose transition-colors text-sm" data-de="Impressum" data-ru="Правовая информация" data-en="Legal Notice">Impressum</a>
+      <a href="/datenschutz.html" class="text-cream/60 hover:text-rose transition-colors text-sm" data-de="Datenschutz" data-ru="Конфиденциальность" data-en="Privacy Policy">Datenschutz</a>
     </div>
   </div>
 </footer>
@@ -533,117 +591,143 @@ let currentLang = 'de';
 let activeCategory = 'nails';
 
 const services = [
-  {id:'nails',de:'Maniküre & Nägel',ru:'Маникюр и ногти',en:'Manicure & Nails',items:[
-    {de:'Maniküre klassisch',ru:'Классический маникюр',en:'Classic manicure',p:'25 €'},
-    {de:'Maniküre mit Gel',ru:'Маникюр с гелем',en:'Gel manicure',p:'45 €'},
-    {de:'Gel-Verlängerung',ru:'Наращивание гелем',en:'Gel extensions',p:'65 €'},
-    {de:'Nagel-Design (pro Nagel)',ru:'Дизайн ногтей (за ноготь)',en:'Nail design (per nail)',p:'5 €'},
-    {de:'Gel entfernen',ru:'Снятие геля',en:'Gel removal',p:'15 €'},
-    {de:'Reparatur (pro Nagel)',ru:'Ремонт (за ноготь)',en:'Repair (per nail)',p:'8 €'},
+  {id:'nails',de:'Nägel & Maniküre',ru:'Ногти и Маникюр',en:'Nails & Manicure',items:[
+    {de:'Neumodellage Natur',ru:'Наращивание (натуральный)',en:'New set (natural)',p:'50 €'},
+    {de:'Neumodellage Farben',ru:'Наращивание (цвет)',en:'New set (color)',p:'59 €'},
+    {de:'Neumodellage French/Babyboomer',ru:'Наращивание French/Babyboomer',en:'New set French/Babyboomer',p:'69 €'},
+    {de:'Auffüllen Natur',ru:'Коррекция (натуральный)',en:'Refill (natural)',p:'44 €'},
+    {de:'Auffüllen Farben',ru:'Коррекция (цвет)',en:'Refill (color)',p:'49 €'},
+    {de:'Auffüllen French/Babyboomer',ru:'Коррекция French/Babyboomer',en:'Refill French/Babyboomer',p:'55 €'},
+    {de:'Maniküre-Classic ohne Lack',ru:'Классический маникюр (без лака)',en:'Classic manicure (no polish)',p:'30 €'},
+    {de:'Maniküre mit Lack',ru:'Маникюр с лаком',en:'Manicure with polish',p:'40 €'},
+    {de:'Nail-Art, pro Nagel',ru:'Дизайн ногтей, 1 ноготь',en:'Nail art, per nail',p:'2 €'},
+    {de:'Swarovski Steine 1 Stk.',ru:'Камни Swarovski 1 шт.',en:'Swarovski stones 1 pc.',p:'0,50 €'},
+    {de:'Reparatur Nagel',ru:'Ремонт ногтя',en:'Nail repair',p:'5 €'},
   ]},
-  {id:'pedicure',de:'Pediküre',ru:'Педикюр',en:'Pedicure',items:[
-    {de:'Pediküre klassisch',ru:'Классический педикюр',en:'Classic pedicure',p:'35 €'},
-    {de:'Pediküre mit Gel',ru:'Педикюр с гелем',en:'Gel pedicure',p:'55 €'},
-    {de:'Medizinische Pediküre',ru:'Медицинский педикюр',en:'Medical pedicure',p:'50 €'},
-    {de:'Fußpflege Spa',ru:'Спа-уход за стопами',en:'Foot spa care',p:'40 €'},
+  {id:'pedicure',de:'Pediküre & SPA',ru:'Педикюр и SPA',en:'Pedicure & SPA',items:[
+    {de:'Pediküre-Classic ohne Lack',ru:'Классический педикюр (без лака)',en:'Classic pedicure (no polish)',p:'40 €'},
+    {de:'Pediküre mit Lack',ru:'Педикюр с лаком',en:'Pedicure with polish',p:'46 €'},
+    {de:'Pediküre Gel-Lack / Shellac',ru:'Педикюр гель-лак / Shellac',en:'Pedicure gel polish / Shellac',p:'56 €'},
+    {de:'Smart-Pediküre ohne Lack',ru:'Смарт-педикюр (без лака)',en:'Smart pedicure (no polish)',p:'50 €'},
+    {de:'Smart-Pediküre mit Lack',ru:'Смарт-педикюр с лаком',en:'Smart pedicure with polish',p:'59 €'},
+    {de:'Smart-Pediküre mit Gel-Lack',ru:'Смарт-педикюр с гель-лаком',en:'Smart pedicure with gel polish',p:'69 €'},
+    {de:'SPA Fußpflege (Peeling, Maske, Aroma Kerze)',ru:'SPA педикюр (пилинг, маска, аромасвеча)',en:'SPA pedicure (peeling, mask, candle)',p:'50 €'},
+    {de:'SPA Füße mit Lack',ru:'SPA педикюр с лаком',en:'SPA pedicure with polish',p:'59 €'},
+    {de:'SPA Füße mit Gel-Lack',ru:'SPA педикюр с гель-лаком',en:'SPA pedicure with gel polish',p:'69 €'},
   ]},
-  {id:'brows',de:'Augenbrauen',ru:'Брови',en:'Eyebrows',items:[
-    {de:'Augenbrauen zupfen',ru:'Коррекция бровей',en:'Brow shaping',p:'15 €'},
-    {de:'Augenbrauen färben',ru:'Окрашивание бровей',en:'Brow tinting',p:'15 €'},
-    {de:'Brow Lamination',ru:'Ламинирование бровей',en:'Brow lamination',p:'45 €'},
-    {de:'Brow Lamination + Färben',ru:'Ламинирование + окрашивание',en:'Lamination + tinting',p:'55 €'},
-  ]},
-  {id:'lashes',de:'Wimpern',ru:'Ресницы',en:'Lashes',items:[
-    {de:'Wimpernverlängerung Classic',ru:'Наращивание ресниц классика',en:'Classic lash extensions',p:'80 €'},
-    {de:'Wimpernverlängerung Volume',ru:'Наращивание ресниц объём',en:'Volume lash extensions',p:'100 €'},
-    {de:'Wimpern-Lifting',ru:'Лифтинг ресниц',en:'Lash lifting',p:'50 €'},
+  {id:'brows',de:'Augenbrauen & Lifting',ru:'Брови и Лифтинг',en:'Brows & Lifting',items:[
+    {de:'Wimpernlifting mit färben',ru:'Лифтинг ресниц + окрашивание',en:'Lash lifting + tinting',p:'60 €'},
+    {de:'Augenbrauenlifting mit färben',ru:'Лифтинг бровей + окрашивание',en:'Brow lifting + tinting',p:'60 €'},
+    {de:'Augenbrauen färben mit Henna',ru:'Окрашивание бровей хной',en:'Brow tinting with henna',p:'40 €'},
     {de:'Wimpern färben',ru:'Окрашивание ресниц',en:'Lash tinting',p:'15 €'},
-    {de:'Wimpern entfernen',ru:'Снятие ресниц',en:'Lash removal',p:'20 €'},
+    {de:'Augenbrauen färben',ru:'Окрашивание бровей',en:'Brow tinting',p:'15 €'},
+    {de:'Augenbrauen zupfen',ru:'Коррекция бровей',en:'Brow shaping',p:'15 €'},
   ]},
-  {id:'makeup',de:'Make-up',ru:'Макияж',en:'Make-up',items:[
-    {de:'Tages Make-up',ru:'Дневной макияж',en:'Day make-up',p:'50 €'},
-    {de:'Abend Make-up',ru:'Вечерний макияж',en:'Evening make-up',p:'70 €'},
-    {de:'Braut Make-up',ru:'Свадебный макияж',en:'Bridal make-up',p:'120 €'},
-    {de:'Braut Make-up + Probe',ru:'Свадебный макияж + проба',en:'Bridal make-up + trial',p:'180 €'},
+  {id:'lashes',de:'Wimpernverlängerung',ru:'Наращивание ресниц',en:'Lash Extensions',items:[
+    {de:'Naturlashes Look, Classic 1:1 Neu',ru:'Классика 1:1 (Новое)',en:'Classic 1:1 (New set)',p:'79 €'},
+    {de:'Auffüllung bis 2 Wochen',ru:'Коррекция (до 2 нед.)',en:'Refill (up to 2 weeks)',p:'39 €'},
+    {de:'Auffüllung bis 3 Wochen',ru:'Коррекция (до 3 нед.)',en:'Refill (up to 3 weeks)',p:'49 €'},
+    {de:'Auffüllung bis 4 Wochen',ru:'Коррекция (до 4 нед.)',en:'Refill (up to 4 weeks)',p:'59 €'},
+    {de:'Mascara Look 2-3D Neu',ru:'Mascara Look 2-3D (Новое)',en:'Mascara Look 2-3D (New set)',p:'89 €'},
+    {de:'Auffüllung 2-3D bis 2 Wochen',ru:'Коррекция 2-3D (до 2 нед.)',en:'Refill 2-3D (up to 2 weeks)',p:'40 €'},
+    {de:'Auffüllung 2-3D bis 3 Wochen',ru:'Коррекция 2-3D (до 3 нед.)',en:'Refill 2-3D (up to 3 weeks)',p:'59 €'},
+    {de:'Auffüllung 2-3D bis 4 Wochen',ru:'Коррекция 2-3D (до 4 нед.)',en:'Refill 2-3D (up to 4 weeks)',p:'69 €'},
   ]},
-  {id:'waxing',de:'Waxing',ru:'Ваксинг',en:'Waxing',hasTabs:true,
-    tabs:{damen:{de:'Damen',ru:'Женщинам',en:'Women',items:[
-      {de:'Oberlippe',ru:'Верхняя губа',en:'Upper lip',p:'10 €'},
-      {de:'Achseln',ru:'Подмышки',en:'Underarms',p:'15 €'},
-      {de:'Bikinizone',ru:'Зона бикини',en:'Bikini area',p:'25 €'},
-      {de:'Ganzes Bein',ru:'Полностью ноги',en:'Full legs',p:'40 €'},
-      {de:'Halbes Bein',ru:'Полуноги',en:'Half legs',p:'25 €'},
-      {de:'Arme',ru:'Руки',en:'Arms',p:'20 €'},
-    ]},herren:{de:'Herren',ru:'Мужчинам',en:'Men',items:[
-      {de:'Rücken',ru:'Спина',en:'Back',p:'35 €'},
-      {de:'Brust',ru:'Грудь',en:'Chest',p:'30 €'},
-      {de:'Ganzes Bein',ru:'Полностью ноги',en:'Full legs',p:'45 €'},
-      {de:'Achseln',ru:'Подмышки',en:'Underarms',p:'15 €'},
-    ]}}
-  },
   {id:'permanent',de:'Permanent Make-up',ru:'Перманентный макияж',en:'Permanent Make-up',items:[
-    {de:'Augenbrauen Permanent',ru:'Перманент бровей',en:'Permanent brows',p:'250 €'},
-    {de:'Lippen Permanent',ru:'Перманент губ',en:'Permanent lips',p:'280 €'},
-    {de:'Eyeliner Permanent',ru:'Перманент стрелки',en:'Permanent eyeliner',p:'200 €'},
-    {de:'Auffrischung (bis 6 Mo.)',ru:'Коррекция (до 6 мес.)',en:'Touch-up (up to 6 mo.)',p:'120 €'},
+    {de:'Powder Brows',ru:'Пудровые брови (Powder Brows)',en:'Powder Brows',p:'230 €'},
+    {de:'Nachstechen in 5 Wochen (Brows)',ru:'Брови - Коррекция (через 5 нед.)',en:'Brows - Touch up (in 5 weeks)',p:'75 €'},
+    {de:'Lippen',ru:'Губы',en:'Lips',p:'280 €'},
+    {de:'Nachstechen in 5 Wochen (Lippen)',ru:'Губы - Коррекция (через 5 нед.)',en:'Lips - Touch up (in 5 weeks)',p:'90 €'},
+    {de:'Lidstrich',ru:'Стрелки',en:'Eyeliner',p:'180 €'},
+    {de:'Nachstechen in 5 Wochen (Lidstrich)',ru:'Стрелки - Коррекция (через 5 нед.)',en:'Eyeliner - Touch up (in 5 weeks)',p:'70 €'},
   ]},
-  {id:'lifting',de:'Wimpern & Brauen Lifting',ru:'Лифтинг ресниц и бровей',en:'Lash & Brow Lifting',items:[
-    {de:'Wimpern Lifting + Botox',ru:'Лифтинг ресниц + ботокс',en:'Lash lifting + botox',p:'60 €'},
-    {de:'Wimpern Lifting + Färben',ru:'Лифтинг ресниц + окрашивание',en:'Lash lifting + tinting',p:'55 €'},
-    {de:'Brauen Lifting + Färben',ru:'Лифтинг бровей + окрашивание',en:'Brow lifting + tinting',p:'55 €'},
-    {de:'Kombi: Wimpern + Brauen Lifting',ru:'Комбо: лифтинг ресниц + бровей',en:'Combo: lash + brow lifting',p:'90 €'},
-  ]},
+  {id:'waxing',de:'Waxing & Haarentfernung',ru:'Депиляция (Воск)',en:'Waxing',hasTabs:true,
+    tabs:{damen:{de:'Damen',ru:'Женщинам',en:'Women',items:[
+      {de:'Oberlippe, 10 Min.',ru:'Верхняя губа, 10 мин.',en:'Upper lip, 10 min.',p:'14 €'},
+      {de:'Kinn, 10 Min.',ru:'Подбородок, 10 мин.',en:'Chin, 10 min.',p:'16 €'},
+      {de:'Oberlippe & Kinn, 15 Min.',ru:'Верхняя губа и подбородок, 15 мин.',en:'Upper lip & chin, 15 min.',p:'22 €'},
+      {de:'Wange, 10 Min.',ru:'Щеки, 10 мин.',en:'Cheeks, 10 min.',p:'22 €'},
+      {de:'Hals, 10 Min.',ru:'Шея, 10 мин.',en:'Neck, 10 min.',p:'28 €'},
+      {de:'Nase, 5 Min.',ru:'Нос, 5 мин.',en:'Nose, 5 min.',p:'12 €'},
+      {de:'Ohren, 5 Min.',ru:'Уши, 5 мин.',en:'Ears, 5 min.',p:'12 €'},
+      {de:'Gesicht komplett, 25 Min.',ru:'Лицо полностью, 25 мин.',en:'Full face, 25 min.',p:'44 €'},
+      {de:'Nacken, 10 Min.',ru:'Затылок (шея сзади), 10 мин.',en:'Nape, 10 min.',p:'28 €'},
+      {de:'Achseln, 10 Min.',ru:'Подмышки, 10 мин.',en:'Underarms, 10 min.',p:'28 €'},
+      {de:'Unterarme, 20 Min.',ru:'Предплечья, 20 мин.',en:'Forearms, 20 min.',p:'32 €'},
+      {de:'Oberarme, 25 Min.',ru:'Плечи, 25 мин.',en:'Upper arms, 25 min.',p:'38 €'},
+      {de:'Arme komplett, 40 Min.',ru:'Руки полностью, 40 мин.',en:'Full arms, 40 min.',p:'65 €'},
+      {de:'Arme komplett mit Achseln, 45 Min.',ru:'Руки и подмышки, 45 мин.',en:'Full arms & underarms, 45 min.',p:'75 €'},
+      {de:'Unterschenkel inkl. Knie, 30 Min.',ru:'Голени вкл. колени, 30 мин.',en:'Lower legs incl. knees, 30 min.',p:'40 €'},
+      {de:'Oberschenkel, 30 Min.',ru:'Бедра, 30 мин.',en:'Upper legs, 30 min.',p:'45 €'},
+      {de:'Beine komplett, 45 Min.',ru:'Ноги полностью, 45 мин.',en:'Full legs, 45 min.',p:'70 €'},
+      {de:'Rücken unten, 15 Min.',ru:'Спина (низ), 15 мин.',en:'Lower back, 15 min.',p:'28 €'},
+      {de:'Rücken oben, 25 Min.',ru:'Спина (верх), 25 мин.',en:'Upper back, 25 min.',p:'35 €'},
+      {de:'Rücken komplett, 35 Min.',ru:'Спина полностью, 35 мин.',en:'Full back, 35 min.',p:'58 €'},
+      {de:'Schulter, 20 Min.',ru:'Плечи, 20 мин.',en:'Shoulders, 20 min.',p:'30 €'},
+      {de:'Brust, 20 Min.',ru:'Грудь, 20 мин.',en:'Chest, 20 min.',p:'30 €'},
+      {de:'Bauch, 25 Min.',ru:'Живот, 25 мин.',en:'Stomach, 25 min.',p:'35 €'},
+      {de:'Bikinilinie (Grenze Obersch.), 15 Min.',ru:'Зона бикини, 15 мин.',en:'Bikini line, 15 min.',p:'30 €'},
+      {de:'Intim inkl. Pofalte, 30-45 Min.',ru:'Бикини (вкл. межяг. складку), 30-45 мин.',en:'Brazilian incl. gluteal cleft, 30-45 min.',p:'ab 60 €'},
+      {de:'Intim ohne Pofalte, 30 Min.',ru:'Бикини (без межяг. складки), 30 мин.',en:'Brazilian excl. gluteal cleft, 30 min.',p:'ab 55 €'},
+      {de:'Nur Pofalte, 10 Min.',ru:'Только межягодичная складка, 10 мин.',en:'Gluteal cleft only, 10 min.',p:'ab 25 €'},
+      {de:'Pobacken, 15 Min.',ru:'Ягодицы, 15 мин.',en:'Buttocks, 15 min.',p:'40 €'},
+    ]},herren:{de:'Herren',ru:'Мужчинам',en:'Men',items:[
+      {de:'Wange, 10 Min.',ru:'Щеки, 10 мин.',en:'Cheeks, 10 min.',p:'22 €'},
+      {de:'Hals, 10 Min.',ru:'Шея, 10 мин.',en:'Neck, 10 min.',p:'28 €'},
+      {de:'Nase, 5 Min.',ru:'Нос, 5 мин.',en:'Nose, 5 min.',p:'12 €'},
+      {de:'Ohren, 5 Min.',ru:'Уши, 5 мин.',en:'Ears, 5 min.',p:'12 €'},
+      {de:'Nacken, 10 Min.',ru:'Затылок (шея сзади), 10 мин.',en:'Nape, 10 min.',p:'28 €'},
+      {de:'Achseln, 10 Min.',ru:'Подмышки, 10 мин.',en:'Underarms, 10 min.',p:'28 €'},
+      {de:'Unterarme, 20 Min.',ru:'Предплечья, 20 мин.',en:'Forearms, 20 min.',p:'32 €'},
+      {de:'Oberarme, 25 Min.',ru:'Плечи, 25 мин.',en:'Upper arms, 25 min.',p:'38 €'},
+      {de:'Arme komplett, 40 Min.',ru:'Руки полностью, 40 мин.',en:'Full arms, 40 min.',p:'65 €'},
+      {de:'Arme komplett mit Achseln, 45 Min.',ru:'Руки и подмышки, 45 мин.',en:'Full arms & underarms, 45 min.',p:'75 €'},
+      {de:'Unterschenkel inkl. Knie, 30 Min.',ru:'Голени вкл. колени, 30 мин.',en:'Lower legs incl. knees, 30 min.',p:'40 €'},
+      {de:'Oberschenkel, 30 Min.',ru:'Бедра, 30 мин.',en:'Upper legs, 30 min.',p:'45 €'},
+      {de:'Beine komplett, 45 Min.',ru:'Ноги полностью, 45 мин.',en:'Full legs, 45 min.',p:'70 €'},
+      {de:'Pobacken, 15 Min.',ru:'Ягодицы, 15 мин.',en:'Buttocks, 15 min.',p:'40 €'},
+      {de:'Brust, 25 Min.',ru:'Грудь, 25 мин.',en:'Chest, 25 min.',p:'35 €'},
+      {de:'Bauch, 30 Min.',ru:'Живот, 30 мин.',en:'Stomach, 30 min.',p:'40 €'},
+      {de:'Brust und Bauch, 45 Min.',ru:'Грудь и живот, 45 мин.',en:'Chest & Stomach, 45 min.',p:'70 €'},
+      {de:'Rücken oben, 25 Min.',ru:'Спина (верх), 25 мин.',en:'Upper back, 25 min.',p:'40 €'},
+      {de:'Rücken unten, 20 Min.',ru:'Спина (низ), 20 мин.',en:'Lower back, 20 min.',p:'35 €'},
+      {de:'Rücken komplett, 40 Min.',ru:'Спина полностью, 40 мин.',en:'Full back, 40 min.',p:'70 €'},
+    ]}}
+  }
 ];
 
 const galleryCategories = [
-  {id:'nails',de:'Nails',ru:'Ногти',en:'Nails',images:[
-    {src:'gallery/nails_2.png',de:'Geometrisches Design',ru:'Геометрический дизайн',en:'Geometric design'},
-    {src:'gallery/nails_new_1.jpg',de:'Maniküre',ru:'Маникюр',en:'Manicure'},
-    {src:'gallery/nails_new_2.jpg',de:'Natürliches Design',ru:'Естественный дизайн',en:'Natural design'},
-    {src:'gallery/nails_new_3.jpg',de:'Nagelkunst',ru:'Нейл-арт',en:'Nail art'},
+  {id:'nails',de:'Nägel',ru:'Ногти',en:'Nails',images:[
+    {src:'ногти/3fbdcd90-aaa3-4ec9-8af6-b5b2b1448831.jpg'},
+    {src:'ногти/52d49672-62ab-4f99-829b-2d41ba113324.jpg'},
+    {src:'ногти/5e35dc00-bd3f-4383-8d7e-9bfb3570ec5b.jpg'},
+    {src:'ногти/a7cfbb77-3f22-4336-a4bd-79f06b2cea92.jpg'},
+    {src:'ногти/ac10c53a-9339-4737-811c-29a6dbda18d3.jpg'},
+    {src:'ногти/c75303e9-92c3-4f70-96cb-46c62b522dc7.JPG'},
+    {src:'ногти/d747f5b1-bfa0-40b1-9bdb-623e886ca62e.jpg'},
+    {src:'ногти/ea710c88-676e-40df-a75f-79f5ef9a0830.jpg'},
   ]},
   {id:'brows',de:'Brauen',ru:'Брови',en:'Brows',images:[
-    {src:'gallery/brows_1.png',de:'Perfekte Augenbrauen',ru:'Идеальные брови',en:'Perfect brows'},
-    {grad:'from-[#a08070] via-[#c4826a] to-[#e8dfd4]',de:'Brow Lamination',ru:'Ламинирование бровей',en:'Brow lamination'},
-    {grad:'from-[#d4a090] via-[#1c1410]/20 to-[#e8dfd4]',de:'Microblading',ru:'Микроблейдинг',en:'Microblading'},
-    {grad:'from-[#c4826a]/40 via-[#e8dfd4] to-[#a08070]',de:'Brow Styling',ru:'Стайлинг бровей',en:'Brow styling'},
+    {src:'брови/1f20b06c-467c-45bf-bab9-0ebac1a995e1.jpg'},
+    {src:'брови/5c393966-f4a5-496e-ba2d-e415b01269f6.jpg'},
+    {src:'брови/5e036710-5658-420f-a162-a382a2cfff31.jpg'},
   ]},
   {id:'lashes',de:'Wimpern',ru:'Ресницы',en:'Lashes',images:[
-    {src:'gallery/lashes_1.png',de:'Volume Lashes',ru:'Объёмные ресницы',en:'Volume lashes'},
-    {grad:'from-[#a08070] via-[#d4a090] to-[#f5efe8]',de:'Classic Lashes',ru:'Классические ресницы',en:'Classic lashes'},
-    {grad:'from-[#c4826a]/50 via-[#1c1410]/20 to-[#e8dfd4]',de:'Natural Look',ru:'Натуральный образ',en:'Natural look'},
-    {grad:'from-[#d9a895] via-[#c4826a]/30 to-[#f5efe8]',de:'Mega Volume',ru:'Мега объём',en:'Mega volume'},
-  ]},
-  {id:'makeup',de:'Make-up',ru:'Макияж',en:'Make-up',images:[
-    {src:'gallery/makeup_1.png',de:'Braut Make-up',ru:'Свадебный макияж',en:'Bridal make-up'},
-    {grad:'from-[#a8694f] via-[#c4826a] to-[#e8dfd4]',de:'Abend Make-up',ru:'Вечерний макияж',en:'Evening make-up'},
-    {grad:'from-[#d4a090] via-[#f5efe8] to-[#c4826a]/30',de:'Tages Make-up',ru:'Дневной макияж',en:'Day make-up'},
-    {grad:'from-[#c4826a]/60 via-[#d9a895] to-[#e8dfd4]',de:'Special Occasion',ru:'Особый повод',en:'Special occasion'},
+    {src:'ресницы/817fe79e-63b8-4aa2-b3be-40aeec1d6381.jpg'},
+    {src:'ресницы/d349fb78-6c2b-4202-9ba0-8d5545c377c5.jpg'},
+    {src:'ресницы/d5febd6d-0d54-4751-aea2-8381444448ed.jpg'},
+    {src:'ресницы/ddd296ef-3fe5-4e34-afab-480cff627c67.jpg'},
   ]},
   {id:'pedicure',de:'Pediküre',ru:'Педикюр',en:'Pedicure',images:[
-    {src:'gallery/pedicure_1.png',de:'Gel Pediküre',ru:'Гель-педикюр',en:'Gel pedicure'},
-    {grad:'from-[#f5efe8] via-[#d4a090] to-[#a8694f]/40',de:'Spa Fußpflege',ru:'Спа-уход',en:'Foot spa care'},
-    {grad:'from-[#c4826a]/30 via-[#e8dfd4] to-[#d9a895]',de:'Klassisch',ru:'Классический',en:'Classic'},
-    {grad:'from-[#d9a895]/50 via-[#f5efe8] to-[#c4826a]/20',de:'Med. Pediküre',ru:'Мед. педикюр',en:'Medical pedicure'},
-  ]},
-  {id:'waxing',de:'Waxing',ru:'Ваксинг',en:'Waxing',images:[
-    {grad:'from-[#d9a895] via-[#f5efe8] to-[#c4826a]/30',de:'Ganzkörper',ru:'Всё тело',en:'Full body'},
-    {grad:'from-[#e8dfd4] via-[#c4826a]/20 to-[#f5efe8]',de:'Beine',ru:'Ноги',en:'Legs'},
-    {grad:'from-[#c4826a]/40 via-[#d9a895] to-[#f5efe8]',de:'Bikinizone',ru:'Бикини',en:'Bikini area'},
-    {grad:'from-[#f5efe8] via-[#d4a090]/30 to-[#e8dfd4]',de:'Achseln',ru:'Подмышки',en:'Underarms'},
+    {src:'ноги/5fa2c08d-e86d-45b7-a1da-c6290919201b.jpg'},
+    {src:'ноги/b939fc42-fb14-4c33-83d1-5af1b9206c37.jpg'},
+    {src:'ноги/fe305990-21dc-4b62-9c77-3397cb0abf4d.jpg'},
   ]},
   {id:'permanent',de:'Permanent',ru:'Перманент',en:'Permanent',images:[
-    {grad:'from-[#c4826a] via-[#a8694f] to-[#1c1410]/20',de:'Lippen',ru:'Губы',en:'Lips'},
-    {grad:'from-[#d4a090] via-[#c4826a] to-[#e8dfd4]',de:'Brauen',ru:'Брови',en:'Brows'},
-    {grad:'from-[#a8694f]/60 via-[#c4826a] to-[#d9a895]',de:'Eyeliner',ru:'Стрелки',en:'Eyeliner'},
-    {grad:'from-[#c4826a]/30 via-[#d4a090] to-[#1c1410]/10',de:'Auffrischung',ru:'Коррекция',en:'Touch-up'},
-  ]},
-  {id:'lifting',de:'Lifting',ru:'Лифтинг',en:'Lifting',images:[
-    {grad:'from-[#f5efe8] via-[#d9a895] to-[#c4826a]/40',de:'Wimpern Lifting',ru:'Лифтинг ресниц',en:'Lash lifting'},
-    {grad:'from-[#e8dfd4] via-[#c4826a]/30 to-[#d4a090]',de:'Brauen Lifting',ru:'Лифтинг бровей',en:'Brow lifting'},
-    {grad:'from-[#d9a895]/60 via-[#f5efe8] to-[#c4826a]/20',de:'Kombi',ru:'Комбо',en:'Combo'},
-    {grad:'from-[#c4826a]/20 via-[#d9a895]/40 to-[#e8dfd4]',de:'Botox Lashes',ru:'Ботокс ресниц',en:'Botox lashes'},
-  ]},
+    {src:'губы/2030ec50-6514-4d24-bd00-809ea1e6f842.jpg'},
+    {src:'губы/ae2ec813-89f0-4b8f-9334-eefdbf8e62a9.jpg'},
+    {src:'губы/d403d3ec-bc92-49bb-8ab6-a6ed8223a926.jpg'},
+  ]}
 ];
 
 const reviews = [
@@ -712,17 +796,19 @@ function buildGallery(){
     const cId=`carousel-${cat.id}`;
     let cards=cat.images.map(img=>{
       const content=img.src
-        ?`<img src="${img.src}" alt="${img[currentLang]}" class="w-full h-full object-cover">`
-        :`<div class="w-full h-full bg-gradient-to-br ${img.grad}"></div>`;
-      return `<div class="carousel-card w-[260px] md:w-[300px]" onclick="openLightbox(this)" data-src="${img.src||''}" data-grad="${img.grad||''}">
+        ?`<img src="${img.src}" alt="${cat[currentLang]}" class="w-full h-full object-cover">`
+        :`<div class="w-full h-full bg-cream"></div>`;
+      return `<div class="carousel-card w-[260px] md:w-[300px] flex-shrink-0" onclick="openLightbox(this)" data-src="${img.src||''}">
         <div class="relative rounded-2xl overflow-hidden aspect-[3/4] gallery-item shadow-md">
           ${content}
-          <div class="absolute inset-0 bg-gradient-to-t from-espresso/50 via-transparent to-transparent"></div>
-          <div class="absolute bottom-0 left-0 right-0 p-4">
-            <p class="font-heading text-lg text-white drop-shadow-lg" data-de="${img.de}" data-ru="${img.ru}" data-en="${img.en}">${img[currentLang]}</p>
-          </div>
         </div></div>`;
     }).join('');
+    
+    // Center alignment mechanism if few photos
+    // Assume container max-width 6xl = ~1152px. Each card is 300 + 16px gap = 316px. 
+    // If <= 3 images, they easily fit exactly and center on large screens.
+    const centerClass = cat.images.length <= 3 ? 'md:justify-center' : '';
+    
     panel.innerHTML=`<div class="relative">
         <div class="flex items-center gap-3 mb-4">
           <h3 class="font-heading text-2xl text-espresso" data-de="${cat.de}" data-ru="${cat.ru}" data-en="${cat.en}">${cat[currentLang]}</h3>
@@ -730,7 +816,7 @@ function buildGallery(){
           <button class="carousel-arrow" onclick="scrollCarousel('${cId}',-1)">‹</button>
           <button class="carousel-arrow" onclick="scrollCarousel('${cId}',1)">›</button>
         </div>
-        <div class="carousel-track" id="${cId}">${cards}</div>
+        <div class="carousel-track ${centerClass}" id="${cId}">${cards}</div>
       </div>`;
     panelsC.appendChild(panel);
   });
@@ -860,43 +946,226 @@ function showToast(message, type = 'error') {
 function showNotification(message) { showToast(message, 'error'); }
 
 
-/* ============ BOOKING: SERVICE CARDS ============ */
-const bookingServiceList = [
-  {id:'nails',   de:'Maniküre & Nägel',   ru:'Маникюр и ногти',   en:'Manicure & Nails',  price:'ab 25 €'},
-  {id:'pedicure',de:'Pediküre',            ru:'Педикюр',            en:'Pedicure',           price:'ab 35 €'},
-  {id:'brows',   de:'Augenbrauen',         ru:'Брови',              en:'Eyebrows',           price:'ab 15 €'},
-  {id:'lashes',  de:'Wimpern',             ru:'Ресницы',            en:'Lashes',             price:'ab 15 €'},
-  {id:'makeup',  de:'Make-up',             ru:'Макияж',             en:'Make-up',            price:'ab 50 €'},
-  {id:'waxing',  de:'Waxing',              ru:'Ваксинг',            en:'Waxing',             price:'ab 10 €'},
-  {id:'permanent',de:'Permanent Make-up',  ru:'Перманент',          en:'Permanent Make-up',  price:'ab 200 €'},
-  {id:'lifting', de:'Lifting',             ru:'Лифтинг',            en:'Lifting',            price:'ab 55 €'},
+/* ============ BOOKING: SERVICE DATA & PICKER ============ */
+const bookingCategories = [
+  {id:'permanent', de:'Permanent Make-up', ru:'Перманентный макияж', en:'Permanent Make-up', icon:'✦',
+    subs:[
+      {id:'pm-brows', de:'Augenbrauen', ru:'Брови', en:'Eyebrows', items:[
+        {de:'Powder Brows', ru:'Пудровые брови', en:'Powder Brows', p:'230 €'},
+        {de:'Nachstechen in 5 Wochen', ru:'Коррекция через 5 нед.', en:'Touch-up in 5 weeks', p:'75 €'},
+      ]},
+      {id:'pm-lips', de:'Lippen', ru:'Губы', en:'Lips', items:[
+        {de:'Lippen', ru:'Губы', en:'Lips', p:'280 €'},
+        {de:'Nachstechen in 5 Wochen', ru:'Коррекция через 5 нед.', en:'Touch-up in 5 weeks', p:'90 €'},
+      ]},
+      {id:'pm-liner', de:'Lidstrich', ru:'Стрелки', en:'Eyeliner', items:[
+        {de:'Lidstrich', ru:'Стрелки', en:'Eyeliner', p:'180 €'},
+        {de:'Nachstechen in 5 Wochen', ru:'Коррекция через 5 нед.', en:'Touch-up in 5 weeks', p:'70 €'},
+      ]},
+    ]
+  },
+  {id:'lashes-ext', de:'Wimpernverlängerung', ru:'Наращивание ресниц', en:'Lash Extensions', icon:'✦',
+    subs:[
+      {id:'lash-classic', de:'Naturlashes / Classic 1:1', ru:'Классика 1:1', en:'Classic 1:1', items:[
+        {de:'Neu', ru:'Новый комплект', en:'New set', p:'79 €'},
+        {de:'Auffüllung bis 2 Wochen', ru:'Коррекция до 2 нед.', en:'Refill up to 2 weeks', p:'39 €'},
+        {de:'Auffüllung bis 3 Wochen', ru:'Коррекция до 3 нед.', en:'Refill up to 3 weeks', p:'49 €'},
+        {de:'Auffüllung bis 4 Wochen', ru:'Коррекция до 4 нед.', en:'Refill up to 4 weeks', p:'59 €'},
+      ]},
+      {id:'lash-volume', de:'Mascara Look 2-3D', ru:'Объём 2-3D', en:'Volume 2-3D', items:[
+        {de:'Neu', ru:'Новый комплект', en:'New set', p:'89 €'},
+        {de:'Auffüllung bis 2 Wochen', ru:'Коррекция до 2 нед.', en:'Refill up to 2 weeks', p:'40 €'},
+        {de:'Auffüllung bis 3 Wochen', ru:'Коррекция до 3 нед.', en:'Refill up to 3 weeks', p:'59 €'},
+        {de:'Auffüllung bis 4 Wochen', ru:'Коррекция до 4 нед.', en:'Refill up to 4 weeks', p:'69 €'},
+      ]},
+    ]
+  },
+  {id:'lifting', de:'Lifting', ru:'Лифтинг', en:'Lifting', icon:'✦',
+    items:[
+      {de:'Wimpernlifting mit färben', ru:'Лифтинг ресниц с окрашиванием', en:'Lash lift with tint', p:'60 €'},
+      {de:'Augenbrauenlifting mit färben', ru:'Лифтинг бровей с окрашиванием', en:'Brow lift with tint', p:'60 €'},
+      {de:'Augenbrauen färben mit Henna', ru:'Окрашивание бровей хной', en:'Brow tint with henna', p:'40 €'},
+      {de:'Wimper färben', ru:'Окрашивание ресниц', en:'Lash tint', p:'15 €'},
+      {de:'Augenbrauen färben', ru:'Окрашивание бровей', en:'Brow tint', p:'15 €'},
+      {de:'Augenbrauen zupfen', ru:'Коррекция бровей', en:'Brow plucking', p:'15 €'},
+    ]
+  },
+  {id:'nails', de:'Gel Nails', ru:'Гелевые ногти', en:'Gel Nails', icon:'✦',
+    subs:[
+      {id:'nail-new', de:'Neumodellage', ru:'Новое наращивание', en:'New set', items:[
+        {de:'Natur', ru:'Натуральный', en:'Natural', p:'50 €'},
+        {de:'Farben', ru:'Цветной', en:'Colour', p:'59 €'},
+        {de:'French / Babyboomer', ru:'Френч / Бэбибумер', en:'French / Babyboomer', p:'69 €'},
+      ]},
+      {id:'nail-refill', de:'Auffüllen', ru:'Коррекция', en:'Refill', items:[
+        {de:'Natur', ru:'Натуральный', en:'Natural', p:'44 €'},
+        {de:'Farben', ru:'Цветной', en:'Colour', p:'49 €'},
+        {de:'French / Babyboomer', ru:'Френч / Бэбибумер', en:'French / Babyboomer', p:'55 €'},
+      ]},
+      {id:'nail-mani', de:'Maniküre', ru:'Маникюр', en:'Manicure', items:[
+        {de:'Classic ohne Lack', ru:'Классический без лака', en:'Classic without polish', p:'30 €'},
+        {de:'Mit Lack', ru:'С лаком', en:'With polish', p:'40 €'},
+      ]},
+    ]
+  },
+  {id:'pedicure', de:'Fußpflege', ru:'Педикюр', en:'Pedicure', icon:'✦',
+    items:[
+      {de:'Fußpflege Classic', ru:'Классический педикюр', en:'Classic pedicure', p:'38 €'},
+      {de:'Fußpflege mit Lack', ru:'Педикюр с лаком', en:'Pedicure with polish', p:'43 €'},
+      {de:'Fußpflege mit Gellack', ru:'Педикюр с гель-лаком', en:'Pedicure with gel polish', p:'55 €'},
+    ]
+  },
+  {id:'spa-pedicure', de:'SPA Fußpflege', ru:'SPA педикюр', en:'SPA Pedicure', icon:'✦',
+    items:[
+      {de:'SPA Fußpflege', ru:'SPA педикюр', en:'SPA pedicure', p:'48 €'},
+      {de:'SPA Fußpflege mit Lack', ru:'SPA педикюр с лаком', en:'SPA pedicure with polish', p:'53 €'},
+      {de:'SPA Fußpflege mit Gellack', ru:'SPA педикюр с гель-лаком', en:'SPA pedicure with gel polish', p:'65 €'},
+    ]
+  },
+  {id:'waxing', de:'Waxing', ru:'Ваксинг', en:'Waxing', icon:'✦',
+    items:[
+      {de:'Oberlippe', ru:'Верхняя губа', en:'Upper lip', p:'10 €'},
+      {de:'Kinn', ru:'Подбородок', en:'Chin', p:'16 €'},
+      {de:'Oberlippe & Kinn', ru:'Верхняя губа и подбородок', en:'Upper lip & chin', p:'22 €'},
+      {de:'Gesicht komplett', ru:'Лицо полностью', en:'Full face', p:'44 €'},
+      {de:'Achseln', ru:'Подмышки', en:'Underarms', p:'28 €'},
+      {de:'Arme komplett', ru:'Руки полностью', en:'Full arms', p:'65 €'},
+      {de:'Beine komplett', ru:'Ноги полностью', en:'Full legs', p:'70 €'},
+      {de:'Rücken komplett', ru:'Спина полностью', en:'Full back', p:'58 €'},
+      {de:'Bikinizone', ru:'Зона бикини', en:'Bikini line', p:'30 €'},
+      {de:'Intim inkl. Pofalte', ru:'Бикини глубокое', en:'Brazilian', p:'ab 60 €'},
+    ]
+  },
+  {id:'extras', de:'Extras', ru:'Доп. услуги', en:'Extras', icon:'✦',
+    items:[
+      {de:'Nail-Art (pro Nagel)', ru:'Нейл-арт (за ноготь)', en:'Nail art (per nail)', p:'ab 3 €'},
+      {de:'Strasssteine (pro Nagel)', ru:'Стразы (за ноготь)', en:'Rhinestones (per nail)', p:'ab 2 €'},
+      {de:'Verlängerung entfernen', ru:'Снятие наращённых ресниц', en:'Lash extension removal', p:'20 €'},
+      {de:'French oder Babyboomer (Aufpreis)', ru:'Френч / Бэбибумер (доплата)', en:'French / Babyboomer (surcharge)', p:'+10 €'},
+    ]
+  },
 ];
 
 let selectedServiceId = null;
 let selectedServiceName = null;
+let selectedServicePrice = null;
 
 function buildServiceCards() {
-  const grid = document.getElementById('serviceCardsGrid');
-  if (!grid) return;
-  bookingServiceList.forEach(svc => {
+  const wrap = document.getElementById('svcPickerWrap');
+  if (!wrap) return;
+  renderCategoryGrid(wrap);
+}
+
+function renderCategoryGrid(wrap) {
+  wrap.innerHTML = '';
+  const panel = document.createElement('div');
+  const grid = document.createElement('div');
+  grid.className = 'service-cards-grid';
+  bookingCategories.forEach(cat => {
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className = 'service-card';
-    btn.setAttribute('data-de', svc.de);
-    btn.setAttribute('data-ru', svc.ru);
-    btn.setAttribute('data-en', svc.en);
-    btn.innerHTML = `<span>${svc[currentLang]}</span><span class="service-card-price">${svc.price}</span>`;
+    btn.setAttribute('data-de', cat.de);
+    btn.setAttribute('data-ru', cat.ru);
+    btn.setAttribute('data-en', cat.en);
+    btn.innerHTML = `<span>${cat[currentLang]}</span>`;
     btn.onclick = () => {
-      document.querySelectorAll('.service-card').forEach(c => c.classList.remove('active'));
-      btn.classList.add('active');
-      selectedServiceId = svc.id;
-      selectedServiceName = svc[currentLang];
-      document.getElementById('selectedServiceId').value = svc.id;
-      document.getElementById('selectedServiceName').value = svc[currentLang];
-      unlockStep('blockDate');
+      if (cat.subs) {
+        renderSubcategories(wrap, cat);
+      } else {
+        renderServiceList(wrap, cat, cat.items, cat);
+      }
     };
     grid.appendChild(btn);
   });
+  panel.appendChild(grid);
+  showPanel(wrap, panel);
+}
+
+function renderSubcategories(wrap, cat) {
+  wrap.innerHTML = '';
+  const panel = document.createElement('div');
+  // Back button
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'svc-back';
+  back.innerHTML = `← <span data-de="Zurück" data-ru="Назад" data-en="Back">${{de:'Zurück',ru:'Назад',en:'Back'}[currentLang]}</span>`;
+  back.onclick = () => renderCategoryGrid(wrap);
+  panel.appendChild(back);
+  // Breadcrumb
+  const bc = document.createElement('div');
+  bc.className = 'svc-breadcrumb';
+  bc.textContent = cat[currentLang];
+  panel.appendChild(bc);
+  // Grid
+  const grid = document.createElement('div');
+  grid.className = 'service-cards-grid';
+  cat.subs.forEach(sub => {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'service-card';
+    btn.setAttribute('data-de', sub.de);
+    btn.setAttribute('data-ru', sub.ru);
+    btn.setAttribute('data-en', sub.en);
+    btn.innerHTML = `<span>${sub[currentLang]}</span>`;
+    btn.onclick = () => renderServiceList(wrap, cat, sub.items, sub);
+    grid.appendChild(btn);
+  });
+  panel.appendChild(grid);
+  showPanel(wrap, panel);
+}
+
+function renderServiceList(wrap, cat, items, context) {
+  wrap.innerHTML = '';
+  const panel = document.createElement('div');
+  // Back button
+  const back = document.createElement('button');
+  back.type = 'button';
+  back.className = 'svc-back';
+  back.innerHTML = `← <span data-de="Zurück" data-ru="Назад" data-en="Back">${{de:'Zurück',ru:'Назад',en:'Back'}[currentLang]}</span>`;
+  back.onclick = () => {
+    if (cat.subs) renderSubcategories(wrap, cat);
+    else renderCategoryGrid(wrap);
+  };
+  panel.appendChild(back);
+  // Breadcrumb
+  const bc = document.createElement('div');
+  bc.className = 'svc-breadcrumb';
+  bc.textContent = cat[currentLang] + (context !== cat ? ' → ' + context[currentLang] : '');
+  panel.appendChild(bc);
+  // Services list
+  items.forEach(item => {
+    const div = document.createElement('div');
+    div.className = 'svc-item';
+    div.innerHTML = `<span>${item[currentLang]}</span><span class="svc-price">${item.p}</span>`;
+    div.onclick = () => {
+      panel.querySelectorAll('.svc-item').forEach(s => s.classList.remove('active'));
+      div.classList.add('active');
+      const fullName = cat[currentLang] + ' → ' + (context !== cat ? context[currentLang] + ' → ' : '') + item[currentLang];
+      selectedServiceId = cat.id + '__' + item[currentLang].toLowerCase().replace(/\s+/g,'-');
+      selectedServiceName = fullName;
+      selectedServicePrice = item.p;
+      document.getElementById('selectedServiceId').value = selectedServiceId;
+      document.getElementById('selectedServiceName').value = fullName + ' (' + item.p + ')';
+      // Show badge
+      let badge = wrap.querySelector('.svc-chosen-badge');
+      if (badge) badge.remove();
+      badge = document.createElement('div');
+      badge.className = 'svc-chosen-badge';
+      badge.innerHTML = `<span>${item[currentLang]}</span><span>${item.p} <span class="svc-change" data-de="ändern" data-ru="изменить" data-en="change">${{de:'ändern',ru:'изменить',en:'change'}[currentLang]}</span></span>`;
+      badge.querySelector('.svc-change').onclick = (e) => { e.stopPropagation(); renderCategoryGrid(wrap); };
+      wrap.appendChild(badge);
+      unlockStep('blockDate');
+    };
+    panel.appendChild(div);
+  });
+  showPanel(wrap, panel);
+}
+
+function showPanel(wrap, el) {
+  el.classList.add('svc-panel');
+  wrap.appendChild(el);
+  requestAnimationFrame(() => { el.classList.add('active'); });
 }
 
 function unlockStep(blockId) {
@@ -1291,6 +1560,74 @@ function initParallax() {
 }
 initParallax();
 
+/* ============ SMOOTH SCROLL (LENIS) ============ */
+const lenis = new Lenis({
+  duration: 1.5,
+  easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  smoothWheel: true,
+  touchMultiplier: 2
+});
+function raf(time) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
+
+// Override native anchor links to use lenis
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener('click', function(e) {
+    e.preventDefault();
+    const target = this.getAttribute('href');
+    if(target && target !== '#') {
+      lenis.scrollTo(target, { offset: -80 });
+    }
+  });
+});
+
+/* ============ COOKIE CONSENT & DYNAMIC SCRIPTS ============ */
+function loadScripts() {
+  if (typeof emailjs !== 'undefined') return;
+  const script = document.createElement('script');
+  script.src = "https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js";
+  script.onload = () => { if(typeof ensureSDKs === 'function') ensureSDKs(); };
+  document.head.appendChild(script);
+}
+
+function acceptCookies(type) {
+  localStorage.setItem('cookieConsent', type);
+  document.getElementById('cookieBanner').classList.remove('translate-y-0');
+  if (type === 'accepted') {
+    loadScripts();
+  }
+}
+
+function initCookies() {
+  const consent = localStorage.getItem('cookieConsent');
+  if (!consent) {
+    setTimeout(() => {
+      document.getElementById('cookieBanner').classList.add('translate-y-0');
+    }, 1000);
+  } else if (consent === 'accepted') {
+    loadScripts();
+  }
+}
+
+// Call on load
+initCookies();
+
 </script>
+
+
+<!-- COOKIE BANNER -->
+<div id="cookieBanner" class="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-md border-t border-espresso/10 p-6 z-[9999] flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 transform translate-y-full transition-transform duration-500">
+  <div class="text-sm font-body text-espresso/80 text-center md:text-left flex-1" data-de="Diese Website verwendet Cookies, um die Benutzererfahrung zu verbessern." data-ru="Этот сайт использует файлы cookie." data-en="This website uses cookies.">
+    Diese Website verwendet Cookies, um die Benutzererfahrung zu verbessern.
+  </div>
+  <div class="flex gap-3 w-full md:w-auto">
+    <button onclick="acceptCookies('necessary')" class="flex-1 md:flex-none px-5 py-2.5 rounded-full border border-espresso text-espresso text-xs font-bold uppercase tracking-widest hover:bg-cream transition-colors whitespace-nowrap" data-de="Nur notwendige" data-ru="Только необходимые" data-en="Necessary only">Nur notwendige</button>
+    <button onclick="acceptCookies('accepted')" class="flex-1 md:flex-none px-5 py-2.5 rounded-full bg-espresso text-cream text-xs font-bold uppercase tracking-widest hover:bg-rose transition-colors whitespace-nowrap" data-de="Akzeptieren" data-ru="Принять" data-en="Accept">Akzeptieren</button>
+  </div>
+</div>
+
 </body>
 </html>
