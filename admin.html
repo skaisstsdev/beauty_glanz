@@ -95,7 +95,7 @@
           <button onclick="filterStatus('rescheduled')" id="filter-rescheduled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-purple-600 hover:bg-purple-50 border border-purple-200" data-de="Verschoben" data-ru="Перенесенные" data-en="Rescheduled">Перенесенные</button>
         </div>
         <div class="flex gap-2 items-center ml-auto">
-          <input type="text" id="dateFilter" placeholder="Дата" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" onchange="renderTable()" class="w-full sm:w-auto px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
+          <input type="date" id="dateFilter" onchange="renderTable()" class="px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
           <button onclick="document.getElementById('dateFilter').value=''; renderTable()" class="px-3 py-1.5 rounded-full text-sm font-medium bg-white text-gray-400 hover:bg-gray-100 border border-gray-200">✕</button>
           <button onclick="loadBookings()" class="px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻ Обновить</button>
         </div>
@@ -104,8 +104,8 @@
       <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div id="loadingState" class="p-12 text-center text-gray-400" data-de="Laden..." data-ru="Загрузка..." data-en="Loading...">Laden...</div>
         <div id="emptyState" class="p-12 text-center text-gray-400 hidden" data-de="Keine Buchungen gefunden" data-ru="Записи не найдены" data-en="No bookings found">Keine Buchungen gefunden</div>
-        <div class="overflow-hidden md:overflow-visible px-4 md:px-0 -mx-4 md:mx-0">
-          <table id="bookingsTable" class="w-full hidden md:whitespace-nowrap block md:table">
+        <div class="overflow-x-auto">
+          <table id="bookingsTable" class="w-full hidden whitespace-nowrap">
             <thead class="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Kunde</th>
@@ -137,8 +137,8 @@
           <div class="text-4xl mb-3">📅</div>
           <div data-de="Keine verschobenen Buchungen" data-ru="Перенесённых записей нет" data-en="No rescheduled bookings">Перенесённых записей нет</div>
         </div>
-        <div class="overflow-hidden md:overflow-visible px-4 md:px-0 -mx-4 md:mx-0">
-          <table id="reschedTable" class="w-full hidden md:whitespace-nowrap block md:table">
+        <div class="overflow-x-auto">
+          <table id="reschedTable" class="w-full hidden whitespace-nowrap">
             <thead class="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Клиент</th>
@@ -180,9 +180,9 @@
               <div class="flex-1">
                 <label class="block text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2" data-de="Ausgewählte Daten" data-ru="Даты" data-en="Dates">Даты</label>
                 <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl border border-gray-100">
-                  <input type="text" id="massDateFrom" placeholder="Начало" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                  <input type="date" id="massDateFrom" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
                   <span class="text-gray-300 px-1">—</span>
-                  <input type="text" id="massDateTo" placeholder="Конец" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                  <input type="date" id="massDateTo" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
                 </div>
               </div>
             </div>
@@ -261,7 +261,7 @@
       <div class="flex gap-4">
         <div class="flex-1">
           <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Datum" data-ru="Дата" data-en="Date">Дата</label>
-          <input type="text" id="createDate" placeholder="Выберите дату" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none text-gray-700">
+          <input type="date" id="createDate" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none text-gray-700">
         </div>
         <div class="flex-1">
           <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Uhrzeit *" data-ru="Время *" data-en="Time *">Время *</label>
@@ -305,7 +305,7 @@
     <input type="hidden" id="editBookingId">
     <div class="mb-5">
       <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Datum" data-ru="Дата" data-en="Date">Datum</label>
-      <input type="text" id="editDate" placeholder="Выберите дату" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
+      <input type="date" id="editDate" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
     </div>
     <div class="mb-8">
       <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Uhrzeit" data-ru="Время" data-en="Time">Uhrzeit</label>
@@ -517,27 +517,25 @@ function renderTable() {
     const t = (b.time || '').substring(0,5);
     const badgeText = locDict[b.status]?.[currentAdminLang] || b.status;
     
-    return `<tr class="group border border-gray-100 md:border-t-0 md:border-x-0 md:border-b hover:bg-gray-50/80 transition-all duration-200 block md:table-row bg-white md:bg-transparent mb-4 md:mb-0 p-4 md:p-0 shadow-sm md:shadow-none rounded-2xl md:rounded-none">
-      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
+    return `<tr class="group border-b border-gray-100 hover:bg-gray-50/80 transition-all duration-200">
+      <td class="px-5 py-4">
         <div class="font-semibold text-sm text-gray-900">${b.name}</div>
         <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A] transition-colors">${b.phone}</a></div>
         <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A] transition-colors">${b.email}</a></div>
         <div class="text-xs text-gray-300 mt-1">${createdStr}</div>
       </td>
-      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
+      <td class="px-5 py-4">
         <div class="text-sm text-gray-800 font-medium whitespace-break-spaces">${b.service}</div>
         ${(b.notes || '').replace(/\[DUR=\d+\]\s*/, '') ? '<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-gray-200 pl-2 whitespace-break-spaces">"' + b.notes.replace(/\[DUR=\d+\]\s*/, '') + '"</div>' : ''}
       </td>
-      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0 flex justify-between items-center md:items-start md:block">
-        <div>
-          <span class="md:hidden text-xs text-gray-400 mr-2 uppercase">Дата:</span><span class="text-sm font-semibold text-gray-900">${dateStr}</span>
-        </div>
-        <div><span class="text-sm text-[#C4826A] font-bold md:mt-0.5">${t}</span></div>
+      <td class="px-5 py-4">
+        <div class="text-sm font-semibold text-gray-900">${dateStr}</div>
+        <div class="text-sm text-[#C4826A] font-bold mt-0.5">${t}</div>
       </td>
-      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-4 md:mb-0 text-right md:text-left">
+      <td class="px-5 py-4">
         <span class="px-3 py-1 rounded-full text-xs font-semibold shadow-sm status-${b.status}">${badgeText}</span>
       </td>
-      <td class="block md:table-cell px-2 py-3 md:px-5 md:py-4 border-t border-gray-50 md:border-none mt-2 md:mt-0">
+      <td class="px-5 py-4">
         <div class="flex gap-2 flex-wrap items-center">
           ${b.status !== 'confirmed' ? `<button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>` : ''}
           ${b.status === 'rescheduled' ? `<button onclick="updateStatus('${b.id}','pending')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-semibold hover:bg-yellow-50 hover:text-yellow-700 transition-all shadow-sm">${tDict.btnRestore[currentAdminLang]}</button>` : ''}
@@ -605,23 +603,21 @@ function renderRescheduledTable() {
   bodyEl.innerHTML = rescheduled.map(b => {
     const dateStr = new Date(b.date).toLocaleDateString(currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US'), { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
     const t = (b.time || '').substring(0,5);
-    return `<tr class="group border border-gray-100 md:border-t-0 md:border-x-0 md:border-b hover:bg-purple-50/30 transition-all duration-200 block md:table-row bg-white md:bg-transparent mb-4 md:mb-0 p-4 md:p-0 shadow-sm md:shadow-none rounded-2xl md:rounded-none">
-      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
+    return `<tr class="group border-b border-gray-100 hover:bg-purple-50/30 transition-all duration-200">
+      <td class="px-5 py-4">
         <div class="font-semibold text-sm text-gray-900">${b.name}</div>
         <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A] transition-colors">${b.phone}</a></div>
         <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A] transition-colors">${b.email}</a></div>
       </td>
-      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
-        <div class="text-sm text-gray-800 font-medium whitespace-break-spaces">${b.service}</div>
+      <td class="px-5 py-4">
+        <div class="text-sm text-gray-800 font-medium">${b.service}</div>
         ${(b.notes || '').replace(/\[DUR=\d+\]\s*/, '') ? `<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-purple-200 pl-2">"${(b.notes || '').replace(/\[DUR=\d+\]\s*/, '')}"</div>` : ''}
       </td>
-      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0 flex justify-between items-center md:items-start md:block">
-        <div>
-          <span class="md:hidden text-xs text-gray-400 mr-2 uppercase">Дата:</span><span class="text-sm font-semibold text-gray-900">${dateStr}</span>
-        </div>
-        <div><span class="text-sm text-[#C4826A] font-bold md:mt-0.5">${t}</span></div>
+      <td class="px-5 py-4">
+        <div class="text-sm font-semibold text-gray-900">${dateStr}</div>
+        <div class="text-sm text-[#C4826A] font-bold mt-0.5">${t}</div>
       </td>
-      <td class="block md:table-cell px-2 py-3 md:px-5 md:py-4 border-t border-gray-50 md:border-none mt-2 md:mt-0">
+      <td class="px-5 py-4">
         <div class="flex gap-2 flex-wrap items-center">
           <button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>
           <button onclick="updateStatus('${b.id}','pending')" class="px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-xs font-semibold hover:bg-yellow-100 transition-all shadow-sm">${tDict.btnRestore[currentAdminLang]}</button>
