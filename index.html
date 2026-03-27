@@ -343,28 +343,32 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
     <p class="reveal text-center font-body text-rose tracking-[0.2em] uppercase text-xs font-bold mb-3" data-de="Unsere Klinik" data-ru="Наша клиника" data-en="Our Clinic">Unsere Klinik</p>
     <h2 class="reveal stagger-1 text-center font-heading text-4xl md:text-5xl text-espresso mb-12" data-de="Hier entsteht Schönheit" data-ru="Здесь рождается красота" data-en="Where beauty is created">Hier entsteht Schönheit</h2>
     
-    <div class="grid lg:grid-cols-2 gap-12 items-center mb-16">
-      <div class="reveal stagger-2 space-y-6">
-        <p class="font-body text-espresso/80 leading-relaxed max-w-lg" data-de="Unser Studio bietet Ihnen einen Ort der Ruhe und Entspannung. Mit modernster Ausstattung und höchstem Komfort sorgen wir dafür, dass Sie sich bei jeder Behandlung rundum wohlfühlen." data-ru="Наша студия предлагает вам место спокойствия и расслабления. С самым современным оборудованием и высоким уровнем комфорта мы заботимся о том, чтобы вы чувствовали себя прекрасно во время каждой процедуры." data-en="Our studio offers you a place of peace and relaxation. With state-of-the-art equipment and maximum comfort, we ensure that you feel completely at ease during every treatment.">Unser Studio bietet Ihnen einen Ort der Ruhe und Entspannung. Mit modernster Ausstattung und höchstem Komfort sorgen wir dafür, dass Sie sich bei jeder Behandlung rundum wohlfühlen.</p>
-        <div class="flex flex-col gap-3 pt-4">
+    <div class="flex flex-col lg:flex-row gap-12 lg:gap-16 items-center justify-between mb-16">
+      <div class="reveal stagger-2 space-y-6 lg:w-[55%] max-w-xl mx-auto lg:mx-0">
+        <p class="font-body text-espresso/80 leading-relaxed md:text-lg" data-de="Unser Studio bietet Ihnen einen Ort der Ruhe und Entspannung. Mit modernster Ausstattung und höchstem Komfort sorgen wir dafür, dass Sie sich bei jeder Behandlung rundum wohlfühlen." data-ru="Наша студия предлагает вам место спокойствия и расслабления. С самым современным оборудованием и высоким уровнем комфорта мы заботимся о том, чтобы вы чувствовали себя прекрасно во время каждой процедуры." data-en="Our studio offers you a place of peace and relaxation. With state-of-the-art equipment and maximum comfort, we ensure that you feel completely at ease during every treatment.">Unser Studio bietet Ihnen einen Ort der Ruhe und Entspannung. Mit modernster Ausstattung und höchstem Komfort sorgen wir dafür, dass Sie sich bei jeder Behandlung rundum wohlfühlen.</p>
+        <div class="flex flex-col gap-3.5 pt-2">
           <div class="flex items-center gap-3 text-espresso">
             <div class="w-2 h-2 rounded-full bg-rose flex-shrink-0"></div>
-            <span class="font-body text-base font-medium" data-de="Höchste Hygienestandards" data-ru="Высочайшие стандарты гигиены" data-en="Highest hygiene standards">Höchste Hygienestandards</span>
+            <span class="font-body md:text-lg font-medium" data-de="Höchste Hygienestandards" data-ru="Высочайшие стандарты гигиены" data-en="Highest hygiene standards">Höchste Hygienestandards</span>
           </div>
           <div class="flex items-center gap-3 text-espresso">
             <div class="w-2 h-2 rounded-full bg-rose flex-shrink-0"></div>
-            <span class="font-body text-base font-medium" data-de="Entspannende Atmosphäre" data-ru="Расслабляющая атмосфера" data-en="Relaxing atmosphere">Entspannende Atmosphäre</span>
+            <span class="font-body md:text-lg font-medium" data-de="Entspannende Atmosphäre" data-ru="Расслабляющая атмосфера" data-en="Relaxing atmosphere">Entspannende Atmosphäre</span>
           </div>
+        </div>
+        <div class="pt-6 hidden lg:block">
+          <!-- Decorative accent to fill the remaining space beautifully -->
+          <svg width="60" height="auto" viewBox="0 0 100 20" fill="none" stroke="#C4826A" stroke-width="1.5" class="opacity-60"><path d="M0,10 Q25,-10 50,10 T100,10" /></svg>
         </div>
       </div>
-      <div class="reveal stagger-3 grid grid-cols-2 gap-4">
-        <div class="space-y-4">
-          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg"><img src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
-          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg"><img src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
+      <div class="reveal stagger-3 grid grid-cols-2 gap-4 lg:w-[45%] max-w-md w-full shrink-0 mx-auto">
+        <div class="space-y-4 pt-4 lg:pt-0">
+          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-transform hover:-translate-y-1 gallery-item" onclick="openLightbox(this)" data-src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg"><img src="клиника/7136aa98-6100-45c0-a014-5e105891f0c3.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
+          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-transform hover:-translate-y-1 gallery-item" onclick="openLightbox(this)" data-src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg"><img src="клиника/9566db86-ecff-4110-9228-5fdd1426dcb6.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
         </div>
-        <div class="space-y-4 pt-8">
-          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg"><img src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
-          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-shadow gallery-item" onclick="openLightbox(this)" data-src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg"><img src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
+        <div class="space-y-4 pt-12 lg:pt-10">
+          <div class="aspect-square rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-transform hover:-translate-y-1 gallery-item" onclick="openLightbox(this)" data-src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg"><img src="клиника/a5a7b1bb-bc0a-4fdf-a490-366741df2bc8.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
+          <div class="aspect-[4/5] rounded-3xl overflow-hidden shadow-lg cursor-pointer hover:shadow-xl transition-transform hover:-translate-y-1 gallery-item" onclick="openLightbox(this)" data-src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg"><img src="клиника/aa13b016-a61e-410b-aec3-7fc29657e0f6.jpg" alt="" loading="lazy" class="w-full h-full object-cover"></div>
         </div>
       </div>
     </div>
@@ -486,7 +490,7 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
         <h3 class="font-heading text-2xl text-espresso mb-3" data-de="Termin gebucht!" data-ru="Вы записаны!" data-en="Appointment booked!">Termin gebucht!</h3>
         <p class="font-body text-espresso/60 mb-5" data-de="Wir melden uns in Kürze bei Ihnen zur Bestätigung." data-ru="Мы свяжемся с вами для подтверждения." data-en="We will contact you shortly to confirm.">Wir melden uns in Kürze bei Ihnen zur Bestätigung.</p>
         <div id="bookingSummary" class="bg-cream rounded-2xl p-5 text-left space-y-2 font-body text-sm"></div>
-        <p style="margin-top:10px;font-size:13px;color:#888;" data-de="Falls Sie keine E-Mail erhalten haben, ist Ihre Buchung trotzdem gespeichert." data-ru="Если вы не получили письмо, ваша запись всё равно сохранена." data-en="If you didn't receive an email, your booking is still saved.">Falls Sie keine E-Mail erhalten haben, ist Ihre Buchung trotzdem gespeichert.</p>
+        <p id="noEmailWarning" style="margin-top:10px;font-size:13px;color:#888;" data-de="Falls Sie keine Bestätigung per E-Mail erhalten haben, schreiben Sie uns bitte." data-ru="Если вам не пришло подтверждение на почту, напишите нам." data-en="If you didn't receive a confirmation email, please contact us.">Falls Sie keine Bestätigung per E-Mail erhalten haben, schreiben Sie uns bitte.</p>
         <button type="button" onclick="resetBooking()" class="cta-btn mt-6 border-2 border-espresso text-espresso font-body font-bold text-sm tracking-widest uppercase px-8 py-3.5 rounded-full" data-de="Neue Buchung" data-ru="Новая запись" data-en="New Booking">Neue Buchung</button>
       </div>
     </div>
@@ -1032,35 +1036,76 @@ const bookingCategories = [
     ]
   },
   {id:'spa-pedicure', de:'SPA Fußpflege', ru:'SPA педикюр', en:'SPA Pedicure', icon:'✦',
-    items:[
-      {de:'SPA Fußpflege', ru:'SPA педикюр', en:'SPA pedicure', p:'48 €'},
-      {de:'SPA Fußpflege mit Lack', ru:'SPA педикюр с лаком', en:'SPA pedicure with polish', p:'53 €'},
-      {de:'SPA Fußpflege mit Gellack', ru:'SPA педикюр с гель-лаком', en:'SPA pedicure with gel polish', p:'65 €'},
+    subs:[
+      {id:'spa-base-1', de:'Nur SPA Fußpflege', ru:'Только SPA педикюр', en:'Only SPA pedicure', items:[
+        {de:'Ohne Extra', ru:'Без доп. услуг', en:'No extra', p:'48 €'},
+        {de:'+ Nail-Art', ru:'+ Нейл-арт', en:'+ Nail art', p:'51 €'},
+        {de:'+ Strasssteine', ru:'+ Стразы', en:'+ Rhinestones', p:'50 €'},
+        {de:'+ French / Babyboomer', ru:'+ Френч / Бэбибумер', en:'+ French / Babyboomer', p:'58 €'}
+      ]},
+      {id:'spa-base-2', de:'SPA Fußpflege mit Lack', ru:'SPA педикюр с лаком', en:'SPA pedicure with polish', items:[
+        {de:'Ohne Extra', ru:'Без доп. услуг', en:'No extra', p:'53 €'},
+        {de:'+ Nail-Art', ru:'+ Нейл-арт', en:'+ Nail art', p:'56 €'},
+        {de:'+ Strasssteine', ru:'+ Стразы', en:'+ Rhinestones', p:'55 €'},
+        {de:'+ French / Babyboomer', ru:'+ Френч / Бэбибумер', en:'+ French / Babyboomer', p:'63 €'}
+      ]},
+      {id:'spa-base-3', de:'SPA Fußpflege mit Gellack', ru:'SPA педикюр с гель-лаком', en:'SPA pedicure with gel polish', items:[
+        {de:'Ohne Extra', ru:'Без доп. услуг', en:'No extra', p:'65 €'},
+        {de:'+ Nail-Art', ru:'+ Нейл-арт', en:'+ Nail art', p:'68 €'},
+        {de:'+ Strasssteine', ru:'+ Стразы', en:'+ Rhinestones', p:'67 €'},
+        {de:'+ French / Babyboomer', ru:'+ Френч / Бэбибумер', en:'+ French / Babyboomer', p:'75 €'}
+      ]}
     ]
   },
   {id:'waxing', de:'Waxing', ru:'Ваксинг', en:'Waxing', icon:'✦',
-    items:[
-      {de:'Oberlippe', ru:'Верхняя губа', en:'Upper lip', p:'10 €'},
-      {de:'Kinn', ru:'Подбородок', en:'Chin', p:'16 €'},
-      {de:'Oberlippe & Kinn', ru:'Верхняя губа и подбородок', en:'Upper lip & chin', p:'22 €'},
-      {de:'Gesicht komplett', ru:'Лицо полностью', en:'Full face', p:'44 €'},
-      {de:'Achseln', ru:'Подмышки', en:'Underarms', p:'28 €'},
-      {de:'Arme komplett', ru:'Руки полностью', en:'Full arms', p:'65 €'},
-      {de:'Beine komplett', ru:'Ноги полностью', en:'Full legs', p:'70 €'},
-      {de:'Rücken komplett', ru:'Спина полностью', en:'Full back', p:'58 €'},
-      {de:'Bikinizone', ru:'Зона бикини', en:'Bikini line', p:'30 €'},
-      {de:'Intim inkl. Pofalte', ru:'Бикини глубокое', en:'Brazilian', p:'ab 60 €'},
-      {de:'Intim ohne Pofalte', ru:'Бикини (без межяг. складки)', en:'Brazilian excl. gluteal cleft', p:'ab 55 €'},
+    subs:[
+      {id:'wax-damen', de:'Damen', ru:'Женщинам', en:'Women', items:[
+        {de:'Oberlippe', ru:'Верхняя губа', en:'Upper lip', p:'14 €'},
+        {de:'Kinn', ru:'Подбородок', en:'Chin', p:'16 €'},
+        {de:'Oberlippe & Kinn', ru:'Верхняя губа и подбородок', en:'Upper lip & chin', p:'22 €'},
+        {de:'Wange', ru:'Щеки', en:'Cheeks', p:'22 €'},
+        {de:'Hals', ru:'Шея', en:'Neck', p:'28 €'},
+        {de:'Nase', ru:'Нос', en:'Nose', p:'12 €'},
+        {de:'Ohren', ru:'Уши', en:'Ears', p:'12 €'},
+        {de:'Gesicht komplett', ru:'Лицо полностью', en:'Full face', p:'44 €'},
+        {de:'Nacken', ru:'Затылок', en:'Nape', p:'28 €'},
+        {de:'Achseln', ru:'Подмышки', en:'Underarms', p:'28 €'},
+        {de:'Unterarme', ru:'Предплечья', en:'Forearms', p:'32 €'},
+        {de:'Oberarme', ru:'Плечи', en:'Upper arms', p:'38 €'},
+        {de:'Arme komplett', ru:'Руки полностью', en:'Full arms', p:'65 €'},
+        {de:'Unterschenkel inkl. Knie', ru:'Голени вкл. колени', en:'Lower legs', p:'40 €'},
+        {de:'Oberschenkel', ru:'Бедра', en:'Upper legs', p:'45 €'},
+        {de:'Beine komplett', ru:'Ноги полностью', en:'Full legs', p:'70 €'},
+        {de:'Rücken unten', ru:'Спина (низ)', en:'Lower back', p:'28 €'},
+        {de:'Rücken oben', ru:'Спина (верх)', en:'Upper back', p:'35 €'},
+        {de:'Rücken komplett', ru:'Спина полностью', en:'Full back', p:'58 €'},
+        {de:'Bikinilinie', ru:'Зона бикини', en:'Bikini line', p:'30 €'},
+        {de:'Intim inkl. Pofalte', ru:'Бикини глубокое', en:'Brazilian incl. gluteal cleft', p:'ab 60 €'},
+        {de:'Intim ohne Pofalte', ru:'Бикини (без межяг. складки)', en:'Brazilian excl. gluteal cleft', p:'ab 55 €'},
+        {de:'Pobacken', ru:'Ягодицы', en:'Buttocks', p:'40 €'},
+      ]},
+      {id:'wax-herren', de:'Herren', ru:'Мужчинам', en:'Men', items:[
+        {de:'Wange', ru:'Щеки', en:'Cheeks', p:'22 €'},
+        {de:'Hals', ru:'Шея', en:'Neck', p:'28 €'},
+        {de:'Nase', ru:'Нос', en:'Nose', p:'12 €'},
+        {de:'Ohren', ru:'Уши', en:'Ears', p:'12 €'},
+        {de:'Nacken', ru:'Затылок', en:'Nape', p:'28 €'},
+        {de:'Achseln', ru:'Подмышки', en:'Underarms', p:'28 €'},
+        {de:'Unterarme', ru:'Предплечья', en:'Forearms', p:'32 €'},
+        {de:'Oberarme', ru:'Плечи', en:'Upper arms', p:'38 €'},
+        {de:'Arme komplett', ru:'Руки полностью', en:'Full arms', p:'65 €'},
+        {de:'Unterschenkel inkl. Knie', ru:'Голени вкл. колени', en:'Lower legs', p:'40 €'},
+        {de:'Oberschenkel', ru:'Бедра', en:'Upper legs', p:'45 €'},
+        {de:'Beine komplett', ru:'Ноги полностью', en:'Full legs', p:'70 €'},
+        {de:'Pobacken', ru:'Ягодицы', en:'Buttocks', p:'40 €'},
+        {de:'Brust', ru:'Грудь', en:'Chest', p:'35 €'},
+        {de:'Bauch', ru:'Живот', en:'Stomach', p:'40 €'},
+        {de:'Rücken oben', ru:'Спина (верх)', en:'Upper back', p:'40 €'},
+        {de:'Rücken unten', ru:'Спина (низ)', en:'Lower back', p:'35 €'},
+        {de:'Rücken komplett', ru:'Спина полностью', en:'Full back', p:'70 €'},
+      ]}
     ]
-  },
-  {id:'extras', de:'Extras', ru:'Доп. услуги', en:'Extras', icon:'✦',
-    items:[
-      {de:'Nail-Art (pro Nagel)', ru:'Нейл-арт (за ноготь)', en:'Nail art (per nail)', p:'ab 3 €'},
-      {de:'Strasssteine (pro Nagel)', ru:'Стразы (за ноготь)', en:'Rhinestones (per nail)', p:'ab 2 €'},
-      {de:'Verlängerung entfernen', ru:'Снятие наращённых ресниц', en:'Lash extension removal', p:'20 €'},
-      {de:'French oder Babyboomer (Aufpreis)', ru:'Френч / Бэбибумер (доплата)', en:'French / Babyboomer (surcharge)', p:'+10 €'},
-    ]
-  },
+  }
 ];
 
 let selectedServiceId = null;
@@ -1369,7 +1414,8 @@ function resetBooking() {
   document.getElementById('blockTime').classList.add('locked');
   // Scroll to booking section
   setTimeout(() => {
-    document.getElementById('booking').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const y = document.getElementById('booking').getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({top: y, behavior: 'smooth'});
   }, 100);
 }
 
@@ -1478,9 +1524,11 @@ async function bookingSubmit(e) {
 
   // ── 2. ПОКАЗЫВАЕМ SUCCESS-БЛОК (сразу после успешной записи в БД) ──
   const labels = {
-    de: { svc: 'Behandlung', date: 'Datum', time: 'Uhrzeit', name: 'Name', phone: 'Telefon', email: 'E-Mail' }
+    de: { svc: 'Behandlung', date: 'Datum', time: 'Uhrzeit', name: 'Name', phone: 'Telefon', email: 'E-Mail' },
+    ru: { svc: 'Услуга', date: 'Дата', time: 'Время', name: 'Имя', phone: 'Телефон', email: 'E-Mail' },
+    en: { svc: 'Treatment', date: 'Date', time: 'Time', name: 'Name', phone: 'Phone', email: 'Email' }
   };
-  const l = labels['de'];
+  const l = labels[currentLang] || labels['de'];
 
   document.getElementById('bookingSummary').innerHTML = `
     <div class="flex justify-between items-start border-b border-espresso/10 pb-3 gap-6"><span class="font-bold whitespace-nowrap">${l.svc}</span><span class="text-right text-espresso/80 leading-snug">${svcText}</span></div>
@@ -1494,7 +1542,8 @@ async function bookingSubmit(e) {
   document.getElementById('bookingStep1').classList.add('hidden');
   document.getElementById('bookingSuccess').classList.remove('hidden');
   setTimeout(() => {
-    document.getElementById('bookingSuccess').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const y = document.getElementById('booking').getBoundingClientRect().top + window.scrollY - 80;
+    window.scrollTo({top: y, behavior: 'smooth'});
   }, 100);
 
   // ── 3. ОТПРАВКА EMAIL (отдельный try/catch — не блокирует бронирование) ──
@@ -1596,7 +1645,7 @@ function initParallax() {
     const ease = (v) => v * v;
 
     // --- HERO SECTION PARALLAX ---
-    if (scrollY <= 1200) {
+    if (window.innerWidth >= 768 && scrollY <= 1200) {
       if(subtitle) subtitle.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
       if(title) title.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
       if(desc) desc.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
@@ -1606,6 +1655,13 @@ function initParallax() {
         const imgScale = 1 + scrollY * 0.0005;
         img.style.transform = `translate3d(0, ${scrollY * 0.45}px, 0) scale(${imgScale})`;
       }
+    } else if (window.innerWidth < 768) {
+      // Clear transforms on mobile
+      if(subtitle) subtitle.style.transform = '';
+      if(title) title.style.transform = '';
+      if(desc) desc.style.transform = '';
+      if(btn) btn.style.transform = '';
+      if(img) img.style.transform = '';
     }
 
     // --- ABOUT SECTION PARALLAX ---

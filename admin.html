@@ -95,7 +95,7 @@
           <button onclick="filterStatus('rescheduled')" id="filter-rescheduled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-purple-600 hover:bg-purple-50 border border-purple-200" data-de="Verschoben" data-ru="Перенесенные" data-en="Rescheduled">Перенесенные</button>
         </div>
         <div class="flex gap-2 items-center ml-auto">
-          <input type="date" id="dateFilter" onchange="renderTable()" class="px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
+          <input type="text" id="dateFilter" placeholder="Дата" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" onchange="renderTable()" class="w-full sm:w-auto px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
           <button onclick="document.getElementById('dateFilter').value=''; renderTable()" class="px-3 py-1.5 rounded-full text-sm font-medium bg-white text-gray-400 hover:bg-gray-100 border border-gray-200">✕</button>
           <button onclick="loadBookings()" class="px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻ Обновить</button>
         </div>
@@ -104,8 +104,8 @@
       <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div id="loadingState" class="p-12 text-center text-gray-400" data-de="Laden..." data-ru="Загрузка..." data-en="Loading...">Laden...</div>
         <div id="emptyState" class="p-12 text-center text-gray-400 hidden" data-de="Keine Buchungen gefunden" data-ru="Записи не найдены" data-en="No bookings found">Keine Buchungen gefunden</div>
-        <div class="overflow-x-auto">
-          <table id="bookingsTable" class="w-full hidden whitespace-nowrap">
+        <div class="overflow-hidden md:overflow-visible px-4 md:px-0 -mx-4 md:mx-0">
+          <table id="bookingsTable" class="w-full hidden md:whitespace-nowrap block md:table">
             <thead class="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Kunde</th>
@@ -137,8 +137,8 @@
           <div class="text-4xl mb-3">📅</div>
           <div data-de="Keine verschobenen Buchungen" data-ru="Перенесённых записей нет" data-en="No rescheduled bookings">Перенесённых записей нет</div>
         </div>
-        <div class="overflow-x-auto">
-          <table id="reschedTable" class="w-full hidden whitespace-nowrap">
+        <div class="overflow-hidden md:overflow-visible px-4 md:px-0 -mx-4 md:mx-0">
+          <table id="reschedTable" class="w-full hidden md:whitespace-nowrap block md:table">
             <thead class="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Клиент</th>
@@ -180,9 +180,9 @@
               <div class="flex-1">
                 <label class="block text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2" data-de="Ausgewählte Daten" data-ru="Даты" data-en="Dates">Даты</label>
                 <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl border border-gray-100">
-                  <input type="date" id="massDateFrom" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                  <input type="text" id="massDateFrom" placeholder="Начало" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
                   <span class="text-gray-300 px-1">—</span>
-                  <input type="date" id="massDateTo" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                  <input type="text" id="massDateTo" placeholder="Конец" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
                 </div>
               </div>
             </div>
@@ -196,7 +196,10 @@
           <!-- DAY DETAILED SLOTS -->
           <div id="adminDayDetail" class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hidden flex-col">
             <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
-              <h3 id="adminSelectedDateDisplay" class="text-2xl font-bold text-[#1C1410] font-heading"></h3>
+              <div class="flex items-center gap-4">
+                <h3 id="adminSelectedDateDisplay" class="text-2xl font-bold text-[#1C1410] font-heading"></h3>
+                <button onclick="openCreateModal()" class="px-3 py-1.5 bg-[#1C1410] text-[#F5EFE8] text-xs font-bold rounded-xl hover:bg-[#C4826A] transition-colors whitespace-nowrap shadow-sm" data-de="+ Buchung" data-ru="+ Добавить запись" data-en="+ Booking">+ Добавить запись</button>
+              </div>
               <button id="adminToggleFullDayBtn" class="px-5 py-2.5 text-xs font-bold rounded-2xl whitespace-nowrap transition-colors"></button>
             </div>
             
@@ -238,6 +241,60 @@
   </div>
 </div>
 
+<!-- CREATE BOOKING MODAL -->
+<div id="createModal" class="hidden fixed inset-0 z-50 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity" onclick="if(event.target===this) closeCreateModal()">
+  <div class="bg-white rounded-3xl p-8 w-full max-w-md shadow-2xl transform transition-transform overflow-y-auto max-h-[90vh]">
+    <div class="flex justify-between items-center mb-6">
+      <h3 class="font-bold text-xl text-gray-900" data-de="Neue Buchung" data-ru="Новая запись" data-en="New Booking">Новая запись</h3>
+      <button onclick="closeCreateModal()" class="text-gray-400 hover:text-gray-700 transition-colors text-lg leading-none">&times;</button>
+    </div>
+    
+    <div class="space-y-4 mb-8">
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Name *" data-ru="Имя *" data-en="Name *">Имя *</label>
+        <input type="text" id="createName" placeholder="Z.b. Maria" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Behandlung *" data-ru="Услуга *" data-en="Service *">Услуга *</label>
+        <input type="text" id="createService" placeholder="Z.b. Wimpernverlängerung" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
+      </div>
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Datum" data-ru="Дата" data-en="Date">Дата</label>
+          <input type="text" id="createDate" placeholder="Выберите дату" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none text-gray-700">
+        </div>
+        <div class="flex-1">
+          <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Uhrzeit *" data-ru="Время *" data-en="Time *">Время *</label>
+          <select id="createTime" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all bg-white cursor-pointer"></select>
+        </div>
+        <div class="flex-1">
+          <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Dauer *" data-ru="Длительность *" data-en="Duration *">Длительность *</label>
+          <select id="createDuration" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all bg-white cursor-pointer"></select>
+        </div>
+      </div>
+      <div class="flex gap-4">
+        <div class="flex-1">
+          <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Telefon" data-ru="Телефон" data-en="Phone">Телефон</label>
+          <input type="tel" id="createPhone" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
+        </div>
+        <div class="flex-1">
+          <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Email" data-ru="Email" data-en="Email">Email</label>
+          <input type="email" id="createEmail" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Notiz" data-ru="Заметка" data-en="Notes">Заметка</label>
+        <textarea id="createNotes" rows="2" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all resize-none"></textarea>
+      </div>
+    </div>
+    
+    <div class="flex gap-3">
+      <button onclick="closeCreateModal()" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors" data-de="Abbrechen" data-ru="Отмена" data-en="Cancel">Отмена</button>
+      <button onclick="createBooking()" id="createSaveBtn" class="flex-1 py-3.5 rounded-xl bg-[#1C1410] text-sm font-semibold text-white hover:bg-[#C4826A] transition-colors shadow-md" data-de="Speichern" data-ru="Сохранить" data-en="Save">Сохранить</button>
+    </div>
+  </div>
+</div>
+
 <!-- EDIT MODAL -->
 <div id="editModal" class="hidden fixed inset-0 z-50 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity" onclick="if(event.target===this) closeEditModal()">
   <div class="bg-white rounded-3xl p-8 w-full max-w-sm shadow-2xl transform transition-transform">
@@ -248,7 +305,7 @@
     <input type="hidden" id="editBookingId">
     <div class="mb-5">
       <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Datum" data-ru="Дата" data-en="Date">Datum</label>
-      <input type="date" id="editDate" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
+      <input type="text" id="editDate" placeholder="Выберите дату" onfocus="this.type='date'; this.showPicker?.()" onblur="if(!this.value) this.type='text'" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
     </div>
     <div class="mb-8">
       <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Uhrzeit" data-ru="Время" data-en="Time">Uhrzeit</label>
@@ -344,6 +401,10 @@ async function loadBookings() {
   allBookings = data || [];
   updateStats();
   renderTable();
+  if(!document.getElementById('viewKalender').classList.contains('hidden')) {
+    renderAdminCalendar();
+    if(adminSelectedDateStr) renderAdminSlots(adminSelectedDateStr);
+  }
 }
 
 // REAL-TIME
@@ -456,44 +517,67 @@ function renderTable() {
     const t = (b.time || '').substring(0,5);
     const badgeText = locDict[b.status]?.[currentAdminLang] || b.status;
     
-    return `<tr class="group border-b border-gray-100 hover:bg-gray-50/80 transition-all duration-200">
-      <td class="px-5 py-4">
+    return `<tr class="group border border-gray-100 md:border-t-0 md:border-x-0 md:border-b hover:bg-gray-50/80 transition-all duration-200 block md:table-row bg-white md:bg-transparent mb-4 md:mb-0 p-4 md:p-0 shadow-sm md:shadow-none rounded-2xl md:rounded-none">
+      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
         <div class="font-semibold text-sm text-gray-900">${b.name}</div>
         <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A] transition-colors">${b.phone}</a></div>
         <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A] transition-colors">${b.email}</a></div>
         <div class="text-xs text-gray-300 mt-1">${createdStr}</div>
       </td>
-      <td class="px-5 py-4">
+      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
         <div class="text-sm text-gray-800 font-medium whitespace-break-spaces">${b.service}</div>
-        ${b.notes ? '<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-gray-200 pl-2 whitespace-break-spaces">"' + b.notes + '"</div>' : ''}
+        ${(b.notes || '').replace(/\[DUR=\d+\]\s*/, '') ? '<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-gray-200 pl-2 whitespace-break-spaces">"' + b.notes.replace(/\[DUR=\d+\]\s*/, '') + '"</div>' : ''}
       </td>
-      <td class="px-5 py-4">
-        <div class="text-sm font-semibold text-gray-900">${dateStr}</div>
-        <div class="text-sm text-[#C4826A] font-bold mt-0.5">${t}</div>
+      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0 flex justify-between items-center md:items-start md:block">
+        <div>
+          <span class="md:hidden text-xs text-gray-400 mr-2 uppercase">Дата:</span><span class="text-sm font-semibold text-gray-900">${dateStr}</span>
+        </div>
+        <div><span class="text-sm text-[#C4826A] font-bold md:mt-0.5">${t}</span></div>
       </td>
-      <td class="px-5 py-4">
+      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-4 md:mb-0 text-right md:text-left">
         <span class="px-3 py-1 rounded-full text-xs font-semibold shadow-sm status-${b.status}">${badgeText}</span>
       </td>
-      <td class="px-5 py-4">
+      <td class="block md:table-cell px-2 py-3 md:px-5 md:py-4 border-t border-gray-50 md:border-none mt-2 md:mt-0">
         <div class="flex gap-2 flex-wrap items-center">
           ${b.status !== 'confirmed' ? `<button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>` : ''}
-          ${b.status !== 'cancelled' ? `<button onclick="updateStatus('${b.id}','cancelled')" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-all shadow-sm">${tDict.btnCancel[currentAdminLang]}</button>` : ''}
           ${b.status === 'rescheduled' ? `<button onclick="updateStatus('${b.id}','pending')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-semibold hover:bg-yellow-50 hover:text-yellow-700 transition-all shadow-sm">${tDict.btnRestore[currentAdminLang]}</button>` : ''}
           <button onclick="openEditModal('${b.id}', '${b.date}', '${t}')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold hover:bg-blue-50 hover:text-blue-600 transition-all shadow-sm opacity-70 group-hover:opacity-100">${tDict.btnEdit[currentAdminLang]}</button>
-          <button onclick="deleteBooking('${b.id}')" class="p-1.5 text-gray-400 hover:bg-gray-200 hover:text-red-500 rounded-lg transition-all opacity-50 group-hover:opacity-100">
+          ${b.status !== 'cancelled' ? `
+          <button onclick="updateStatus('${b.id}','cancelled')" class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all opacity-50 group-hover:opacity-100" title="${tDict.btnCancel[currentAdminLang]}">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-          </button>
+          </button>` : `
+          <button onclick="deleteBookingPermanently('${b.id}')" class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all opacity-50 group-hover:opacity-100" title="Dauerhaft löschen / Удалить навсегда">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>`}
         </div>
       </td>
     </tr>`;
   }).join('');
 }
 
+async function freeManualSlots(booking) {
+  const match = (booking.notes || '').match(/\[DUR=(\d+)\]/);
+  if(!match) return;
+  const duration = parseInt(match[1], 10);
+  const reqSlots = get15MinSlots(booking.time.substring(0,5), duration);
+  if (reqSlots.length > 0) {
+    const { error } = await supabaseClient.from('blocked_slots')
+      .delete()
+      .eq('date', booking.date)
+      .eq('is_full_day', false)
+      .in('time', reqSlots);
+    if (!error) await loadBlockedSlots();
+  }
+}
+
 async function updateStatus(id, status) {
   const { error } = await supabaseClient.from('bookings').update({ status }).eq('id', id);
   if (!error) {
     const booking = allBookings.find(b => b.id === id);
-    if (booking) booking.status = status;
+    if (booking) {
+      booking.status = status;
+      if (status === 'cancelled') await freeManualSlots(booking);
+    }
     updateStats();
     renderTable();
     // If rescheduled tab is open, refresh it too
@@ -521,21 +605,23 @@ function renderRescheduledTable() {
   bodyEl.innerHTML = rescheduled.map(b => {
     const dateStr = new Date(b.date).toLocaleDateString(currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US'), { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
     const t = (b.time || '').substring(0,5);
-    return `<tr class="group border-b border-gray-100 hover:bg-purple-50/30 transition-all duration-200">
-      <td class="px-5 py-4">
+    return `<tr class="group border border-gray-100 md:border-t-0 md:border-x-0 md:border-b hover:bg-purple-50/30 transition-all duration-200 block md:table-row bg-white md:bg-transparent mb-4 md:mb-0 p-4 md:p-0 shadow-sm md:shadow-none rounded-2xl md:rounded-none">
+      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
         <div class="font-semibold text-sm text-gray-900">${b.name}</div>
         <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A] transition-colors">${b.phone}</a></div>
         <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A] transition-colors">${b.email}</a></div>
       </td>
-      <td class="px-5 py-4">
-        <div class="text-sm text-gray-800 font-medium">${b.service}</div>
-        ${b.notes ? `<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-purple-200 pl-2">"${b.notes}"</div>` : ''}
+      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0">
+        <div class="text-sm text-gray-800 font-medium whitespace-break-spaces">${b.service}</div>
+        ${(b.notes || '').replace(/\[DUR=\d+\]\s*/, '') ? `<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-purple-200 pl-2">"${(b.notes || '').replace(/\[DUR=\d+\]\s*/, '')}"</div>` : ''}
       </td>
-      <td class="px-5 py-4">
-        <div class="text-sm font-semibold text-gray-900">${dateStr}</div>
-        <div class="text-sm text-[#C4826A] font-bold mt-0.5">${t}</div>
+      <td class="block md:table-cell px-2 py-1 md:px-5 md:py-4 mb-3 md:mb-0 flex justify-between items-center md:items-start md:block">
+        <div>
+          <span class="md:hidden text-xs text-gray-400 mr-2 uppercase">Дата:</span><span class="text-sm font-semibold text-gray-900">${dateStr}</span>
+        </div>
+        <div><span class="text-sm text-[#C4826A] font-bold md:mt-0.5">${t}</span></div>
       </td>
-      <td class="px-5 py-4">
+      <td class="block md:table-cell px-2 py-3 md:px-5 md:py-4 border-t border-gray-50 md:border-none mt-2 md:mt-0">
         <div class="flex gap-2 flex-wrap items-center">
           <button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>
           <button onclick="updateStatus('${b.id}','pending')" class="px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-xs font-semibold hover:bg-yellow-100 transition-all shadow-sm">${tDict.btnRestore[currentAdminLang]}</button>
@@ -546,9 +632,11 @@ function renderRescheduledTable() {
   }).join('');
 }
 
-async function deleteBooking(id) {
-  const ask = currentAdminLang === 'de' ? 'Buchung wirklich löschen?' : (currentAdminLang === 'ru' ? 'Точно удалить запись?' : 'Delete booking?');
+async function deleteBookingPermanently(id) {
+  const ask = currentAdminLang === 'de' ? 'Buchung wirklich dauerhaft löschen?' : (currentAdminLang === 'ru' ? 'Точно удалить запись НАВСЕГДА?' : 'Delete booking permanently?');
   if (!confirm(ask)) return;
+  const booking = allBookings.find(b => b.id === id);
+  if (booking) await freeManualSlots(booking);
   const { error } = await supabaseClient.from('bookings').delete().eq('id', id);
   if (!error) {
     allBookings = allBookings.filter(b => b.id !== id);
@@ -604,6 +692,132 @@ async function saveEdit() {
     closeEditModal();
     const ok = currentAdminLang === 'de' ? 'Gespeichert' : (currentAdminLang === 'ru' ? 'Сохранено' : 'Saved');
     showAdminToast(ok);
+  }
+}
+
+// ================= CREATE BOOKING ЛОГИКА =================
+
+function openCreateModal() {
+  if(!adminSelectedDateStr) return;
+  document.getElementById('createDate').value = adminSelectedDateStr;
+  
+  document.getElementById('createName').value = '';
+  document.getElementById('createService').value = '';
+  document.getElementById('createPhone').value = '';
+  document.getElementById('createEmail').value = '';
+  document.getElementById('createNotes').value = '';
+  
+  let slots15 = [];
+  for(let h=9; h<=18; h++) {
+    for(let m of ['00','15','30','45']) {
+      if(h===18 && m!=='00') continue;
+      slots15.push(`${String(h).padStart(2,'0')}:${m}`);
+    }
+  }
+  document.getElementById('createTime').innerHTML = slots15.map(t => `<option value="${t}">${t}</option>`).join('');
+  
+  let durHtml = '';
+  // 10 to 90 mins in 5 min steps
+  for(let d=10; d<=90; d+=5) {
+    durHtml += `<option value="${d}">${d} мин</option>`;
+  }
+  document.getElementById('createDuration').innerHTML = durHtml;
+  document.getElementById('createDuration').value = '60'; // Default
+  
+  document.getElementById('createModal').classList.remove('hidden');
+}
+
+function closeCreateModal() {
+  document.getElementById('createModal').classList.add('hidden');
+}
+
+function get15MinSlots(startStr, durationMins) {
+  const slots = [];
+  let parts = startStr.split(':');
+  let h = parseInt(parts[0], 10);
+  let m = parseInt(parts[1], 10);
+  let currentMins = h * 60 + m;
+  const endMins = currentMins + parseInt(durationMins, 10);
+  
+  while(currentMins < endMins) {
+    const sh = Math.floor(currentMins / 60);
+    const sm = currentMins % 60;
+    const snapM = Math.floor(sm / 15) * 15;
+    const slotStr = String(sh).padStart(2,'0') + ':' + String(snapM).padStart(2,'0');
+    if(!slots.includes(slotStr) && sh >= 9 && sh <= 18) {
+      if(sh === 18 && snapM > 0) {} else {
+        slots.push(slotStr);
+      }
+    }
+    currentMins += 15;
+  }
+  return slots;
+}
+
+async function createBooking() {
+  const name = document.getElementById('createName').value.trim();
+  const service = document.getElementById('createService').value.trim();
+  const date = document.getElementById('createDate').value;
+  const time = document.getElementById('createTime').value;
+  const durationStr = document.getElementById('createDuration').value;
+  const duration = parseInt(durationStr, 10) || 60;
+  const phone = document.getElementById('createPhone').value.trim();
+  const email = document.getElementById('createEmail').value.trim();
+  const notes = document.getElementById('createNotes').value.trim();
+  
+  if(!name || !service || !date || !time) {
+    const fillTxt = currentAdminLang === 'de' ? 'Bitte alle Pflichtfelder (*) ausfüllen' : (currentAdminLang === 'ru' ? 'Заполните все обязательные поля (*)' : 'Please fill all required fields (*)');
+    alert(fillTxt);
+    return;
+  }
+  
+  const reqSlots = get15MinSlots(time, duration);
+  
+  // Check overlapping with any bookings or blocked slots
+  const isTaken = reqSlots.some(slot => {
+     return blockedSlots.some(b => b.date === date && b.time === slot) ||
+            allBookings.some(b => b.date === date && (b.time||'').substring(0,5) === slot && b.status !== 'cancelled');
+  });
+  
+  if(isTaken) {
+    const takenTxt = currentAdminLang === 'de' ? 'Slot (oder Teile davon) bereits belegt!' : (currentAdminLang === 'ru' ? 'Это время или его часть уже заняты' : 'Slot or parts of it already taken!');
+    alert(takenTxt);
+    return;
+  }
+  
+  const btn = document.getElementById('createSaveBtn');
+  const orgTxt = btn.textContent;
+  btn.textContent = '...';
+  btn.disabled = true;
+  
+  const finalNotes = duration > 0 ? `[DUR=${duration}] ` + notes : notes;
+  const payload = {
+    name, service, date, time: time + ':00', phone, email, notes: finalNotes, status: 'confirmed'
+  };
+  
+  const { error } = await supabaseClient.from('bookings').insert([payload]);
+  
+  btn.textContent = orgTxt;
+  btn.disabled = false;
+  
+  if (error) {
+    alert("Error: " + error.message);
+  } else {
+    // Automatically block the duration slots in database
+    const blockPayload = [];
+    for(const s of reqSlots) {
+       // Avoid duplicates if they manually clicked some already? isTaken protects it.
+       blockPayload.push({ date: date, time: s, is_full_day: false });
+    }
+    if (blockPayload.length > 0) {
+      await supabaseClient.from('blocked_slots').insert(blockPayload);
+    }
+    
+    closeCreateModal();
+    const ok = currentAdminLang === 'de' ? 'Gebucht' : (currentAdminLang === 'ru' ? 'Запись создана' : 'Booking created');
+    showAdminToast(ok);
+    await loadBlockedSlots();
+    await loadBookings();
   }
 }
 
@@ -838,7 +1052,12 @@ async function commitSlotSelection() {
   const dateStr = adminSelectedDateStr;
   
   const inserts = [];
-  const times = Array.from(selectedSlotsSet).map(idx => ADMIN_SLOTS[idx]);
+  const times = [];
+  Array.from(selectedSlotsSet).forEach(idx => {
+    const hStr = ADMIN_SLOTS[idx].substring(0,2);
+    times.push(`${hStr}:00`);
+    if (hStr !== '18') times.push(`${hStr}:15`, `${hStr}:30`, `${hStr}:45`);
+  });
   
   // lock UI
   document.getElementById('slotActionPanel').classList.add('opacity-50', 'pointer-events-none');
@@ -978,21 +1197,19 @@ async function applyMassTimeBlock(lock) {
     return; 
   }
 
-  let slots15 = [];
-  for(let h=9; h<=18; h++) {
-    for(let m of ['00','15','30','45']) {
-      if(h===18 && m!=='00') continue;
-      slots15.push(`${String(h).padStart(2,'0')}:${m}`);
-    }
-  }
-
-  let startIdx = slots15.indexOf(tFrom);
-  let endIdx = slots15.indexOf(tTo);
+  let startIdx = ADMIN_SLOTS.indexOf(tFrom);
+  let endIdx = ADMIN_SLOTS.indexOf(tTo);
   if(startIdx === -1) startIdx = 0; 
-  if(endIdx === -1) endIdx = slots15.length - 1;
+  if(endIdx === -1) endIdx = ADMIN_SLOTS.length - 1;
   if(startIdx > endIdx) { const tmp=startIdx; startIdx=endIdx; endIdx=tmp; }
   
-  const times = slots15.slice(startIdx, endIdx + 1);
+  const selectedHours = ADMIN_SLOTS.slice(startIdx, endIdx + 1);
+  const times = [];
+  selectedHours.forEach(t => {
+     const hStr = t.substring(0,2);
+     times.push(`${hStr}:00`);
+     if (hStr !== '18') times.push(`${hStr}:15`, `${hStr}:30`, `${hStr}:45`);
+  });
 
   if (lock) {
     const inserts = [];
