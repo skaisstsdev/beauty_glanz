@@ -13,6 +13,7 @@
   .status-pending { background: #FEF3C7; color: #92400E; }
   .status-confirmed { background: #D1FAE5; color: #065F46; }
   .status-cancelled { background: #FEE2E2; color: #991B1B; }
+  .status-rescheduled { background: #F3E8FF; color: #6B21A8; }
 </style>
 </head>
 <body class="min-h-screen">
@@ -55,49 +56,185 @@
   </div>
 
   <div class="max-w-6xl mx-auto px-4 py-8">
-    <div class="grid grid-cols-3 gap-4 mb-8">
-      <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
-        <div id="statPending" class="text-3xl font-bold text-yellow-600">—</div>
-        <div class="text-sm text-gray-500 mt-1" data-de="Ausstehend" data-ru="В ожидании" data-en="Pending">Ausstehend</div>
-      </div>
-      <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
-        <div id="statConfirmed" class="text-3xl font-bold text-green-600">—</div>
-        <div class="text-sm text-gray-500 mt-1" data-de="Bestätigt" data-ru="Подтверждено" data-en="Confirmed">Bestätigt</div>
-      </div>
-      <div class="bg-white rounded-2xl p-5 text-center shadow-sm">
-        <div id="statCancelled" class="text-3xl font-bold text-red-500">—</div>
-        <div class="text-sm text-gray-500 mt-1" data-de="Storniert" data-ru="Отменено" data-en="Cancelled">Storniert</div>
-      </div>
+    
+    <!-- TABS -->
+    <div class="flex gap-6 border-b border-gray-200 mb-8" id="adminTabs">
+      <button onclick="switchTab('buchungen')" id="tabBuchungen" class="pb-3 px-2 text-sm font-semibold text-[#1C1410] border-b-2 border-[#1C1410] transition-colors" data-de="Buchungen" data-ru="Бронирования" data-en="Bookings">Buchungen</button>
+      <button onclick="switchTab('kalender')" id="tabKalender" class="pb-3 px-2 text-sm font-medium text-gray-400 hover:text-gray-700 border-b-2 border-transparent transition-colors" data-de="Kalender" data-ru="Календарь" data-en="Calendar">Kalender</button>
     </div>
 
-    <div class="flex flex-wrap gap-3 mb-6">
-      <button onclick="filterStatus('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-[#1C1410] text-white" data-de="Alle" data-ru="Все" data-en="All">Alle</button>
-      <button onclick="filterStatus('pending')" id="filter-pending" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Ausstehend" data-ru="Ожидают" data-en="Pending">Ausstehend</button>
-      <button onclick="filterStatus('confirmed')" id="filter-confirmed" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Bestätigt" data-ru="Подтверждены" data-en="Confirmed">Bestätigt</button>
-      <button onclick="filterStatus('cancelled')" id="filter-cancelled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Storniert" data-ru="Отменены" data-en="Cancelled">Storniert</button>
-      <input type="date" id="dateFilter" onchange="renderTable()" class="ml-2 px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
-      <button onclick="document.getElementById('dateFilter').value=''; renderTable()" class="px-3 py-1.5 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100">✕</button>
-      <button onclick="loadBookings()" class="ml-auto px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻ Aktualisieren</button>
-    </div>
-
-    <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
-      <div id="loadingState" class="p-12 text-center text-gray-400" data-de="Laden..." data-ru="Загрузка..." data-en="Loading...">Laden...</div>
-      <div id="emptyState" class="p-12 text-center text-gray-400 hidden" data-de="Keine Buchungen gefunden" data-ru="Записи не найдены" data-en="No bookings found">Keine Buchungen gefunden</div>
-      <div class="overflow-x-auto">
-        <table id="bookingsTable" class="w-full hidden whitespace-nowrap">
-          <thead class="bg-gray-50 border-b border-gray-100">
-            <tr>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Kunde</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Behandlung" data-ru="Услуга" data-en="Service">Behandlung</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Datum & Zeit" data-ru="Дата и время" data-en="Date & Time">Datum & Zeit</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Status" data-ru="Статус" data-en="Status">Status</th>
-              <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Aktionen" data-ru="Действия" data-en="Actions">Aktionen</th>
-            </tr>
-          </thead>
-          <tbody id="bookingsBody"></tbody>
-        </table>
+    <!-- TAB 1: BUCHUNGEN -->
+    <div id="viewBuchungen">
+      <!-- STAT CARDS -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        <div onclick="filterStatus('pending')" class="bg-white rounded-2xl p-5 text-center shadow-sm cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5">
+          <div id="statPending" class="text-3xl font-bold text-yellow-600">—</div>
+          <div class="text-sm text-gray-500 mt-1" data-de="Ausstehend" data-ru="В ожидании" data-en="Pending">Ausstehend</div>
+        </div>
+        <div onclick="filterStatus('confirmed')" class="bg-white rounded-2xl p-5 text-center shadow-sm cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5">
+          <div id="statConfirmed" class="text-3xl font-bold text-green-600">—</div>
+          <div class="text-sm text-gray-500 mt-1" data-de="Bestätigt" data-ru="Подтверждено" data-en="Confirmed">Bestätigt</div>
+        </div>
+        <div onclick="filterStatus('cancelled')" class="bg-white rounded-2xl p-5 text-center shadow-sm cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5">
+          <div id="statCancelled" class="text-3xl font-bold text-red-500">—</div>
+          <div class="text-sm text-gray-500 mt-1" data-de="Storniert" data-ru="Отменено" data-en="Cancelled">Storniert</div>
+        </div>
+        <div onclick="filterStatus('rescheduled')" class="bg-white rounded-2xl p-5 text-center shadow-sm cursor-pointer hover:shadow-md transition-all hover:-translate-y-0.5">
+          <div id="statRescheduled" class="text-3xl font-bold text-purple-600">—</div>
+          <div class="text-sm text-gray-500 mt-1" data-de="Verschoben" data-ru="Перенесено" data-en="Rescheduled">Перенесено</div>
+        </div>
       </div>
-    </div>
+
+      <!-- FILTER BAR -->
+      <div class="flex flex-wrap gap-3 mb-6 items-center">
+        <div class="flex gap-2 flex-wrap">
+          <button onclick="filterStatus('all')" id="filter-all" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-[#1C1410] text-white" data-de="Alle" data-ru="Все" data-en="All">Alle</button>
+          <button onclick="filterStatus('pending')" id="filter-pending" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Ausstehend" data-ru="Ожидают" data-en="Pending">Ausstehend</button>
+          <button onclick="filterStatus('confirmed')" id="filter-confirmed" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Bestätigt" data-ru="Подтверждены" data-en="Confirmed">Bestätigt</button>
+          <button onclick="filterStatus('cancelled')" id="filter-cancelled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Storniert" data-ru="Отменены" data-en="Cancelled">Storniert</button>
+          <button onclick="filterStatus('rescheduled')" id="filter-rescheduled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-purple-600 hover:bg-purple-50 border border-purple-200" data-de="Verschoben" data-ru="Перенесенные" data-en="Rescheduled">Перенесенные</button>
+        </div>
+        <div class="flex gap-2 items-center ml-auto">
+          <input type="date" id="dateFilter" onchange="renderTable()" class="px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
+          <button onclick="document.getElementById('dateFilter').value=''; renderTable()" class="px-3 py-1.5 rounded-full text-sm font-medium bg-white text-gray-400 hover:bg-gray-100 border border-gray-200">✕</button>
+          <button onclick="loadBookings()" class="px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻ Обновить</button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div id="loadingState" class="p-12 text-center text-gray-400" data-de="Laden..." data-ru="Загрузка..." data-en="Loading...">Laden...</div>
+        <div id="emptyState" class="p-12 text-center text-gray-400 hidden" data-de="Keine Buchungen gefunden" data-ru="Записи не найдены" data-en="No bookings found">Keine Buchungen gefunden</div>
+        <div class="overflow-x-auto">
+          <table id="bookingsTable" class="w-full hidden whitespace-nowrap">
+            <thead class="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Kunde</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Behandlung" data-ru="Услуга" data-en="Service">Behandlung</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Datum & Zeit" data-ru="Дата и время" data-en="Date & Time">Datum & Zeit</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Status" data-ru="Статус" data-en="Status">Status</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Aktionen" data-ru="Действия" data-en="Actions">Aktionen</th>
+              </tr>
+            </thead>
+            <tbody id="bookingsBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div> <!-- /viewBuchungen -->
+
+    <!-- TAB 3: VERSCHOBEN / Перенесённые -->
+    <div id="viewVerschoben" class="hidden">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-[#1C1410]" data-de="Verschobene Buchungen" data-ru="Перенесённые записи" data-en="Rescheduled Bookings">Перенесённые записи</h2>
+          <p class="text-sm text-gray-400 mt-0.5" data-de="Buchungen die auf einen anderen Termin verschoben wurden" data-ru="Записи, перенесённые на другое время" data-en="Bookings moved to another slot">Записи, перенесённые на другое время</p>
+        </div>
+        <button onclick="loadBookings()" class="px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻ Обновить</button>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div id="reschedLoadingState" class="p-12 text-center text-gray-400" data-de="Laden..." data-ru="Загрузка..." data-en="Loading...">Загрузка...</div>
+        <div id="reschedEmptyState" class="p-12 text-center text-gray-400 hidden">
+          <div class="text-4xl mb-3">📅</div>
+          <div data-de="Keine verschobenen Buchungen" data-ru="Перенесённых записей нет" data-en="No rescheduled bookings">Перенесённых записей нет</div>
+        </div>
+        <div class="overflow-x-auto">
+          <table id="reschedTable" class="w-full hidden whitespace-nowrap">
+            <thead class="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Клиент</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Behandlung" data-ru="Услуга" data-en="Service">Услуга</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Datum &amp; Zeit" data-ru="Дата и время" data-en="Date &amp; Time">Дата и время</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Aktionen" data-ru="Действия" data-en="Actions">Действия</th>
+              </tr>
+            </thead>
+            <tbody id="reschedBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div> <!-- /viewVerschoben -->
+
+    <!-- TAB 2: KALENDER -->
+    <div id="viewKalender" class="hidden flex-col gap-6">
+
+      <!-- CALENDAR & SLOTS -->
+      <div class="flex flex-col xl:flex-row gap-6">
+        <div class="w-full xl:w-5/12">
+          <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 relative h-full">
+            <div class="flex items-center justify-between mb-6">
+              <button onclick="changeAdminMonth(-1)" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 text-gray-500 transition-colors">❮</button>
+              <div id="adminMonthYear" class="text-lg font-bold text-gray-800"></div>
+              <button onclick="changeAdminMonth(1)" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-50 text-gray-500 transition-colors">❯</button>
+            </div>
+            <div class="grid grid-cols-7 gap-1 text-center mb-2 text-xs font-semibold text-gray-400 uppercase tracking-widest" id="adminCalWeekdays"></div>
+            <div id="adminCalDays" class="grid grid-cols-7 gap-1"></div>
+          </div>
+        </div>
+        
+        <div class="w-full xl:w-7/12 flex flex-col gap-6">
+          
+          <!-- BULK DATE RANGE PICKER (ONLY DATES) -->
+          <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 flex flex-col gap-4">
+            <h4 class="font-bold text-lg text-[#1C1410]" data-de="Tage sperren (Urlaub)" data-ru="Блокировка дней (Отпуск)" data-en="Block Days (Vacation)">Блокировка дней (Отпуск)</h4>
+            
+            <div class="flex flex-col sm:flex-row gap-4 w-full">
+              <div class="flex-1">
+                <label class="block text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2" data-de="Ausgewählte Daten" data-ru="Даты" data-en="Dates">Даты</label>
+                <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl border border-gray-100">
+                  <input type="date" id="massDateFrom" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                  <span class="text-gray-300 px-1">—</span>
+                  <input type="date" id="massDateTo" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                </div>
+              </div>
+            </div>
+
+            <div class="flex gap-2 w-full mt-2">
+              <button onclick="applyMassDateBlock(true)" class="flex-1 px-6 py-3.5 bg-red-50 text-red-600 font-bold rounded-2xl hover:bg-red-100 transition-colors shadow-sm text-sm" data-de="Tage sperren" data-ru="Закрыть дни" data-en="Close Days">Закрыть дни</button>
+              <button onclick="applyMassDateBlock(false)" class="flex-1 px-6 py-3.5 bg-white border border-gray-200 text-gray-700 font-bold rounded-2xl hover:bg-gray-50 transition-colors shadow-sm text-sm" data-de="Tage freigeben" data-ru="Открыть дни" data-en="Open Days">Открыть дни</button>
+            </div>
+          </div>
+
+          <!-- DAY DETAILED SLOTS -->
+          <div id="adminDayDetail" class="bg-white rounded-3xl p-6 shadow-sm border border-gray-100 hidden flex-col">
+            <div class="flex justify-between items-center mb-6 border-b border-gray-100 pb-4">
+              <h3 id="adminSelectedDateDisplay" class="text-2xl font-bold text-[#1C1410] font-heading"></h3>
+              <button id="adminToggleFullDayBtn" class="px-5 py-2.5 text-xs font-bold rounded-2xl whitespace-nowrap transition-colors"></button>
+            </div>
+            
+            <!-- TIME RANGE PICKER -->
+            <div class="mb-6 pb-6 border-b border-gray-100">
+              <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide" data-de="Uhrzeitbereich (Optional)" data-ru="Диапазон времени (Выбрать сразу несколько)" data-en="Time Range">Диапазон времени (Выбрать сразу несколько)</label>
+              <div class="flex flex-wrap sm:flex-nowrap items-center gap-3">
+                <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl border border-gray-100 w-full sm:w-fit">
+                  <select id="massTimeFrom" class="bg-transparent border-none text-sm font-semibold outline-none px-2 w-full sm:w-28 text-gray-700 text-center cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5 appearance-none"></select>
+                  <span class="text-gray-300 font-bold px-1">—</span>
+                  <select id="massTimeTo" class="bg-transparent border-none text-sm font-semibold outline-none px-2 w-full sm:w-28 text-gray-700 text-center cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5 appearance-none"></select>
+                </div>
+                <div class="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                  <button onclick="applyMassTimeBlock(true)" class="flex-1 sm:flex-none px-6 py-3 bg-red-50 text-red-600 font-bold rounded-2xl hover:bg-red-100 transition-colors shadow-sm text-sm whitespace-nowrap" data-de="Zeiten sperren" data-ru="Закрыть диапазон" data-en="Block times">Закрыть диапазон</button>
+                  <button onclick="applyMassTimeBlock(false)" class="flex-1 sm:flex-none px-6 py-3 bg-white border border-gray-200 text-gray-700 font-bold rounded-2xl hover:bg-gray-50 transition-colors shadow-sm text-sm whitespace-nowrap" data-de="Zeiten freigeben" data-ru="Открыть" data-en="Unblock times">Открыть</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- DRAG INSTRUCTION -->
+            <p class="text-xs text-gray-400 mb-4 italic text-center" data-de="...oder einzeln anklicken/auswählen" data-ru="...или потяните мышью по конкретным часам ниже" data-en="...or click/drag below">...или потяните мышью по конкретным часам ниже</p>
+            <div id="adminSlotsGrid" class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 relative select-none"></div>
+            
+            <!-- FLOATING ACTION PANEL FOR SLOTS -->
+            <div id="slotActionPanel" class="hidden mt-6 p-4 bg-[#F5EFE8] rounded-2xl border border-[#E8DFD5] flex flex-col sm:flex-row items-center justify-between gap-4 animate-fade-up">
+              <span id="slotActionText" class="text-sm font-bold text-[#1C1410]"></span>
+              <div class="flex gap-2 w-full sm:w-auto">
+                <button onclick="commitSlotSelection()" id="slotActionConfirmBtn" class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-bold transition-colors shadow-sm text-sm"></button>
+                <button onclick="cancelSlotSelection()" class="flex-1 sm:flex-none px-6 py-2.5 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm text-sm" data-de="Abbrechen" data-ru="Отмена" data-en="Cancel">Abbrechen</button>
+              </div>
+            </div>
+
+          </div>
+          <div id="adminDayEmpty" class="flex-1 min-h-[300px] flex items-center justify-center bg-white/50 border border-dashed border-gray-200 rounded-3xl text-gray-400 text-base font-medium" data-de="Bitte wählen Sie einen Tag aus." data-ru="Пожалуйста, выберите день." data-en="Please select a day.">Bitte wählen Sie einen Tag aus.</div>
+        </div>
+      </div>
+    </div> <!-- /viewKalender -->
+
   </div>
 </div>
 
@@ -115,13 +252,7 @@
     </div>
     <div class="mb-8">
       <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Uhrzeit" data-ru="Время" data-en="Time">Uhrzeit</label>
-      <select id="editTime" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all bg-white cursor-pointer">
-        <option value="09:00">09:00</option><option value="10:00">10:00</option>
-        <option value="11:00">11:00</option><option value="12:00">12:00</option>
-        <option value="13:00">13:00</option><option value="14:00">14:00</option>
-        <option value="15:00">15:00</option><option value="16:00">16:00</option>
-        <option value="17:00">17:00</option><option value="18:00">18:00</option>
-      </select>
+      <select id="editTime" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all bg-white cursor-pointer"></select>
     </div>
     <div class="flex gap-3">
       <button onclick="closeEditModal()" class="flex-1 py-3 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition-colors" data-de="Abbrechen" data-ru="Отмена" data-en="Cancel">Abbrechen</button>
@@ -136,11 +267,27 @@
 <script>
 const SUPABASE_URL = 'https://kouwlhuazgugzmrxpprf.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtvdXdsaHVhemd1Z3ptcnhwcHJmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5MTcwNzcsImV4cCI6MjA4OTQ5MzA3N30.no3mpNpuiOVXeM9aN2UZn4d_OWj6r_2VR8OZ6bbSetM';
-const ADMIN_PASSWORD = 'beautyglanz2024';
+
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = ((hash << 5) - hash) + str.charCodeAt(i);
+    hash |= 0;
+  }
+  return hash.toString();
+}
+
+const ADMIN_HASH = '-1661697300';
 const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 let allBookings = [];
 let currentFilter = 'all';
+
+// KALENDER STATE
+let blockedSlots = [];
+let adminCalDate = new Date();
+let adminSelectedDateStr = null;
+const ADMIN_SLOTS = ["09:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00","18:00"];
 
 // TOAST UI
 function showAdminToast(msg) {
@@ -160,11 +307,12 @@ function showAdminToast(msg) {
 
 function checkPassword() {
   const val = document.getElementById('passwordInput').value;
-  if (val === ADMIN_PASSWORD) {
+  if (simpleHash(val) === ADMIN_HASH) {
     sessionStorage.setItem('bg_admin', '1');
     document.getElementById('loginScreen').classList.add('hidden');
     document.getElementById('adminPanel').classList.remove('hidden');
     loadBookings();
+    loadBlockedSlots();
   } else {
     document.getElementById('loginError').classList.remove('hidden');
   }
@@ -181,6 +329,7 @@ if (sessionStorage.getItem('bg_admin') === '1') {
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('adminPanel').classList.remove('hidden');
   loadBookings();
+  loadBlockedSlots();
 }
 
 async function loadBookings() {
@@ -211,10 +360,12 @@ const tDict = {
     pending: { de: 'Ausstehend', ru: 'Ожидает', en: 'Pending' },
     confirmed: { de: 'Bestätigt', ru: 'Подтверждена', en: 'Confirmed' },
     cancelled: { de: 'Storniert', ru: 'Отменена', en: 'Cancelled' },
+    rescheduled: { de: 'Verschoben', ru: 'Перенесена', en: 'Rescheduled' },
   },
   btnConfirm: { de: '✓ Bestätigen', ru: '✓ Подтвердить', en: '✓ Confirm' },
   btnCancel: { de: '✗ Freigeben', ru: '✗ В свободные', en: '✗ Release' },
-  btnEdit: { de: '✎ Bearbeiten', ru: '✎ Изменить', en: '✎ Edit' }
+  btnEdit: { de: '✎ Bearbeiten', ru: '✎ Изменить', en: '✎ Edit' },
+  btnRestore: { de: '↩ Wiederherstellen', ru: '↩ Вернуть', en: '↩ Restore' },
 };
 
 let currentAdminLang = localStorage.getItem('bg_lang') || 'de';
@@ -245,19 +396,34 @@ function updateStats() {
   document.getElementById('statPending').textContent = allBookings.filter(b => b.status === 'pending').length;
   document.getElementById('statConfirmed').textContent = allBookings.filter(b => b.status === 'confirmed').length;
   document.getElementById('statCancelled').textContent = allBookings.filter(b => b.status === 'cancelled').length;
+  const reschEl = document.getElementById('statRescheduled');
+  if(reschEl) reschEl.textContent = allBookings.filter(b => b.status === 'rescheduled').length;
   const countRaw = tDict.total[currentAdminLang].replace('{n}', allBookings.length);
   document.getElementById('totalCount').textContent = countRaw;
 }
 
 function filterStatus(status) {
   currentFilter = status;
+  // Reset all pills to default
   document.querySelectorAll('.filter-btn').forEach(btn => {
-    btn.classList.remove('bg-[#1C1410]', 'text-white');
-    btn.classList.add('bg-white', 'text-gray-600');
+    btn.classList.remove('bg-[#1C1410]', 'text-white', 'bg-purple-600', 'text-purple-50');
+    const isReschBtn = btn.id === 'filter-rescheduled';
+    if(isReschBtn) {
+      btn.classList.add('bg-white', 'text-purple-600');
+    } else {
+      btn.classList.add('bg-white', 'text-gray-600');
+    }
   });
   const active = document.getElementById('filter-' + status);
-  active.classList.add('bg-[#1C1410]', 'text-white');
-  active.classList.remove('bg-white', 'text-gray-600');
+  if(active) {
+    if(status === 'rescheduled') {
+      active.classList.remove('bg-white', 'text-purple-600');
+      active.classList.add('bg-purple-600', 'text-purple-50');
+    } else {
+      active.classList.remove('bg-white', 'text-gray-600');
+      active.classList.add('bg-[#1C1410]', 'text-white');
+    }
+  }
   renderTable();
 }
 
@@ -312,6 +478,7 @@ function renderTable() {
         <div class="flex gap-2 flex-wrap items-center">
           ${b.status !== 'confirmed' ? `<button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>` : ''}
           ${b.status !== 'cancelled' ? `<button onclick="updateStatus('${b.id}','cancelled')" class="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-semibold hover:bg-red-100 transition-all shadow-sm">${tDict.btnCancel[currentAdminLang]}</button>` : ''}
+          ${b.status === 'rescheduled' ? `<button onclick="updateStatus('${b.id}','pending')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-semibold hover:bg-yellow-50 hover:text-yellow-700 transition-all shadow-sm">${tDict.btnRestore[currentAdminLang]}</button>` : ''}
           <button onclick="openEditModal('${b.id}', '${b.date}', '${t}')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold hover:bg-blue-50 hover:text-blue-600 transition-all shadow-sm opacity-70 group-hover:opacity-100">${tDict.btnEdit[currentAdminLang]}</button>
           <button onclick="deleteBooking('${b.id}')" class="p-1.5 text-gray-400 hover:bg-gray-200 hover:text-red-500 rounded-lg transition-all opacity-50 group-hover:opacity-100">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
@@ -329,7 +496,54 @@ async function updateStatus(id, status) {
     if (booking) booking.status = status;
     updateStats();
     renderTable();
+    // If rescheduled tab is open, refresh it too
+    if(!document.getElementById('viewVerschoben').classList.contains('hidden')) renderRescheduledTable();
   }
+}
+
+function renderRescheduledTable() {
+  const rescheduled = allBookings.filter(b => b.status === 'rescheduled');
+  const loadEl = document.getElementById('reschedLoadingState');
+  const emptyEl = document.getElementById('reschedEmptyState');
+  const tableEl = document.getElementById('reschedTable');
+  const bodyEl = document.getElementById('reschedBody');
+
+  loadEl.classList.add('hidden');
+  if (rescheduled.length === 0) {
+    emptyEl.classList.remove('hidden');
+    tableEl.classList.add('hidden');
+    return;
+  }
+  emptyEl.classList.add('hidden');
+  tableEl.classList.remove('hidden');
+
+  const locDict = tDict.statusLabels;
+  bodyEl.innerHTML = rescheduled.map(b => {
+    const dateStr = new Date(b.date).toLocaleDateString(currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US'), { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    const t = (b.time || '').substring(0,5);
+    return `<tr class="group border-b border-gray-100 hover:bg-purple-50/30 transition-all duration-200">
+      <td class="px-5 py-4">
+        <div class="font-semibold text-sm text-gray-900">${b.name}</div>
+        <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A] transition-colors">${b.phone}</a></div>
+        <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A] transition-colors">${b.email}</a></div>
+      </td>
+      <td class="px-5 py-4">
+        <div class="text-sm text-gray-800 font-medium">${b.service}</div>
+        ${b.notes ? `<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-purple-200 pl-2">"${b.notes}"</div>` : ''}
+      </td>
+      <td class="px-5 py-4">
+        <div class="text-sm font-semibold text-gray-900">${dateStr}</div>
+        <div class="text-sm text-[#C4826A] font-bold mt-0.5">${t}</div>
+      </td>
+      <td class="px-5 py-4">
+        <div class="flex gap-2 flex-wrap items-center">
+          <button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>
+          <button onclick="updateStatus('${b.id}','pending')" class="px-3 py-1.5 bg-yellow-50 text-yellow-700 rounded-lg text-xs font-semibold hover:bg-yellow-100 transition-all shadow-sm">${tDict.btnRestore[currentAdminLang]}</button>
+          <button onclick="openEditModal('${b.id}', '${b.date}', '${t}')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold hover:bg-blue-50 hover:text-blue-600 transition-all shadow-sm">${tDict.btnEdit[currentAdminLang]}</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
 }
 
 async function deleteBooking(id) {
@@ -367,7 +581,7 @@ async function saveEdit() {
     return;
   }
 
-  const { error } = await supabaseClient.from('bookings').update({ date: newDate, time: newTime }).eq('id', id);
+  const { error } = await supabaseClient.from('bookings').update({ date: newDate, time: newTime, status: 'rescheduled' }).eq('id', id);
   
   if (error) {
     if (error.code === '23505' || error.message.includes('duplicate')) {
@@ -383,16 +597,480 @@ async function saveEdit() {
       booking.date = newDate;
       // Add :00 safely
       booking.time = newTime.length === 5 ? newTime + ':00' : newTime;
+      booking.status = 'rescheduled';
     }
+    updateStats();
     renderTable();
     closeEditModal();
     const ok = currentAdminLang === 'de' ? 'Gespeichert' : (currentAdminLang === 'ru' ? 'Сохранено' : 'Saved');
     showAdminToast(ok);
   }
 }
+
+// ================= KALENDER ЛОГИКА =================
+
+function switchTab(tab) {
+  const tB = document.getElementById('tabBuchungen');
+  const tK = document.getElementById('tabKalender');
+  const vB = document.getElementById('viewBuchungen');
+  const vK = document.getElementById('viewKalender');
+
+  // reset all
+  [tB, tK].forEach(t => { if(t) t.className = "pb-3 px-2 text-sm font-medium text-gray-400 hover:text-gray-700 border-b-2 border-transparent transition-colors"; });
+  if(vB) vB.classList.add('hidden');
+  if(vK) { vK.classList.add('hidden'); vK.classList.remove('flex'); }
+
+  if(tab === 'buchungen') {
+    if(tB) tB.className = "pb-3 px-2 text-sm font-semibold text-[#1C1410] border-b-2 border-[#1C1410] transition-colors";
+    if(vB) vB.classList.remove('hidden');
+  } else if(tab === 'kalender') {
+    if(tK) tK.className = "pb-3 px-2 text-sm font-semibold text-[#1C1410] border-b-2 border-[#1C1410] transition-colors";
+    if(vK) {
+      vK.classList.remove('hidden');
+      vK.classList.add('flex');
+    }
+    renderAdminCalendar();
+    if(adminSelectedDateStr) renderAdminSlots(adminSelectedDateStr);
+  }
+}
+
+async function loadBlockedSlots() {
+  const { data, error } = await supabaseClient.from('blocked_slots').select('*');
+  if(!error) {
+    blockedSlots = data || [];
+    if(!document.getElementById('viewKalender').classList.contains('hidden')) {
+      renderAdminCalendar();
+      if(adminSelectedDateStr) renderAdminSlots(adminSelectedDateStr);
+    }
+  }
+}
+
+function changeAdminMonth(dir) {
+  adminCalDate.setMonth(adminCalDate.getMonth() + dir);
+  renderAdminCalendar();
+}
+
+function renderAdminCalendar() {
+  const year = adminCalDate.getFullYear();
+  const month = adminCalDate.getMonth();
+  
+  const monthNames = {
+    de: ['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'],
+    ru: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+    en: ['January','February','March','April','May','June','July','August','September','October','November','December']
+  };
+  const wdNames = {
+    de: ['Mo','Di','Mi','Do','Fr','Sa','So'],
+    ru: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+    en: ['Mo','Tu','We','Th','Fr','Sa','Su']
+  };
+  
+  const safeLang = monthNames[currentAdminLang] ? currentAdminLang : 'de';
+  
+  document.getElementById('adminMonthYear').textContent = `${monthNames[safeLang][month]} ${year}`;
+  
+  const wds = document.getElementById('adminCalWeekdays');
+  wds.innerHTML = wdNames[safeLang].map(d => `<div>${d}</div>`).join('');
+  
+  const daysEl = document.getElementById('adminCalDays');
+  daysEl.innerHTML = '';
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  
+  let startDay = firstDay.getDay() || 7; 
+  startDay--; // Mon=0
+  
+  for(let i=0; i<startDay; i++){
+    daysEl.innerHTML += `<div></div>`;
+  }
+  
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const todayStr = [today.getFullYear(), String(today.getMonth()+1).padStart(2,'0'), String(today.getDate()).padStart(2,'0')].join('-');
+  
+  for(let d=1; d<=lastDay.getDate(); d++){
+    // const dateObj = new Date(year, month, d);
+    const dateStr = [year, String(month+1).padStart(2,'0'), String(d).padStart(2,'0')].join('-');
+    const isPast = dateStr < todayStr;
+    
+    // Check bookings/blocks for dot indicators
+    const hasBookings = allBookings.some(b => b.date === dateStr && b.status !== 'cancelled');
+    const partiallyBlocked = blockedSlots.some(b => b.date === dateStr && !b.is_full_day);
+    const isFullDay = blockedSlots.some(b => b.date === dateStr && b.is_full_day === true);
+    
+    let dotsHtml = '';
+    if(!isPast && (hasBookings || partiallyBlocked) && !isFullDay) {
+       dotsHtml = `<div class="flex gap-1 mt-0.5 justify-center absolute bottom-1.5 left-0 right-0">`;
+       if(hasBookings) dotsHtml += `<div class="w-1 h-1 rounded-full bg-green-500"></div>`;
+       if(partiallyBlocked) dotsHtml += `<div class="w-1 h-1 rounded-full bg-red-400"></div>`;
+       dotsHtml += `</div>`;
+    }
+    
+    let btnClass = isPast ? "opacity-30 cursor-not-allowed" : "cursor-pointer hover:bg-[#F5EFE8] hover:text-[#1C1410] transition-colors";
+    
+    if(!isPast && isFullDay) {
+       btnClass += " bg-red-50 text-red-600 font-bold border border-red-200";
+    } else if(!isPast && adminSelectedDateStr === dateStr) {
+       btnClass += " bg-[#1C1410] text-[#F5EFE8] font-bold shadow-md";
+    } else if (!isPast) {
+       btnClass += " bg-white text-gray-700 border border-gray-100";
+    }
+    
+    daysEl.innerHTML += `<button 
+        ${isPast ? 'disabled' : `onclick="selectAdminDay('${dateStr}')"`}
+        class="aspect-square flex flex-col items-center justify-center rounded-xl text-sm ${btnClass} relative overflow-hidden">
+        <span>${d}</span>
+        ${dotsHtml}
+      </button>`;
+  }
+}
+
+function formatAdminDate(ds) {
+  const [y,m,d] = ds.split('-');
+  return `${d}.${m}.${y}`;
+}
+
+function selectAdminDay(dateStr) {
+  adminSelectedDateStr = dateStr;
+  
+  // reset selection
+  selectedSlotsSet.clear();
+  const actionPanel = document.getElementById('slotActionPanel');
+  if(actionPanel) actionPanel.classList.add('hidden');
+  
+  renderAdminCalendar(); // refresh selection state
+  
+  document.getElementById('adminDayEmpty').classList.add('hidden');
+  const dDetail = document.getElementById('adminDayDetail');
+  dDetail.classList.remove('hidden');
+  
+  document.getElementById('adminSelectedDateDisplay').textContent = formatAdminDate(dateStr);
+  
+  renderAdminSlots(dateStr);
+}
+
+// === DRAG & DROP SELECTION ===
+let isDragSelecting = false;
+let dragStartIndex = -1;
+let selectedSlotsSet = new Set();
+let currentDragLockMode = true; // true=booking, false=unbooking
+
+window.addEventListener('mouseup', () => {
+  if (isDragSelecting) {
+    isDragSelecting = false;
+    processSlotSelection();
+  }
+});
+
+function handleSlotDown(idx, isFree) {
+  isDragSelecting = true;
+  dragStartIndex = idx;
+  currentDragLockMode = isFree; 
+  selectedSlotsSet.clear();
+  selectedSlotsSet.add(idx);
+  redrawSlotsDOM();
+}
+
+function handleSlotEnter(idx) {
+  if (isDragSelecting) {
+    selectedSlotsSet.clear();
+    const min = Math.min(dragStartIndex, idx);
+    const max = Math.max(dragStartIndex, idx);
+    for(let i=min; i<=max; i++) selectedSlotsSet.add(i);
+    redrawSlotsDOM();
+  }
+}
+
+function redrawSlotsDOM() {
+  ADMIN_SLOTS.forEach((time, idx) => {
+    const el = document.getElementById(`admin-slot-${idx}`);
+    if(!el) return;
+    if (selectedSlotsSet.has(idx)) {
+       el.className = el.getAttribute('data-orig-class') + " ring-2 ring-[#1C1410] scale-95 shadow-inner opacity-90 backdrop-brightness-95";
+    } else {
+       el.className = el.getAttribute('data-orig-class');
+    }
+  });
+}
+
+function cancelSlotSelection() {
+  selectedSlotsSet.clear();
+  document.getElementById('slotActionPanel').classList.add('hidden');
+  redrawSlotsDOM();
+}
+
+function processSlotSelection() {
+  if (selectedSlotsSet.size === 0) {
+    document.getElementById('slotActionPanel').classList.add('hidden');
+    return;
+  }
+  
+  const lock = currentDragLockMode;
+  const panel = document.getElementById('slotActionPanel');
+  const txt = document.getElementById('slotActionText');
+  const btn = document.getElementById('slotActionConfirmBtn');
+  
+  panel.classList.remove('hidden');
+  
+  const count = selectedSlotsSet.size;
+  if(currentAdminLang === 'ru') {
+    txt.textContent = `Выбрано слотов: ${count}`;
+    btn.textContent = lock ? 'Закрыть выбранное' : 'Открыть выбранное';
+  } else if (currentAdminLang === 'en') {
+    txt.textContent = `Selected slots: ${count}`;
+    btn.textContent = lock ? 'Lock Selected' : 'Unlock Selected';
+  } else {
+    txt.textContent = `${count} Slots ausgewählt`;
+    btn.textContent = lock ? 'Auswahl sperren' : 'Auswahl freigeben';
+  }
+  
+  if (lock) {
+    btn.className = "flex-1 sm:flex-none px-6 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 font-bold rounded-xl transition-colors shadow-sm text-sm border border-red-200";
+  } else {
+    btn.className = "flex-1 sm:flex-none px-6 py-2.5 bg-[#1C1410] text-white hover:bg-[#C4826A] font-bold rounded-xl transition-colors shadow-md text-sm";
+  }
+}
+
+async function commitSlotSelection() {
+  if (selectedSlotsSet.size === 0) return;
+  const lock = currentDragLockMode;
+  const dateStr = adminSelectedDateStr;
+  
+  const inserts = [];
+  const times = Array.from(selectedSlotsSet).map(idx => ADMIN_SLOTS[idx]);
+  
+  // lock UI
+  document.getElementById('slotActionPanel').classList.add('opacity-50', 'pointer-events-none');
+  
+  if (lock) {
+    for(const t of times) {
+       // if not already blocked
+       if(!blockedSlots.some(b => b.date === dateStr && b.time === t)) {
+          inserts.push({ date: dateStr, time: t, is_full_day: false });
+          // local UI state predictive
+          blockedSlots.push({ date: dateStr, time: t, is_full_day: false });
+       }
+    }
+    if(inserts.length > 0) {
+      const { error } = await supabaseClient.from('blocked_slots').insert(inserts);
+      if(error) alert(error.message);
+    }
+  } else {
+    for(const t of times) {
+      const { error } = await supabaseClient.from('blocked_slots').delete().match({ date: dateStr, time: t });
+      if(error) alert(error.message);
+      else blockedSlots = blockedSlots.filter(b => !(b.date === dateStr && b.time === t));
+    }
+  }
+  
+  selectedSlotsSet.clear();
+  document.getElementById('slotActionPanel').classList.remove('opacity-50', 'pointer-events-none');
+  document.getElementById('slotActionPanel').classList.add('hidden');
+  
+  await loadBlockedSlots();
+  const msg = lock ? (currentAdminLang==='ru'?'Слоты закрыты':'Slots locked') : (currentAdminLang==='ru'?'Слоты открыты':'Slots opened');
+  showAdminToast(msg);
+}
+
+// ==== DAY DETAILS SLOTS ====
+function renderAdminSlots(dateStr) {
+  const grid = document.getElementById('adminSlotsGrid');
+  grid.innerHTML = '';
+  
+  const isFullDay = blockedSlots.some(b => b.date === dateStr && b.is_full_day === true);
+  
+  const btnFull = document.getElementById('adminToggleFullDayBtn');
+  if(isFullDay) {
+    btnFull.className = "px-5 py-2.5 text-xs font-bold rounded-2xl transition-colors bg-white text-gray-700 border border-gray-200 hover:bg-gray-50 shadow-sm";
+    btnFull.textContent = currentAdminLang === 'de' ? 'Tag öffnen' : (currentAdminLang === 'ru' ? 'Открыть день' : 'Open day');
+    btnFull.onclick = () => toggleFullDay(dateStr, false);
+  } else {
+    btnFull.className = "px-5 py-2.5 text-xs font-bold rounded-2xl transition-colors bg-red-50 text-red-600 border border-red-200 hover:bg-red-100 shadow-sm";
+    btnFull.textContent = currentAdminLang === 'de' ? 'Gesamten Tag schließen' : (currentAdminLang === 'ru' ? 'Закрыть весь день' : 'Close full day');
+    btnFull.onclick = () => toggleFullDay(dateStr, true);
+  }
+
+  ADMIN_SLOTS.forEach((time, idx) => {
+    // If any 15-min chunk matches this hour, consider it booked/blocked for the grid visuals
+    const hourPrefix = time.substring(0,2) + ':';
+    
+    const isBooked = allBookings.some(b => b.date === dateStr && (b.time || '').substring(0,3) === hourPrefix && b.status !== 'cancelled');
+    const isBlocked = isFullDay || blockedSlots.some(b => b.date === dateStr && b.time.substring(0,3) === hourPrefix);
+    
+    let bg = "bg-white", border = "border-gray-200", text = "text-gray-700";
+    let sub = currentAdminLang==='de'?'Frei':(currentAdminLang==='ru'?'Свободно':'Free');
+    let subOp = "opacity-40";
+    let cursor = "cursor-pointer hover:border-[#1C1410] hover:shadow-md";
+    let line = "";
+    let isFree = true;
+
+    if (isBooked) {
+      isFree = false;
+      bg = "bg-green-50"; text = "text-green-700"; border = "border-green-200";
+      sub = currentAdminLang==='de'?'Gebucht':(currentAdminLang==='ru'?'Занято':'Booked');
+      subOp = "opacity-80";
+      cursor = "cursor-not-allowed";
+    } else if (isBlocked) {
+      isFree = false;
+      bg = "bg-red-50"; text = "text-red-700"; border = "border-red-200";
+      sub = currentAdminLang==='de'?'Gesperrt':(currentAdminLang==='ru'?'Закрыто':'Blocked');
+      subOp = "opacity-80";
+      cursor = "cursor-pointer hover:bg-red-100";
+      line = "line-through opacity-70";
+    }
+
+    const events = isBooked ? '' : `onmousedown="handleSlotDown(${idx}, ${isFree})" onmouseenter="handleSlotEnter(${idx})"`;
+    const fullClass = `select-none py-3.5 rounded-2xl border text-sm font-medium transition-all duration-200 text-center ${bg} ${border} ${text} ${cursor}`;
+
+    grid.innerHTML += `<div id="admin-slot-${idx}" data-orig-class="${fullClass}" class="${fullClass}" ${events}>
+      <div class="font-bold mb-1 ${line} pointer-events-none text-base">${time}</div>
+      <div class="text-[9px] sm:text-[10px] uppercase tracking-wide font-bold ${subOp} pointer-events-none">${sub}</div>
+    </div>`;
+  });
+}
+
+// ==== MASS ACTIONS & RANGE ====
+
+async function applyMassDateBlock(lock) {
+  const dFrom = document.getElementById('massDateFrom').value;
+  const dTo = document.getElementById('massDateTo').value || dFrom;
+
+  if (!dFrom) {
+    alert(currentAdminLang==='ru' ? 'Выберите дату!' : 'Date required!');
+    return;
+  }
+
+  let current = new Date(dFrom);
+  const end = new Date(dTo);
+  const dates = [];
+  while(current <= end) {
+    dates.push(current.toISOString().split('T')[0]);
+    current.setDate(current.getDate() + 1);
+  }
+
+  if (lock) {
+    // delete all partial/full blocks for these dates first
+    for(const d of dates) await supabaseClient.from('blocked_slots').delete().eq('date', d);
+    const inserts = dates.map(d => ({ date: d, time: null, is_full_day: true }));
+    const { error } = await supabaseClient.from('blocked_slots').insert(inserts);
+    if(error) { alert("Error: "+error.message); return; }
+  } else {
+    for(const d of dates) await supabaseClient.from('blocked_slots').delete().eq('date', d);
+  }
+
+  showAdminToast(lock ? (currentAdminLang==='ru'?'Дни закрыты':'Days locked') : (currentAdminLang==='ru'?'Дни открыты':'Days unlocked'));
+  await loadBlockedSlots();
+}
+
+async function applyMassTimeBlock(lock) {
+  const dStr = adminSelectedDateStr;
+  if (!dStr) {
+    alert(currentAdminLang==='ru' ? 'Сначала выберите день!' : 'Select a day first!');
+    return;
+  }
+
+  const tFrom = document.getElementById('massTimeFrom').value;
+  const tTo = document.getElementById('massTimeTo').value;
+
+  if(!tFrom || !tTo) { 
+    alert(currentAdminLang==='ru' ? 'Выберите время от и до!' : 'Time range required!'); 
+    return; 
+  }
+
+  let slots15 = [];
+  for(let h=9; h<=18; h++) {
+    for(let m of ['00','15','30','45']) {
+      if(h===18 && m!=='00') continue;
+      slots15.push(`${String(h).padStart(2,'0')}:${m}`);
+    }
+  }
+
+  let startIdx = slots15.indexOf(tFrom);
+  let endIdx = slots15.indexOf(tTo);
+  if(startIdx === -1) startIdx = 0; 
+  if(endIdx === -1) endIdx = slots15.length - 1;
+  if(startIdx > endIdx) { const tmp=startIdx; startIdx=endIdx; endIdx=tmp; }
+  
+  const times = slots15.slice(startIdx, endIdx + 1);
+
+  if (lock) {
+    const inserts = [];
+    for(const t of times) {
+       // Only insert if not already blocked
+       if(!blockedSlots.some(b => b.date === dStr && b.time === t)) {
+          inserts.push({ date: dStr, time: t, is_full_day: false });
+       }
+    }
+    if (inserts.length > 0) {
+      const { error } = await supabaseClient.from('blocked_slots').insert(inserts);
+      if(error) { alert("Error: "+error.message); return; }
+    }
+  } else {
+    for(const t of times) {
+      await supabaseClient.from('blocked_slots').delete().match({date: dStr, time: t});
+    }
+  }
+
+  showAdminToast(lock ? (currentAdminLang==='ru'?'Время закрыто':'Time locked') : (currentAdminLang==='ru'?'Время открыто':'Time unlocked'));
+  document.getElementById('massTimeFrom').value = '';
+  document.getElementById('massTimeTo').value = '';
+  await loadBlockedSlots();
+}
+
+async function toggleFullDay(dateStr, lock) {
+  if (lock) {
+    await supabaseClient.from('blocked_slots').delete().eq('date', dateStr);
+    const { error } = await supabaseClient.from('blocked_slots').insert([{ date: dateStr, is_full_day: true, time: null }]);
+    if (error) { 
+      alert("Supabase Error (Full Day Lock): " + (error.message || JSON.stringify(error))); 
+      console.error(error); 
+      return; 
+    }
+    blockedSlots = blockedSlots.filter(b => b.date !== dateStr);
+    blockedSlots.push({ date: dateStr, is_full_day: true, time: null });
+  } else {
+    const { error } = await supabaseClient.from('blocked_slots').delete().eq('date', dateStr);
+    if (error) { 
+      alert("Supabase Error (Full Day Unlock): " + (error.message || JSON.stringify(error))); 
+      console.error(error); 
+      return; 
+    }
+    blockedSlots = blockedSlots.filter(b => b.date !== dateStr);
+  }
+  await loadBlockedSlots(); // sync
+  renderAdminCalendar();
+  if (adminSelectedDateStr === dateStr) renderAdminSlots(dateStr);
+  
+  const msg = lock ? (currentAdminLang==='ru'?'День закрыт':'Day closed') : (currentAdminLang==='ru'?'День открыт':'Day opened');
+  showAdminToast(msg);
+}
+
 // Initialize language on load
 document.addEventListener('DOMContentLoaded', () => {
   setAdminLang(currentAdminLang);
+  
+  // Populate time dropdowns with 15-min granularities independent of ADMIN_SLOTS
+  let slots15 = [];
+  for(let h=9; h<=18; h++) {
+    for(let m of ['00','15','30','45']) {
+      if(h===18 && m!=='00') continue;
+      slots15.push(`${String(h).padStart(2,'0')}:${m}`);
+    }
+  }
+
+  const html = slots15.map(t => `<option value="${t}">${t}</option>`).join('');
+  if(document.getElementById('massTimeFrom')) document.getElementById('massTimeFrom').innerHTML = html;
+  
+  const mTo = document.getElementById('massTimeTo');
+  if(mTo) {
+    mTo.innerHTML = html;
+    mTo.value = '18:00';
+  }
+  
+  // Edit modal uses 1-hour steps (matching the booking grid)
+  const html1h = ADMIN_SLOTS.map(t => `<option value="${t}">${t}</option>`).join('');
+  if(document.getElementById('editTime')) document.getElementById('editTime').innerHTML = html1h;
 });
 </script>
 </body>
