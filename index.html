@@ -65,8 +65,18 @@ h1,h2,h3,h4,h5,h6{font-family:'Playfair Display',serif}
 @keyframes goldShimmer{0%,100%{filter:brightness(1) drop-shadow(0 4px 20px rgba(196,130,106,.15))}50%{filter:brightness(1.08) sepia(.12) saturate(1.8) hue-rotate(335deg) drop-shadow(0 8px 30px rgba(196,130,106,.3))}}
 @keyframes glowPulse{0%,100%{opacity:.4;transform:translateX(-50%) scale(1)}50%{opacity:.7;transform:translateX(-50%) scale(1.2)}}
 @keyframes logoPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
-/* Parallax scroll utilities */
-.parallax-text { transition: transform 0.1s ease-out, opacity 0.1s ease-out; }
+/* Preloader */
+@keyframes preloaderLine{0%{width:0}100%{width:100%}}
+@keyframes preloaderFadeUp{0%{opacity:0;transform:translateY(16px)}100%{opacity:1;transform:translateY(0)}}
+.preloader-line{position:relative;width:120px;height:1px;background:#E8DFD4;overflow:hidden;border-radius:1px}
+.preloader-line::after{content:'';position:absolute;left:0;top:0;height:100%;background:linear-gradient(90deg,#C4826A,#1C1410);animation:preloaderLine 2s ease-in-out infinite}
+.preloader-title{animation:preloaderFadeUp 0.6s ease-out forwards}
+.preloader-sub{animation:preloaderFadeUp 0.6s 0.15s ease-out forwards;opacity:0}
+/* Hands slide-in animation */
+.hand-left{opacity:0;transform:translateX(-80px);transition:opacity 1.2s cubic-bezier(.22,1,.36,1), transform 1.2s cubic-bezier(.22,1,.36,1)}
+.hand-left.visible{opacity:0.95;transform:translateX(0)}
+.hand-right{opacity:0;transform:translateX(80px);transition:opacity 1.2s cubic-bezier(.22,1,.36,1), transform 1.2s cubic-bezier(.22,1,.36,1);transition-delay:0.2s}
+.hand-right.visible{opacity:0.95;transform:translateX(0)}
 /* Section divider */
 .section-divider{padding:20px 0;margin:0;display:flex;justify-content:center}
 .section-divider::before{content:'';display:block;width:80%;max-width:500px;height:1px;background:linear-gradient(90deg,transparent,#C4826A40,transparent)}
@@ -190,14 +200,10 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
 <body class="overflow-x-hidden max-w-[100vw] overflow-hidden">
 
 <!-- PRELOADER -->
-<div id="preloader" class="fixed inset-0 z-[10000] bg-[#F5EFE8] flex flex-col items-center justify-center transition-opacity duration-700">
-  <div class="relative w-16 h-16 mb-6">
-    <!-- Spinning outer ring -->
-    <div class="absolute inset-0 rounded-full border-t-2 border-r-2 border-espresso opacity-70 animate-spin"></div>
-    <!-- Inner pulsing dot -->
-    <div class="absolute inset-0 m-auto w-3 h-3 bg-rose rounded-full animate-pulse"></div>
-  </div>
-  <div class="font-heading text-lg text-espresso tracking-[0.3em] uppercase opacity-80 animate-pulse">Beauty Glanz</div>
+<div id="preloader" class="fixed inset-0 z-[10000] bg-[#F5EFE8] flex flex-col items-center justify-center">
+  <div class="preloader-title font-heading text-3xl md:text-4xl text-espresso tracking-[0.15em] mb-2">Beauty <span class="text-rose italic">Glanz</span></div>
+  <div class="preloader-sub font-body text-xs text-espresso/40 tracking-[0.3em] uppercase mb-8">Nagelstudio & Kosmetik</div>
+  <div class="preloader-line"></div>
 </div>
 
 <!-- LANGUAGE SWITCHER -->
@@ -268,10 +274,10 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
 <section id="intro" class="py-24 md:py-32 bg-[#EDE5DA] relative z-20 overflow-hidden flex items-center">
   
   <!-- hands2.png (Left, top) -> Anchored to edge, scaled up for depth -->
-  <img src="hands2.png" alt="Hands 2" id="introImgLeft" class="absolute top-12 md:top-24 left-0 w-48 sm:w-64 md:w-80 lg:w-[400px] xl:w-[480px] object-contain object-left pointer-events-none mix-blend-multiply opacity-95 z-30">
+  <img src="hands2.png" alt="Hands 2" id="introImgLeft" class="hand-left absolute top-12 md:top-24 left-0 w-48 sm:w-64 md:w-80 lg:w-[400px] xl:w-[480px] object-contain object-left pointer-events-none mix-blend-multiply z-30">
   
   <!-- hands1.png (Right, bottom) -> Anchored to edge, scaled up for depth -->
-  <img src="hands1.png" alt="Hands 1" id="introImgRight" class="absolute bottom-12 md:bottom-24 right-0 w-48 sm:w-64 md:w-80 lg:w-[400px] xl:w-[480px] object-contain object-right pointer-events-none mix-blend-multiply opacity-95 z-30">
+  <img src="hands1.png" alt="Hands 1" id="introImgRight" class="hand-right absolute bottom-12 md:bottom-24 right-0 w-48 sm:w-64 md:w-80 lg:w-[400px] xl:w-[480px] object-contain object-right pointer-events-none mix-blend-multiply z-30">
 
   <div class="max-w-4xl mx-auto px-6 text-center relative z-10 py-12 md:py-0">
     <h2 id="introTitle" class="reveal font-heading text-4xl md:text-5xl lg:text-6xl text-rose mb-6 leading-snug" data-de="Schönheit, die von innen strahlt" data-ru="Красота, которая сияет изнутри" data-en="Beauty that radiates from within">Schönheit, die von innen strahlt</h2>
@@ -570,22 +576,47 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
   </div>
 </footer>
 
-<!-- Preloader logic runs FIRST, before any blocking CDN scripts -->
+<!-- Preloader logic: waits for key images then elegant fade out -->
 <script>
-function hidePreloader() {
-  var preloader = document.getElementById('preloader');
-  if (preloader) {
-    preloader.style.transition = 'opacity 0.7s';
-    preloader.style.opacity = '0';
+(function() {
+  var hidden = false;
+  var minTime = 1500; // minimum 1.5s display
+  var startTime = Date.now();
+
+  function hidePreloader() {
+    if (hidden) return;
+    hidden = true;
+    var elapsed = Date.now() - startTime;
+    var wait = Math.max(0, minTime - elapsed);
     setTimeout(function() {
-      preloader.style.display = 'none';
-      document.body.classList.remove('overflow-hidden');
-    }, 700);
+      var preloader = document.getElementById('preloader');
+      if (preloader) {
+        preloader.style.transition = 'opacity 0.8s cubic-bezier(.22,1,.36,1)';
+        preloader.style.opacity = '0';
+        setTimeout(function() {
+          preloader.style.display = 'none';
+          document.body.classList.remove('overflow-hidden');
+        }, 800);
+      }
+    }, wait);
   }
-}
-window.addEventListener('load', hidePreloader);
-document.addEventListener('DOMContentLoaded', function() { setTimeout(hidePreloader, 300); });
-setTimeout(hidePreloader, 2500);
+
+  // Wait for critical images
+  var criticalSrcs = ['flower.png', 'hands1.png', 'hands2.png', 'anna.png', 'logo_optimized.png'];
+  var loaded = 0;
+  var total = criticalSrcs.length;
+  criticalSrcs.forEach(function(src) {
+    var img = new Image();
+    img.onload = img.onerror = function() {
+      loaded++;
+      if (loaded >= total) hidePreloader();
+    };
+    img.src = src;
+  });
+
+  // Fallback: always hide after 4s max
+  setTimeout(hidePreloader, 4000);
+})();
 </script>
 
 
@@ -1601,7 +1632,7 @@ function initObserver(){
   const obs=new IntersectionObserver(entries=>{
     entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');obs.unobserve(entry.target)}});
   },{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
-  document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>obs.observe(el));
+  document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.hand-left,.hand-right').forEach(el=>obs.observe(el));
 }
 
 buildAccordion();buildGallery();buildReviews();buildFaq();buildServiceCards();initCalendar();initObserver();
@@ -1629,12 +1660,8 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Cinematic Parallax: elements sink downward and dissolve
+// Cinematic Parallax: only image + about section animate
 function initParallax() {
-  const subtitle = document.getElementById('heroSubtitle');
-  const title = document.getElementById('heroTitle');
-  const desc = document.getElementById('heroDesc');
-  const btn = document.getElementById('heroBtn');
   const img = document.getElementById('heroImg');
   const aboutWrap = document.getElementById('aboutPhotoWrap');
 
@@ -1642,30 +1669,22 @@ function initParallax() {
   if(aboutWrap) { aboutWrap.style.willChange = 'transform'; }
 
   const updateParallax = (scrollY) => {
-    const ease = (v) => v * v;
-
-    // --- HERO SECTION PARALLAX ---
-    if (scrollY <= 1200) {
-      if(subtitle) subtitle.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
-      if(title) title.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
-      if(desc) desc.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
-      if(btn) btn.style.transform = `translate3d(0, ${scrollY * 0.3}px, 0)`;
-      if(img) {
-        img.style.transformOrigin = 'center';
-        const imgScale = 1 + scrollY * 0.0005;
-        img.style.transform = `translate3d(0, ${scrollY * 0.45}px, 0) scale(${imgScale})`;
-      }
+    // Image parallax
+    if (scrollY <= 1200 && img) {
+      img.style.transformOrigin = 'center';
+      const imgScale = 1 + scrollY * 0.0005;
+      img.style.transform = `translate3d(0, ${scrollY * 0.45}px, 0) scale(${imgScale})`;
     }
 
-    // --- ABOUT SECTION PARALLAX ---
+    // About section parallax
     if (aboutWrap) {
       const rect = aboutWrap.getBoundingClientRect();
       const winH = window.innerHeight;
       const progress = Math.max(0, Math.min(1, (winH - rect.top) / (winH + rect.height)));
       const fadeStart = 0.55;
       const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
-      const translateY = fadeProgress * 140; 
-      const scale = 1 - fadeProgress * 0.04; 
+      const translateY = fadeProgress * 140;
+      const scale = 1 - fadeProgress * 0.04;
       aboutWrap.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
       aboutWrap.style.transition = 'none';
     }
@@ -1674,8 +1693,7 @@ function initParallax() {
   lenis.on('scroll', (e) => {
     updateParallax(e.scroll || window.scrollY);
   });
-  
-  // Also run once on init to set initial state
+
   updateParallax(window.scrollY);
 }
 initParallax();

@@ -14,6 +14,53 @@
   .status-confirmed { background: #D1FAE5; color: #065F46; }
   .status-cancelled { background: #FEE2E2; color: #991B1B; }
   .status-rescheduled { background: #F3E8FF; color: #6B21A8; }
+
+  /* Date input styling — clean look on all browsers */
+  input[type="date"] {
+    min-height: 40px;
+    color: #374151;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+  }
+
+  /* Responsive booking cards for mobile */
+  @media (max-width: 639px) {
+    .bookings-table-wrap { display: none !important; }
+    .bookings-cards-wrap { display: block !important; }
+  }
+  @media (min-width: 640px) {
+    .bookings-cards-wrap { display: none !important; }
+  }
+  .booking-card {
+    background: #fff;
+    border-radius: 18px;
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid #f1f5f9;
+  }
+  .booking-card-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .booking-card-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #f1f5f9;
+  }
+  .booking-card-actions button {
+    flex: 1;
+    min-width: 80px;
+  }
 </style>
 </head>
 <body class="min-h-screen">
@@ -94,9 +141,8 @@
           <button onclick="filterStatus('cancelled')" id="filter-cancelled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-gray-600 hover:bg-gray-100" data-de="Storniert" data-ru="Отменены" data-en="Cancelled">Storniert</button>
           <button onclick="filterStatus('rescheduled')" id="filter-rescheduled" class="filter-btn px-4 py-2 rounded-full text-sm font-medium bg-white text-purple-600 hover:bg-purple-50 border border-purple-200" data-de="Verschoben" data-ru="Перенесенные" data-en="Rescheduled">Перенесенные</button>
         </div>
-        <div class="flex gap-2 items-center ml-auto">
-          <input type="date" id="dateFilter" onchange="renderTable()" class="px-3 py-1.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-[#C4826A]">
-          <button onclick="document.getElementById('dateFilter').value=''; renderTable()" class="px-3 py-1.5 rounded-full text-sm font-medium bg-white text-gray-400 hover:bg-gray-100 border border-gray-200">✕</button>
+        <div class="flex gap-2 items-center ml-auto flex-wrap">
+          <input type="hidden" id="dateFilter" value="">
           <button onclick="loadBookings()" class="px-4 py-2 rounded-full text-sm font-medium bg-[#C4826A] text-white hover:bg-[#a8694f]" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻ Обновить</button>
         </div>
       </div>
@@ -104,13 +150,14 @@
       <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
         <div id="loadingState" class="p-12 text-center text-gray-400" data-de="Laden..." data-ru="Загрузка..." data-en="Loading...">Laden...</div>
         <div id="emptyState" class="p-12 text-center text-gray-400 hidden" data-de="Keine Buchungen gefunden" data-ru="Записи не найдены" data-en="No bookings found">Keine Buchungen gefunden</div>
-        <div class="overflow-x-auto">
-          <table id="bookingsTable" class="w-full hidden whitespace-nowrap">
+        <!-- Desktop table -->
+        <div class="bookings-table-wrap overflow-x-hidden">
+          <table id="bookingsTable" class="w-full hidden">
             <thead class="bg-gray-50 border-b border-gray-100">
               <tr>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kunde" data-ru="Клиент" data-en="Client">Kunde</th>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Behandlung" data-ru="Услуга" data-en="Service">Behandlung</th>
-                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Datum & Zeit" data-ru="Дата и время" data-en="Date & Time">Datum & Zeit</th>
+                <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Datum &amp; Zeit" data-ru="Дата и время" data-en="Date &amp; Time">Datum &amp; Zeit</th>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Status" data-ru="Статус" data-en="Status">Status</th>
                 <th class="text-left px-5 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Aktionen" data-ru="Действия" data-en="Actions">Aktionen</th>
               </tr>
@@ -118,6 +165,8 @@
             <tbody id="bookingsBody"></tbody>
           </table>
         </div>
+        <!-- Mobile cards -->
+        <div class="bookings-cards-wrap hidden" id="bookingsCards"></div>
       </div>
     </div> <!-- /viewBuchungen -->
 
@@ -180,9 +229,9 @@
               <div class="flex-1">
                 <label class="block text-[10px] sm:text-xs font-semibold text-gray-400 uppercase tracking-widest mb-2" data-de="Ausgewählte Daten" data-ru="Даты" data-en="Dates">Даты</label>
                 <div class="flex items-center gap-2 bg-gray-50 p-1.5 rounded-2xl border border-gray-100">
-                  <input type="date" id="massDateFrom" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                  <input type="date" id="massDateFrom" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5 flex-1">
                   <span class="text-gray-300 px-1">—</span>
-                  <input type="date" id="massDateTo" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5">
+                  <input type="date" id="massDateTo" class="bg-transparent border-none text-sm font-semibold outline-none px-3 w-full text-gray-700 cursor-pointer rounded-xl hover:bg-white focus:bg-white transition-colors py-2.5 flex-1">
                 </div>
               </div>
             </div>
@@ -230,6 +279,12 @@
                 <button onclick="commitSlotSelection()" id="slotActionConfirmBtn" class="flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-bold transition-colors shadow-sm text-sm"></button>
                 <button onclick="cancelSlotSelection()" class="flex-1 sm:flex-none px-6 py-2.5 bg-white border border-gray-200 text-gray-600 font-bold rounded-xl hover:bg-gray-50 transition-colors shadow-sm text-sm" data-de="Abbrechen" data-ru="Отмена" data-en="Cancel">Abbrechen</button>
               </div>
+            </div>
+
+            <!-- DAY BOOKINGS LIST -->
+            <div id="adminDayBookings" class="hidden mt-6 pt-6 border-t border-gray-100">
+              <h4 class="font-bold text-sm text-[#1C1410] uppercase tracking-wide mb-4" data-de="Buchungen an diesem Tag" data-ru="Записи на этот день" data-en="Bookings on this day">Записи на этот день</h4>
+              <div id="adminDayBookingsList"></div>
             </div>
 
           </div>
@@ -503,17 +558,20 @@ function renderTable() {
   if (filtered.length === 0) {
     document.getElementById('emptyState').classList.remove('hidden');
     document.getElementById('bookingsTable').classList.add('hidden');
+    const cardsEl = document.getElementById('bookingsCards');
+    if (cardsEl) cardsEl.innerHTML = '';
     return;
   }
   document.getElementById('emptyState').classList.add('hidden');
   document.getElementById('bookingsTable').classList.remove('hidden');
   
   const locDict = tDict.statusLabels;
+  const locale = currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US');
 
+  // ── Desktop table rows ──────────────────────────────────
   document.getElementById('bookingsBody').innerHTML = filtered.map(b => {
-    let dateStr = new Date(b.date).toLocaleDateString(currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US'), { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
-    let createdStr = new Date(b.created_at).toLocaleDateString(currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US'), { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
-    
+    let dateStr = new Date(b.date).toLocaleDateString(locale, { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+    let createdStr = new Date(b.created_at).toLocaleDateString(locale, { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
     const t = (b.time || '').substring(0,5);
     const badgeText = locDict[b.status]?.[currentAdminLang] || b.status;
     
@@ -551,6 +609,48 @@ function renderTable() {
       </td>
     </tr>`;
   }).join('');
+
+  // ── Mobile cards ──────────────────────────────────────────
+  const cardsEl = document.getElementById('bookingsCards');
+  if (cardsEl) {
+    cardsEl.innerHTML = filtered.map(b => {
+      let dateStr = new Date(b.date).toLocaleDateString(locale, { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' });
+      const t = (b.time || '').substring(0,5);
+      const badgeText = locDict[b.status]?.[currentAdminLang] || b.status;
+      const notesClean = (b.notes || '').replace(/\[DUR=\d+\]\s*/, '');
+
+      return `<div class="booking-card">
+        <div class="booking-card-row">
+          <div>
+            <div class="font-semibold text-sm text-gray-900">${b.name}</div>
+            <div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A]">${b.phone}</a></div>
+            <div class="text-xs text-gray-400"><a href="mailto:${b.email}" class="hover:text-[#C4826A] break-all">${b.email}</a></div>
+          </div>
+          <span class="px-2.5 py-1 rounded-full text-xs font-semibold status-${b.status} whitespace-nowrap">${badgeText}</span>
+        </div>
+        <div class="mt-3 pt-3 border-t border-gray-50">
+          <div class="text-sm font-medium text-gray-800">${b.service}</div>
+          ${notesClean ? `<div class="text-xs text-gray-500 mt-1 italic border-l-2 border-gray-200 pl-2">"${notesClean}"</div>` : ''}
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-xs font-bold text-[#C4826A]">📅 ${dateStr}</span>
+            <span class="text-xs font-bold text-[#1C1410] bg-gray-100 px-2 py-0.5 rounded-full">⏰ ${t}</span>
+          </div>
+        </div>
+        <div class="booking-card-actions">
+          ${b.status !== 'confirmed' ? `<button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-2 bg-green-50 text-green-700 rounded-xl text-xs font-semibold hover:bg-green-100 transition-all">${tDict.btnConfirm[currentAdminLang]}</button>` : ''}
+          ${b.status === 'rescheduled' ? `<button onclick="updateStatus('${b.id}','pending')" class="px-3 py-2 bg-yellow-50 text-yellow-700 rounded-xl text-xs font-semibold hover:bg-yellow-100 transition-all">${tDict.btnRestore[currentAdminLang]}</button>` : ''}
+          <button onclick="openEditModal('${b.id}', '${b.date}', '${t}')" class="px-3 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-blue-50 hover:text-blue-600 transition-all">${tDict.btnEdit[currentAdminLang]}</button>
+          ${b.status !== 'cancelled' ? `
+          <button onclick="updateStatus('${b.id}','cancelled')" class="p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all" title="${tDict.btnCancel[currentAdminLang]}">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>` : `
+          <button onclick="deleteBookingPermanently('${b.id}')" class="p-2 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-xl transition-all" title="Dauerhaft löschen">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>`}
+        </div>
+      </div>`;
+    }).join('');
+  }
 }
 
 async function freeManualSlots(booking) {
@@ -1143,6 +1243,53 @@ function renderAdminSlots(dateStr) {
       <div class="text-[9px] sm:text-[10px] uppercase tracking-wide font-bold ${subOp} pointer-events-none">${sub}</div>
     </div>`;
   });
+
+  // Render bookings for this day below slots
+  renderDayBookings(dateStr);
+}
+
+// ==== DAY BOOKINGS IN CALENDAR ====
+function renderDayBookings(dateStr) {
+  const container = document.getElementById('adminDayBookings');
+  const list = document.getElementById('adminDayBookingsList');
+  if (!container || !list) return;
+
+  const dayBookings = allBookings.filter(b => b.date === dateStr && b.status !== 'cancelled');
+  
+  if (dayBookings.length === 0) {
+    container.classList.add('hidden');
+    return;
+  }
+
+  container.classList.remove('hidden');
+  const locDict = tDict.statusLabels;
+  const locale = currentAdminLang === 'de' ? 'de-DE' : (currentAdminLang === 'ru' ? 'ru-RU' : 'en-US');
+
+  list.innerHTML = dayBookings.map(b => {
+    const t = (b.time || '').substring(0,5);
+    const badgeText = locDict[b.status]?.[currentAdminLang] || b.status;
+    const notesClean = (b.notes || '').replace(/\[DUR=\d+\]\s*/, '');
+
+    return `<div class="flex flex-col sm:flex-row sm:items-center gap-3 p-4 mb-3 bg-gray-50 rounded-2xl border border-gray-100 hover:bg-gray-100/70 transition-colors">
+      <div class="flex-1 min-w-0">
+        <div class="flex items-center gap-2 flex-wrap">
+          <span class="font-bold text-sm text-[#1C1410]">${t}</span>
+          <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold status-${b.status}">${badgeText}</span>
+        </div>
+        <div class="font-semibold text-sm text-gray-800 mt-1">${b.name}</div>
+        <div class="text-xs text-gray-500 mt-0.5">${b.service}</div>
+        ${b.phone ? `<div class="text-xs text-gray-400 mt-0.5"><a href="tel:${b.phone}" class="hover:text-[#C4826A]">${b.phone}</a></div>` : ''}
+        ${notesClean ? `<div class="text-xs text-gray-400 mt-0.5 italic">"${notesClean}"</div>` : ''}
+      </div>
+      <div class="flex gap-2 flex-wrap flex-shrink-0">
+        ${b.status !== 'confirmed' ? `<button onclick="updateStatus('${b.id}','confirmed')" class="px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-xs font-semibold hover:bg-green-100 transition-all shadow-sm">${tDict.btnConfirm[currentAdminLang]}</button>` : ''}
+        <button onclick="openEditModal('${b.id}', '${b.date}', '${t}')" class="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-xs font-bold hover:bg-blue-50 hover:text-blue-600 transition-all shadow-sm">${tDict.btnEdit[currentAdminLang]}</button>
+        <button onclick="updateStatus('${b.id}','cancelled')" class="p-1.5 text-gray-400 hover:bg-red-50 hover:text-red-500 rounded-lg transition-all" title="${tDict.btnCancel[currentAdminLang]}">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+        </button>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ==== MASS ACTIONS & RANGE ====
