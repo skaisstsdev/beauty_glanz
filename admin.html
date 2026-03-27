@@ -2,7 +2,7 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Admin — Beauty Glanz</title>
 <link rel="icon" href="logo_optimized.png" type="image/png">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -312,7 +312,7 @@
         <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Behandlung *" data-ru="Услуга *" data-en="Service *">Услуга *</label>
         <input type="text" id="createService" placeholder="Z.b. Wimpernverlängerung" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
       </div>
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1">
           <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Datum" data-ru="Дата" data-en="Date">Дата</label>
           <input type="date" id="createDate" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none text-gray-700">
@@ -326,7 +326,7 @@
           <select id="createDuration" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all bg-white cursor-pointer"></select>
         </div>
       </div>
-      <div class="flex gap-4">
+      <div class="flex flex-col sm:flex-row gap-4">
         <div class="flex-1">
           <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Telefon" data-ru="Телефон" data-en="Phone">Телефон</label>
           <input type="tel" id="createPhone" class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] focus:ring-1 focus:ring-[#C4826A] transition-all">
