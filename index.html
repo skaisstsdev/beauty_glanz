@@ -1666,20 +1666,23 @@ function initParallax() {
   const img = document.getElementById('heroImg');
   const aboutWrap = document.getElementById('aboutPhotoWrap');
 
-  if(img) { img.style.willChange = 'transform'; }
+  if(img) { 
+    img.style.willChange = 'transform'; 
+    img.style.transformOrigin = 'center';
+  }
   if(aboutWrap) { aboutWrap.style.willChange = 'transform'; }
 
   const updateParallax = (scrollY) => {
     // Image parallax
-    if (scrollY <= 1200 && img) {
-      img.style.transformOrigin = 'center';
-      const imgScale = 1 + scrollY * 0.0005;
-      img.style.transform = `translate3d(0, ${scrollY * 0.45}px, 0) scale(${imgScale})`;
+    if (img) {
+      const pScroll = Math.max(0, Math.min(scrollY, 1200));
+      const imgScale = 1 + pScroll * 0.0005;
+      img.style.transform = `translate3d(0, ${pScroll * 0.45}px, 0) scale(${imgScale})`;
     }
 
     // About section parallax
-    if (aboutWrap) {
-      const rect = aboutWrap.getBoundingClientRect();
+    if (aboutWrap && aboutWrap.parentElement) {
+      const rect = aboutWrap.parentElement.getBoundingClientRect();
       const winH = window.innerHeight;
       const progress = Math.max(0, Math.min(1, (winH - rect.top) / (winH + rect.height)));
       const fadeStart = 0.55;
@@ -1692,7 +1695,8 @@ function initParallax() {
   };
 
   lenis.on('scroll', (e) => {
-    updateParallax(e.scroll || window.scrollY);
+    const s = e.scroll !== undefined ? e.scroll : window.scrollY;
+    updateParallax(s);
   });
 
   updateParallax(window.scrollY);
