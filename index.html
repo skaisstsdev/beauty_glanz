@@ -6,6 +6,12 @@
 <title>Beauty Glanz — Nagelstudio & Kosmetik von Meisterin Anna</title>
 <link rel="icon" href="logo_optimized.png" type="image/png">
 <meta name="description" content="Beauty Glanz — Professionelle Maniküre, Pediküre, Waxing, Permanent Make-up und mehr von Meisterin Anna.">
+<!-- Critical Image Preloads for Instant Performance -->
+<link rel="preload" as="image" href="flower.png">
+<link rel="preload" as="image" href="anna.png">
+<link rel="preload" as="image" href="logo_optimized.png">
+<link rel="preload" as="image" href="hands1.png">
+<link rel="preload" as="image" href="hands2.png">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://unpkg.com/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
@@ -309,16 +315,10 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
       
       <!-- Animated Lines UNDER Anna's Photo -->
       <div class="absolute bottom-0 w-[150%] md:w-[120%] h-[55vh] sm:h-[70vh] md:h-[95vh] -z-10 flex items-end justify-center pointer-events-none opacity-80 left-1/2 -translate-x-1/2">
-        <svg class="w-full h-full object-cover min-w-[800px]" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M-100 600 C300 800 600 200 1000 400 C1300 550 1500 300 1600 400" stroke="url(#lineGrad1)" stroke-width="2" stroke-linecap="round">
-            <animate attributeName="d" dur="15s" repeatCount="indefinite" values="M-100 600 C300 800 600 200 1000 400 C1300 550 1500 300 1600 400;M-100 500 C400 700 500 300 1100 300 C1400 300 1500 400 1600 500;M-100 600 C300 800 600 200 1000 400 C1300 550 1500 300 1600 400"/>
-          </path>
-          <path d="M-50 400 C200 200 800 700 1200 300 C1400 100 1500 200 1600 250" stroke="url(#lineGrad2)" stroke-width="1" stroke-linecap="round" opacity="0.8">
-            <animate attributeName="d" dur="20s" repeatCount="indefinite" values="M-50 400 C200 200 800 700 1200 300 C1400 100 1500 200 1600 250;M-50 300 C300 150 700 800 1100 400 C1300 150 1500 150 1600 200;M-50 400 C200 200 800 700 1200 300 C1400 100 1500 200 1600 250"/>
-          </path>
-          <path d="M0 700 C400 500 700 600 1000 200 C1200 -50 1400 100 1550 300" stroke="url(#lineGrad3)" stroke-width="3" stroke-linecap="round" opacity="0.6">
-            <animate attributeName="d" dur="18s" repeatCount="indefinite" values="M0 700 C400 500 700 600 1000 200 C1200 -50 1400 100 1550 300;M0 600 C500 400 600 700 1100 300 C1300 0 1450 150 1550 200;M0 700 C400 500 700 600 1000 200 C1200 -50 1400 100 1550 300"/>
-          </path>
+        <svg class="w-full h-full object-cover min-w-[800px] animate-pulse" style="animation-duration: 4s;" viewBox="0 0 1440 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M-100 600 C300 800 600 200 1000 400 C1300 550 1500 300 1600 400" stroke="url(#lineGrad1)" stroke-width="2" stroke-linecap="round" />
+          <path d="M-50 400 C200 200 800 700 1200 300 C1400 100 1500 200 1600 250" stroke="url(#lineGrad2)" stroke-width="1" stroke-linecap="round" opacity="0.8" />
+          <path d="M0 700 C400 500 700 600 1000 200 C1200 -50 1400 100 1550 300" stroke="url(#lineGrad3)" stroke-width="3" stroke-linecap="round" opacity="0.6" />
           <defs>
             <linearGradient id="lineGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
               <stop offset="0%" stop-color="#C4826A" stop-opacity="0.1"/>
@@ -339,7 +339,7 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
         </svg>
       </div>
 
-      <img src="anna.png" alt="Anna" loading="lazy" class="reveal relative z-10 w-auto h-[50vh] sm:h-[65vh] md:h-[85vh] object-contain object-bottom pointer-events-none origin-bottom hover:scale-105 transition-transform duration-700">
+      <img src="anna.png" alt="Anna" fetchpriority="high" class="reveal relative z-10 w-auto h-[50vh] sm:h-[65vh] md:h-[85vh] object-contain object-bottom pointer-events-none origin-bottom hover:scale-105 transition-transform duration-700">
     </div>
   </div>
 </section>
@@ -592,11 +592,12 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
     setTimeout(function() {
       var preloader = document.getElementById('preloader');
       if (preloader) {
+        // Remove overflow block immediately before fading out to prevent layout thrashing clash
+        document.body.classList.remove('overflow-hidden');
         preloader.style.transition = 'opacity 0.8s cubic-bezier(.22,1,.36,1)';
         preloader.style.opacity = '0';
         setTimeout(function() {
           preloader.style.display = 'none';
-          document.body.classList.remove('overflow-hidden');
         }, 800);
       }
     }, wait);
