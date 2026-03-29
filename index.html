@@ -1661,20 +1661,24 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Cinematic Parallax (Optimized to fix jerking and layout thrashing)
+// Cinematic Parallax (Max Performance & Zero Stutter)
 function initParallax() {
   const img = document.getElementById('heroImg');
   const aboutWrap = document.getElementById('aboutPhotoWrap');
 
-  if(img) {
+  // Only apply safe GPU hints. 
+  // We remove 'preserve-3d' and 'backface-visibility' as they severely lag SVG and other CSS animations!
+  if (img) {
     img.style.willChange = 'transform';
     img.style.transformOrigin = 'center';
   }
-  if(aboutWrap) {
-    aboutWrap.style.willChange = 'transform';
+  
+  if (aboutWrap) {
+    // Ensuring no CSS transitions fight with Javascript during scroll
+    aboutWrap.style.transition = 'none';
   }
 
-  // Cache absolute layout positions to prevent layout thrashing inside scroll event
+  // Pre-calculate positions to prevent "Layout Thrashing" (dropping FPS)
   let aboutParentTop = 0;
   let aboutParentHeight = 0;
   let winH = window.innerHeight;
@@ -1688,24 +1692,32 @@ function initParallax() {
     }
   }
 
-  // Delay cache to ensure DOM and CSS are fully painted
+  // Delay cache so DOM paints fully, then listen to window resizes
   setTimeout(cacheDimensions, 100);
   window.addEventListener('resize', cacheDimensions);
 
+  let lastScroll = -9999;
+
   function render() {
+    // Hook into Lenis perfectly
     const currentScroll = lenis.scroll !== undefined ? lenis.scroll : window.scrollY;
+
+    // Prevent redundant style recalculations (saves lots of CPU)
+    if (Math.abs(currentScroll - lastScroll) < 0.1) return;
+    lastScroll = currentScroll;
 
     // Image parallax
     if (img) {
-      // Allow negative values for smooth Mac bounce effect, but clamp at 1200 max.
-      const pScroll = Math.min(currentScroll, 1200);
-      const imgScale = 1 + pScroll * 0.0005;
-      img.style.transform = `translate3d(0, ${pScroll * 0.45}px, 0) scale(${imgScale})`;
+      // Removing the 1200 clamp completely, letting math flow smoothly without abrupt velocity jumps
+      const y = currentScroll * 0.45;
+      const scale = 1 + currentScroll * 0.0005;
+      
+      // Using translateY and rounding prevents browser fractional rendering jitters natively 
+      img.style.transform = `translateY(${y.toFixed(2)}px) scale(${scale.toFixed(4)})`;
     }
 
     // About section parallax
     if (aboutWrap) {
-      // Use cached variables and pure math instead of getBoundingClientRect()
       const rectTop = aboutParentTop - currentScroll;
       const progress = Math.max(0, Math.min(1, (winH - rectTop) / (winH + aboutParentHeight)));
       
@@ -1714,10 +1726,11 @@ function initParallax() {
       const translateY = fadeProgress * 140;
       const scale = 1 - fadeProgress * 0.04;
       
-      aboutWrap.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
+      aboutWrap.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${scale.toFixed(4)})`;
     }
   }
 
+  // Bind to Lenis event purely
   lenis.on('scroll', render);
   render();
 }
