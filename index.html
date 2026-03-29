@@ -1661,45 +1661,65 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// Cinematic Parallax: only image + about section animate
+// Cinematic Parallax (Optimized to fix jerking and layout thrashing)
 function initParallax() {
   const img = document.getElementById('heroImg');
   const aboutWrap = document.getElementById('aboutPhotoWrap');
 
-  if(img) { 
-    img.style.willChange = 'transform'; 
+  if(img) {
+    img.style.willChange = 'transform';
     img.style.transformOrigin = 'center';
   }
-  if(aboutWrap) { aboutWrap.style.willChange = 'transform'; }
+  if(aboutWrap) {
+    aboutWrap.style.willChange = 'transform';
+  }
 
-  const updateParallax = (scrollY) => {
+  // Cache absolute layout positions to prevent layout thrashing inside scroll event
+  let aboutParentTop = 0;
+  let aboutParentHeight = 0;
+  let winH = window.innerHeight;
+
+  function cacheDimensions() {
+    winH = window.innerHeight;
+    if (aboutWrap && aboutWrap.parentElement) {
+      const rect = aboutWrap.parentElement.getBoundingClientRect();
+      aboutParentTop = rect.top + window.scrollY;
+      aboutParentHeight = rect.height;
+    }
+  }
+
+  // Delay cache to ensure DOM and CSS are fully painted
+  setTimeout(cacheDimensions, 100);
+  window.addEventListener('resize', cacheDimensions);
+
+  function render() {
+    const currentScroll = lenis.scroll !== undefined ? lenis.scroll : window.scrollY;
+
     // Image parallax
     if (img) {
-      const pScroll = Math.max(0, Math.min(scrollY, 1200));
+      // Allow negative values for smooth Mac bounce effect, but clamp at 1200 max.
+      const pScroll = Math.min(currentScroll, 1200);
       const imgScale = 1 + pScroll * 0.0005;
       img.style.transform = `translate3d(0, ${pScroll * 0.45}px, 0) scale(${imgScale})`;
     }
 
     // About section parallax
-    if (aboutWrap && aboutWrap.parentElement) {
-      const rect = aboutWrap.parentElement.getBoundingClientRect();
-      const winH = window.innerHeight;
-      const progress = Math.max(0, Math.min(1, (winH - rect.top) / (winH + rect.height)));
+    if (aboutWrap) {
+      // Use cached variables and pure math instead of getBoundingClientRect()
+      const rectTop = aboutParentTop - currentScroll;
+      const progress = Math.max(0, Math.min(1, (winH - rectTop) / (winH + aboutParentHeight)));
+      
       const fadeStart = 0.55;
       const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
       const translateY = fadeProgress * 140;
       const scale = 1 - fadeProgress * 0.04;
+      
       aboutWrap.style.transform = `translate3d(0, ${translateY}px, 0) scale(${scale})`;
-      aboutWrap.style.transition = 'none';
     }
-  };
+  }
 
-  lenis.on('scroll', (e) => {
-    const s = e.scroll !== undefined ? e.scroll : window.scrollY;
-    updateParallax(s);
-  });
-
-  updateParallax(window.scrollY);
+  lenis.on('scroll', render);
+  render();
 }
 initParallax();
 
