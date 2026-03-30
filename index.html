@@ -1707,14 +1707,17 @@ function initParallax() {
     if (Math.abs(currentScroll - lastScroll) < 0.1) return;
     lastScroll = currentScroll;
 
-    // Image parallax
+    // Image parallax (Hero)
     if (img) {
-      // Removing the 1200 clamp completely, letting math flow smoothly without abrupt velocity jumps
-      const y = currentScroll * 0.45;
-      const scale = 1 + currentScroll * 0.0005;
-      
-      // Using translateY and rounding prevents browser fractional rendering jitters natively 
-      img.style.transform = `translateY(${y.toFixed(2)}px) scale(${scale.toFixed(4)})`;
+      if (window.innerWidth >= 768) {
+        // Desktop: Keep JS Parallax exactly as is
+        const y = currentScroll * 0.45;
+        const scale = 1 + currentScroll * 0.0005;
+        img.style.transform = `translateY(${y.toFixed(2)}px) scale(${scale.toFixed(4)})`;
+      } else {
+        // Mobile: Disable scroll parallax, static fake depth via scale
+        img.style.transform = `scale(1.1) translate3d(0,0,0)`;
+      }
     }
 
     // About section parallax
