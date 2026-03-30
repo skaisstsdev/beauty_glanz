@@ -1716,7 +1716,7 @@ function initParallax() {
         img.style.transform = `translateY(${y.toFixed(2)}px) scale(${scale.toFixed(4)})`;
       } else {
         // Mobile: Very subtle parallax shift (a few millimeters), no scale
-        const y = currentScroll * 0.08;
+        const y = currentScroll * 0.05;
         img.style.transform = `translateY(${y.toFixed(2)}px)`;
       }
     }
