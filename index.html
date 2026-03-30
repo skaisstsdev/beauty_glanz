@@ -270,7 +270,7 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
       <a href="#booking" class="reveal stagger-3 cta-btn inline-block border-2 border-espresso text-espresso font-body font-bold text-sm tracking-widest uppercase px-8 py-3.5 rounded-full mt-10 md:mt-4 parallax-text" id="heroBtn" data-de="Termin vereinbaren" data-ru="Записаться на приём" data-en="Book appointment">Termin vereinbaren</a>
     </div>
     <!-- Flower image: overlaps text, top layer -->
-    <div class="reveal -mt-8 sm:-mt-12 md:mt-0 md:-ml-32 -mr-12 sm:-mr-16 md:-mr-40 relative z-[5] flex justify-end pointer-events-none">
+    <div class="reveal -mt-8 sm:-mt-12 md:mt-0 md:-ml-32 -mr-12 sm:-mr-16 md:-mr-40 relative z-20 flex justify-end pointer-events-none">
       <img src="flower.png" alt="Flower decoration" id="heroImg" class="w-[85vw] max-w-[420px] md:w-[620px] md:max-w-none h-auto object-contain">
     </div>
   </div>
@@ -1715,22 +1715,35 @@ function initParallax() {
         const scale = 1 + currentScroll * 0.0005;
         img.style.transform = `translateY(${y.toFixed(2)}px) scale(${scale.toFixed(4)})`;
       } else {
-        // Mobile: Disable scroll parallax, static fake depth via scale
-        img.style.transform = `scale(1.1) translate3d(0,0,0)`;
+        // Mobile: Very subtle parallax shift (a few millimeters), no scale
+        const y = currentScroll * 0.08;
+        img.style.transform = `translateY(${y.toFixed(2)}px)`;
       }
     }
 
     // About section parallax
     if (aboutWrap) {
-      const rectTop = aboutParentTop - currentScroll;
-      const progress = Math.max(0, Math.min(1, (winH - rectTop) / (winH + aboutParentHeight)));
-      
-      const fadeStart = 0.55;
-      const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
-      const translateY = fadeProgress * 140;
-      const scale = 1 - fadeProgress * 0.04;
-      
-      aboutWrap.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${scale.toFixed(4)})`;
+      if (window.innerWidth >= 768) {
+        const rectTop = aboutParentTop - currentScroll;
+        const progress = Math.max(0, Math.min(1, (winH - rectTop) / (winH + aboutParentHeight)));
+        
+        const fadeStart = 0.55;
+        const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
+        const translateY = fadeProgress * 140;
+        const scale = 1 - fadeProgress * 0.04;
+        
+        aboutWrap.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${scale.toFixed(4)})`;
+      } else {
+        // Mobile: Very subtle parallax for Anna's photo
+        const rectTop = aboutParentTop - currentScroll;
+        const progress = Math.max(0, Math.min(1, (winH - rectTop) / (winH + aboutParentHeight)));
+        const fadeStart = 0.55;
+        const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
+        
+        // Max 30px shift instead of 140px, no scale
+        const translateY = fadeProgress * 30;
+        aboutWrap.style.transform = `translateY(${translateY.toFixed(2)}px)`;
+      }
     }
   }
 
