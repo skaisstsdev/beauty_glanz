@@ -263,14 +263,14 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
 <section class="min-h-screen flex items-center pt-20 pb-0 relative overflow-hidden">
   <div class="max-w-7xl mx-auto px-3 md:px-6 w-full grid md:grid-cols-[1fr_auto] gap-0 items-center relative">
     <!-- Text column -->
-    <div class="relative z-10 space-y-6 md:space-y-4 order-2 md:order-1">
+    <div class="relative z-10 space-y-6 md:space-y-4">
       <p class="reveal font-body text-rose tracking-[0.2em] uppercase text-sm font-bold mb-4 md:mb-0 parallax-text" id="heroSubtitle" data-de="Nagelstudio & Kosmetik" data-ru="Ногтевая студия и косметология" data-en="Nail Studio & Beauty">Nagelstudio & Kosmetik</p>
       <h1 class="reveal stagger-1 font-heading text-[24vw] sm:text-[10rem] md:text-[16rem] leading-[0.85] text-espresso -mt-2 parallax-text" id="heroTitle">Beauty<br><span class="text-rose italic">Glanz</span></h1>
       <p class="reveal stagger-2 font-body text-espresso/70 text-base max-w-md leading-relaxed mt-8 md:mt-0 parallax-text" id="heroDesc" data-de="Professionelle Schönheitspflege von Meisterin Anna — Ihr Weg zu natürlicher Eleganz und zeitloser Schönheit." data-ru="Профессиональный уход за красотой от мастера Анны — ваш путь к натуральной элегантности и вневременной красоте." data-en="Professional beauty care by master Anna — your path to natural elegance and timeless beauty.">Professionelle Schönheitspflege von Meisterin Anna — Ihr Weg zu natürlicher Eleganz und zeitloser Schönheit.</p>
       <a href="#booking" class="reveal stagger-3 cta-btn inline-block border-2 border-espresso text-espresso font-body font-bold text-sm tracking-widest uppercase px-8 py-3.5 rounded-full mt-10 md:mt-4 parallax-text" id="heroBtn" data-de="Termin vereinbaren" data-ru="Записаться на приём" data-en="Book appointment">Termin vereinbaren</a>
     </div>
     <!-- Flower image: overlaps text, top layer -->
-    <div class="reveal -mt-8 sm:-mt-12 md:mt-0 md:-ml-32 -mr-12 sm:-mr-16 md:-mr-40 relative z-[5] flex justify-end pointer-events-none order-1 md:order-2">
+    <div class="reveal -mt-8 sm:-mt-12 md:mt-0 md:-ml-32 -mr-12 sm:-mr-16 md:-mr-40 relative z-[5] flex justify-end pointer-events-none">
       <img src="flower.png" alt="Flower decoration" id="heroImg" class="w-[85vw] max-w-[420px] md:w-[620px] md:max-w-none h-auto object-contain">
     </div>
   </div>
@@ -1722,21 +1722,15 @@ function initParallax() {
 
     // About section parallax
     if (aboutWrap) {
-      if (window.innerWidth >= 768) {
-        // Desktop: Keep JS Parallax exactly as is
-        const rectTop = aboutParentTop - currentScroll;
-        const progress = Math.max(0, Math.min(1, (winH - rectTop) / (winH + aboutParentHeight)));
-        
-        const fadeStart = 0.55;
-        const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
-        const translateY = fadeProgress * 140;
-        const scale = 1 - fadeProgress * 0.04;
-        
-        aboutWrap.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${scale.toFixed(4)})`;
-      } else {
-        // Mobile: Disable scroll parallax, static fake depth via scale
-        aboutWrap.style.transform = `scale(1.1) translate3d(0,0,0)`;
-      }
+      const rectTop = aboutParentTop - currentScroll;
+      const progress = Math.max(0, Math.min(1, (winH - rectTop) / (winH + aboutParentHeight)));
+      
+      const fadeStart = 0.55;
+      const fadeProgress = Math.max(0, (progress - fadeStart) / (1 - fadeStart));
+      const translateY = fadeProgress * 140;
+      const scale = 1 - fadeProgress * 0.04;
+      
+      aboutWrap.style.transform = `translateY(${translateY.toFixed(2)}px) scale(${scale.toFixed(4)})`;
     }
   }
 
