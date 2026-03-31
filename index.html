@@ -549,7 +549,7 @@ select.form-input option{padding:12px;font-family:'DM Sans',sans-serif}
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">📞</span></div><div><p class="font-body font-bold text-sm mb-0.5" data-de="WhatsApp / Telefon" data-ru="WhatsApp / Телефон" data-en="WhatsApp / Phone">WhatsApp / Telefon</p><a href="tel:+4917675881485" class="font-body text-sm text-espresso/60 hover:text-rose transition-colors">+49 176 75881485</a></div></div>
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">✉</span></div><div><p class="font-body font-bold text-sm mb-0.5">E-Mail</p><a href="mailto:Beauty.Glanz@web.de" class="font-body text-sm text-espresso/60 hover:text-rose transition-colors">Beauty.Glanz@web.de</a></div></div>
         <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">📸</span></div><div><p class="font-body font-bold text-sm mb-0.5">Instagram</p><a href="https://instagram.com/beautyglanz_26" target="_blank" class="font-body text-sm text-espresso/60 hover:text-rose transition-colors">@beautyglanz_26</a></div></div>
-        <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">🕐</span></div><div><p class="font-body font-bold text-sm mb-0.5" data-de="Öffnungszeiten" data-ru="Часы работы" data-en="Opening hours">Öffnungszeiten</p><p class="font-body text-sm text-espresso/60" data-de="Mo–Sa: 09:00–19:00" data-ru="Пн–Сб: 09:00–19:00" data-en="Mon–Sat: 09:00–19:00">Mo–Sa: 09:00–19:00</p></div></div>
+        <div class="flex items-start gap-4"><div class="w-10 h-10 rounded-full bg-rose/10 flex items-center justify-center flex-shrink-0"><span class="text-rose text-sm">🕐</span></div><div><p class="font-body font-bold text-sm mb-0.5" data-de="Öffnungszeiten" data-ru="Часы работы" data-en="Opening hours">Öffnungszeiten</p><p class="font-body text-sm text-espresso/60" data-de="Mo–Sa: 10:00–18:00" data-ru="Пн–Сб: 10:00–18:00" data-en="Mon–Sat: 10:00–18:00">Mo–Sa: 10:00–18:00</p></div></div>
       </div>
       
       <!-- 2. Interactive Map -->
@@ -669,8 +669,8 @@ const services = [
     {de:'SPA Füße mit Gel-Lack',ru:'SPA педикюр с гель-лаком',en:'SPA pedicure with gel polish',p:'69 €'},
   ]},
   {id:'brows',de:'Augenbrauen & Lifting',ru:'Брови и Лифтинг',en:'Brows & Lifting',items:[
-    {de:'Wimpernlifting mit färben',ru:'Лифтинг ресниц + окрашивание',en:'Lash lifting + tinting',p:'60 €'},
-    {de:'Augenbrauenlifting mit färben',ru:'Лифтинг бровей + окрашивание',en:'Brow lifting + tinting',p:'60 €'},
+    {de:'Wimpernlifting mit färben',ru:'Лифтинг ресниц + окрашивание',en:'Lash lifting + tinting',p:'70 €'},
+    {de:'Augenbrauenlifting mit färben',ru:'Лифтинг бровей + окрашивание',en:'Brow lifting + tinting',p:'75 €'},
     {de:'Augenbrauen färben mit Henna',ru:'Окрашивание бровей хной',en:'Brow tinting with henna',p:'40 €'},
     {de:'Wimpern färben',ru:'Окрашивание ресниц',en:'Lash tinting',p:'15 €'},
     {de:'Augenbrauen färben',ru:'Окрашивание бровей',en:'Brow tinting',p:'15 €'},
@@ -694,59 +694,36 @@ const services = [
     {de:'Lidstrich',ru:'Стрелки',en:'Eyeliner',p:'180 €'},
     {de:'Nachstechen in 5 Wochen (Lidstrich)',ru:'Стрелки - Коррекция (через 5 нед.)',en:'Eyeliner - Touch up (in 5 weeks)',p:'70 €'},
   ]},
-  {id:'waxing',de:'Waxing & Haarentfernung',ru:'Депиляция (Воск)',en:'Waxing',hasTabs:true,
-    tabs:{damen:{de:'Damen',ru:'Женщинам',en:'Women',items:[
-      {de:'Oberlippe, 10 Min.',ru:'Верхняя губа, 10 мин.',en:'Upper lip, 10 min.',p:'14 €'},
-      {de:'Kinn, 10 Min.',ru:'Подбородок, 10 мин.',en:'Chin, 10 min.',p:'16 €'},
-      {de:'Oberlippe & Kinn, 15 Min.',ru:'Верхняя губа и подбородок, 15 мин.',en:'Upper lip & chin, 15 min.',p:'22 €'},
-      {de:'Wange, 10 Min.',ru:'Щеки, 10 мин.',en:'Cheeks, 10 min.',p:'22 €'},
-      {de:'Hals, 10 Min.',ru:'Шея, 10 мин.',en:'Neck, 10 min.',p:'28 €'},
-      {de:'Nase, 5 Min.',ru:'Нос, 5 мин.',en:'Nose, 5 min.',p:'12 €'},
-      {de:'Ohren, 5 Min.',ru:'Уши, 5 мин.',en:'Ears, 5 min.',p:'12 €'},
-      {de:'Gesicht komplett, 25 Min.',ru:'Лицо полностью, 25 мин.',en:'Full face, 25 min.',p:'44 €'},
-      {de:'Nacken, 10 Min.',ru:'Затылок (шея сзади), 10 мин.',en:'Nape, 10 min.',p:'28 €'},
-      {de:'Achseln, 10 Min.',ru:'Подмышки, 10 мин.',en:'Underarms, 10 min.',p:'28 €'},
-      {de:'Unterarme, 20 Min.',ru:'Предплечья, 20 мин.',en:'Forearms, 20 min.',p:'32 €'},
-      {de:'Oberarme, 25 Min.',ru:'Плечи, 25 мин.',en:'Upper arms, 25 min.',p:'38 €'},
-      {de:'Arme komplett, 40 Min.',ru:'Руки полностью, 40 мин.',en:'Full arms, 40 min.',p:'65 €'},
-      {de:'Arme komplett mit Achseln, 45 Min.',ru:'Руки и подмышки, 45 мин.',en:'Full arms & underarms, 45 min.',p:'75 €'},
-      {de:'Unterschenkel inkl. Knie, 30 Min.',ru:'Голени вкл. колени, 30 мин.',en:'Lower legs incl. knees, 30 min.',p:'40 €'},
-      {de:'Oberschenkel, 30 Min.',ru:'Бедра, 30 мин.',en:'Upper legs, 30 min.',p:'45 €'},
-      {de:'Beine komplett, 45 Min.',ru:'Ноги полностью, 45 мин.',en:'Full legs, 45 min.',p:'70 €'},
-      {de:'Rücken unten, 15 Min.',ru:'Спина (низ), 15 мин.',en:'Lower back, 15 min.',p:'28 €'},
-      {de:'Rücken oben, 25 Min.',ru:'Спина (верх), 25 мин.',en:'Upper back, 25 min.',p:'35 €'},
-      {de:'Rücken komplett, 35 Min.',ru:'Спина полностью, 35 мин.',en:'Full back, 35 min.',p:'58 €'},
-      {de:'Schulter, 20 Min.',ru:'Плечи, 20 мин.',en:'Shoulders, 20 min.',p:'30 €'},
-      {de:'Brust, 20 Min.',ru:'Грудь, 20 мин.',en:'Chest, 20 min.',p:'30 €'},
-      {de:'Bauch, 25 Min.',ru:'Живот, 25 мин.',en:'Stomach, 25 min.',p:'35 €'},
-      {de:'Bikinilinie (Grenze Obersch.), 15 Min.',ru:'Зона бикини, 15 мин.',en:'Bikini line, 15 min.',p:'30 €'},
-      {de:'Intim inkl. Pofalte, 30-45 Min.',ru:'Бикини (вкл. межяг. складку), 30-45 мин.',en:'Brazilian incl. gluteal cleft, 30-45 min.',p:'ab 60 €'},
-      {de:'Intim ohne Pofalte, 30 Min.',ru:'Бикини (без межяг. складки), 30 мин.',en:'Brazilian excl. gluteal cleft, 30 min.',p:'ab 55 €'},
-      {de:'Nur Pofalte, 10 Min.',ru:'Только межягодичная складка, 10 мин.',en:'Gluteal cleft only, 10 min.',p:'ab 25 €'},
-      {de:'Pobacken, 15 Min.',ru:'Ягодицы, 15 мин.',en:'Buttocks, 15 min.',p:'40 €'},
-    ]},herren:{de:'Herren',ru:'Мужчинам',en:'Men',items:[
-      {de:'Wange, 10 Min.',ru:'Щеки, 10 мин.',en:'Cheeks, 10 min.',p:'22 €'},
-      {de:'Hals, 10 Min.',ru:'Шея, 10 мин.',en:'Neck, 10 min.',p:'28 €'},
-      {de:'Nase, 5 Min.',ru:'Нос, 5 мин.',en:'Nose, 5 min.',p:'12 €'},
-      {de:'Ohren, 5 Min.',ru:'Уши, 5 мин.',en:'Ears, 5 min.',p:'12 €'},
-      {de:'Nacken, 10 Min.',ru:'Затылок (шея сзади), 10 мин.',en:'Nape, 10 min.',p:'28 €'},
-      {de:'Achseln, 10 Min.',ru:'Подмышки, 10 мин.',en:'Underarms, 10 min.',p:'28 €'},
-      {de:'Unterarme, 20 Min.',ru:'Предплечья, 20 мин.',en:'Forearms, 20 min.',p:'32 €'},
-      {de:'Oberarme, 25 Min.',ru:'Плечи, 25 мин.',en:'Upper arms, 25 min.',p:'38 €'},
-      {de:'Arme komplett, 40 Min.',ru:'Руки полностью, 40 мин.',en:'Full arms, 40 min.',p:'65 €'},
-      {de:'Arme komplett mit Achseln, 45 Min.',ru:'Руки и подмышки, 45 мин.',en:'Full arms & underarms, 45 min.',p:'75 €'},
-      {de:'Unterschenkel inkl. Knie, 30 Min.',ru:'Голени вкл. колени, 30 мин.',en:'Lower legs incl. knees, 30 min.',p:'40 €'},
-      {de:'Oberschenkel, 30 Min.',ru:'Бедра, 30 мин.',en:'Upper legs, 30 min.',p:'45 €'},
-      {de:'Beine komplett, 45 Min.',ru:'Ноги полностью, 45 мин.',en:'Full legs, 45 min.',p:'70 €'},
-      {de:'Pobacken, 15 Min.',ru:'Ягодицы, 15 мин.',en:'Buttocks, 15 min.',p:'40 €'},
-      {de:'Brust, 25 Min.',ru:'Грудь, 25 мин.',en:'Chest, 25 min.',p:'35 €'},
-      {de:'Bauch, 30 Min.',ru:'Живот, 30 мин.',en:'Stomach, 30 min.',p:'40 €'},
-      {de:'Brust und Bauch, 45 Min.',ru:'Грудь и живот, 45 мин.',en:'Chest & Stomach, 45 min.',p:'70 €'},
-      {de:'Rücken oben, 25 Min.',ru:'Спина (верх), 25 мин.',en:'Upper back, 25 min.',p:'40 €'},
-      {de:'Rücken unten, 20 Min.',ru:'Спина (низ), 20 мин.',en:'Lower back, 20 min.',p:'35 €'},
-      {de:'Rücken komplett, 40 Min.',ru:'Спина полностью, 40 мин.',en:'Full back, 40 min.',p:'70 €'},
-    ]}}
-  }
+  {id:'waxing',de:'Waxing & Haarentfernung',ru:'Депиляция (Воск)',en:'Waxing',items:[
+    {de:'Oberlippe, 10 Min.',ru:'Верхняя губа, 10 мин.',en:'Upper lip, 10 min.',p:'14 €'},
+    {de:'Kinn, 10 Min.',ru:'Подбородок, 10 мин.',en:'Chin, 10 min.',p:'16 €'},
+    {de:'Oberlippe & Kinn, 15 Min.',ru:'Верхняя губа и подбородок, 15 мин.',en:'Upper lip & chin, 15 min.',p:'22 €'},
+    {de:'Wange, 10 Min.',ru:'Щеки, 10 мин.',en:'Cheeks, 10 min.',p:'22 €'},
+    {de:'Hals, 10 Min.',ru:'Шея, 10 мин.',en:'Neck, 10 min.',p:'28 €'},
+    {de:'Nase, 5 Min.',ru:'Нос, 5 мин.',en:'Nose, 5 min.',p:'12 €'},
+    {de:'Ohren, 5 Min.',ru:'Уши, 5 мин.',en:'Ears, 5 min.',p:'12 €'},
+    {de:'Gesicht komplett, 25 Min.',ru:'Лицо полностью, 25 мин.',en:'Full face, 25 min.',p:'44 €'},
+    {de:'Nacken, 10 Min.',ru:'Затылок (шея сзади), 10 мин.',en:'Nape, 10 min.',p:'28 €'},
+    {de:'Achseln, 10 Min.',ru:'Подмышки, 10 мин.',en:'Underarms, 10 min.',p:'28 €'},
+    {de:'Unterarme, 20 Min.',ru:'Предплечья, 20 мин.',en:'Forearms, 20 min.',p:'32 €'},
+    {de:'Oberarme, 25 Min.',ru:'Плечи, 25 мин.',en:'Upper arms, 25 min.',p:'38 €'},
+    {de:'Arme komplett, 40 Min.',ru:'Руки полностью, 40 мин.',en:'Full arms, 40 min.',p:'65 €'},
+    {de:'Arme komplett mit Achseln, 45 Min.',ru:'Руки и подмышки, 45 мин.',en:'Full arms & underarms, 45 min.',p:'75 €'},
+    {de:'Unterschenkel inkl. Knie, 30 Min.',ru:'Голени вкл. колени, 30 мин.',en:'Lower legs incl. knees, 30 min.',p:'40 €'},
+    {de:'Oberschenkel, 30 Min.',ru:'Бедра, 30 мин.',en:'Upper legs, 30 min.',p:'45 €'},
+    {de:'Beine komplett, 45 Min.',ru:'Ноги полностью, 45 мин.',en:'Full legs, 45 min.',p:'70 €'},
+    {de:'Rücken unten, 15 Min.',ru:'Спина (низ), 15 мин.',en:'Lower back, 15 min.',p:'28 €'},
+    {de:'Rücken oben, 25 Min.',ru:'Спина (верх), 25 мин.',en:'Upper back, 25 min.',p:'35 €'},
+    {de:'Rücken komplett, 35 Min.',ru:'Спина полностью, 35 мин.',en:'Full back, 35 min.',p:'58 €'},
+    {de:'Schulter, 20 Min.',ru:'Плечи, 20 мин.',en:'Shoulders, 20 min.',p:'30 €'},
+    {de:'Brust, 20 Min.',ru:'Грудь, 20 мин.',en:'Chest, 20 min.',p:'30 €'},
+    {de:'Bauch, 25 Min.',ru:'Живот, 25 мин.',en:'Stomach, 25 min.',p:'35 €'},
+    {de:'Bikinilinie (Grenze Obersch.), 15 Min.',ru:'Зона бикини, 15 мин.',en:'Bikini line, 15 min.',p:'30 €'},
+    {de:'Intim inkl. Pofalte, 30-45 Min.',ru:'Бикини (вкл. межяг. складку), 30-45 мин.',en:'Brazilian incl. gluteal cleft, 30-45 min.',p:'ab 60 €'},
+    {de:'Intim ohne Pofalte, 30 Min.',ru:'Бикини (без межяг. складки), 30 мин.',en:'Brazilian excl. gluteal cleft, 30 min.',p:'ab 55 €'},
+    {de:'Nur Pofalte, 10 Min.',ru:'Только межягодичная складка, 10 мин.',en:'Gluteal cleft only, 10 min.',p:'ab 25 €'},
+    {de:'Pobacken, 15 Min.',ru:'Ягодицы, 15 мин.',en:'Buttocks, 15 min.',p:'40 €'},
+  ]}
 ];
 
 const galleryCategories = [
@@ -793,7 +770,7 @@ const faqs = [
   {q:{de:'Wie kann ich meinen Termin absagen oder verschieben?',ru:'Как я могу отменить или перенести запись?',en:'How can I cancel or reschedule my appointment?'},
    a:{de:'Bitte informieren Sie uns mindestens 24 Stunden im Voraus per Telefon oder Nachricht. Bei sehr kurzfristigen Absagen müssen wir leider 50% des Behandlungspreises in Rechnung stellen.',ru:'Пожалуйста, сообщите нам как минимум за 24 часа. При очень поздней отмене мы будем вынуждены удержать 50% от стоимости процедуры.',en:'Please inform us at least 24 hours in advance. For very late cancellations, we unfortunately have to charge 50% of the treatment price.'}},
   {q:{de:'Welche Zahlungsmöglichkeiten bieten Sie an?',ru:'Какие формы оплаты вы принимаете?',en:'Which payment methods do you accept?'},
-   a:{de:'Sie können bei uns bequem in bar, mit Bankomatkarte oder per Kreditkarte (Visa, Mastercard) bezahlen.',ru:'Вы можете оплатить наличными, банковской картой или кредитной картой (Visa, Mastercard).',en:'You can pay conveniently in cash, with a debit card, or by credit card (Visa, Mastercard).'}},
+   a:{de:'Wir akzeptieren Barzahlung und PayPal. Eine Kartenzahlung ist leider nicht möglich.',ru:'Мы принимаем наличные и PayPal. Оплата картой, к сожалению, не доступна.',en:'We accept cash and PayPal. Card payments are unfortunately not available.'}},
   {q:{de:'Bieten Sie auch Geschenkgutscheine an?',ru:'Можно ли приобрести подарочные сертификаты?',en:'Do you offer gift certificates?'},
    a:{de:'Ja, wir bieten wunderschön verpackte Geschenkgutscheine für jeden beliebigen Betrag an. Sie können diese direkt im Salon erwerben.',ru:'Да, мы предлагаем красиво упакованные подарочные сертификаты на любую сумму. Их можно приобрести прямо в салоне.',en:'Yes, we offer beautifully packaged gift certificates for any amount. You can purchase them directly in the salon.'}},
   {q:{de:'Wie bereite ich mich am besten auf das Waxing vor?',ru:'Как лучше подготовиться к ваксингу?',en:'How should I prepare for waxing?'},
@@ -1035,8 +1012,8 @@ const bookingCategories = [
   },
   {id:'lifting', de:'Lifting', ru:'Лифтинг', en:'Lifting', icon:'✦',
     items:[
-      {de:'Wimpernlifting mit färben', ru:'Лифтинг ресниц с окрашиванием', en:'Lash lift with tint', p:'60 €'},
-      {de:'Augenbrauenlifting mit färben', ru:'Лифтинг бровей с окрашиванием', en:'Brow lift with tint', p:'60 €'},
+      {de:'Wimpernlifting mit färben', ru:'Лифтинг ресниц с окрашиванием', en:'Lash lift with tint', p:'70 €'},
+      {de:'Augenbrauenlifting mit färben', ru:'Лифтинг бровей с окрашиванием', en:'Brow lift with tint', p:'75 €'},
       {de:'Augenbrauen färben mit Henna', ru:'Окрашивание бровей хной', en:'Brow tint with henna', p:'40 €'},
       {de:'Wimper färben', ru:'Окрашивание ресниц', en:'Lash tint', p:'15 €'},
       {de:'Augenbrauen färben', ru:'Окрашивание бровей', en:'Brow tint', p:'15 €'},
@@ -1091,52 +1068,30 @@ const bookingCategories = [
     ]
   },
   {id:'waxing', de:'Waxing', ru:'Ваксинг', en:'Waxing', icon:'✦',
-    subs:[
-      {id:'wax-damen', de:'Damen', ru:'Женщинам', en:'Women', items:[
-        {de:'Oberlippe', ru:'Верхняя губа', en:'Upper lip', p:'14 €'},
-        {de:'Kinn', ru:'Подбородок', en:'Chin', p:'16 €'},
-        {de:'Oberlippe & Kinn', ru:'Верхняя губа и подбородок', en:'Upper lip & chin', p:'22 €'},
-        {de:'Wange', ru:'Щеки', en:'Cheeks', p:'22 €'},
-        {de:'Hals', ru:'Шея', en:'Neck', p:'28 €'},
-        {de:'Nase', ru:'Нос', en:'Nose', p:'12 €'},
-        {de:'Ohren', ru:'Уши', en:'Ears', p:'12 €'},
-        {de:'Gesicht komplett', ru:'Лицо полностью', en:'Full face', p:'44 €'},
-        {de:'Nacken', ru:'Затылок', en:'Nape', p:'28 €'},
-        {de:'Achseln', ru:'Подмышки', en:'Underarms', p:'28 €'},
-        {de:'Unterarme', ru:'Предплечья', en:'Forearms', p:'32 €'},
-        {de:'Oberarme', ru:'Плечи', en:'Upper arms', p:'38 €'},
-        {de:'Arme komplett', ru:'Руки полностью', en:'Full arms', p:'65 €'},
-        {de:'Unterschenkel inkl. Knie', ru:'Голени вкл. колени', en:'Lower legs', p:'40 €'},
-        {de:'Oberschenkel', ru:'Бедра', en:'Upper legs', p:'45 €'},
-        {de:'Beine komplett', ru:'Ноги полностью', en:'Full legs', p:'70 €'},
-        {de:'Rücken unten', ru:'Спина (низ)', en:'Lower back', p:'28 €'},
-        {de:'Rücken oben', ru:'Спина (верх)', en:'Upper back', p:'35 €'},
-        {de:'Rücken komplett', ru:'Спина полностью', en:'Full back', p:'58 €'},
-        {de:'Bikinilinie', ru:'Зона бикини', en:'Bikini line', p:'30 €'},
-        {de:'Intim inkl. Pofalte', ru:'Бикини глубокое', en:'Brazilian incl. gluteal cleft', p:'ab 60 €'},
-        {de:'Intim ohne Pofalte', ru:'Бикини (без межяг. складки)', en:'Brazilian excl. gluteal cleft', p:'ab 55 €'},
-        {de:'Pobacken', ru:'Ягодицы', en:'Buttocks', p:'40 €'},
-      ]},
-      {id:'wax-herren', de:'Herren', ru:'Мужчинам', en:'Men', items:[
-        {de:'Wange', ru:'Щеки', en:'Cheeks', p:'22 €'},
-        {de:'Hals', ru:'Шея', en:'Neck', p:'28 €'},
-        {de:'Nase', ru:'Нос', en:'Nose', p:'12 €'},
-        {de:'Ohren', ru:'Уши', en:'Ears', p:'12 €'},
-        {de:'Nacken', ru:'Затылок', en:'Nape', p:'28 €'},
-        {de:'Achseln', ru:'Подмышки', en:'Underarms', p:'28 €'},
-        {de:'Unterarme', ru:'Предплечья', en:'Forearms', p:'32 €'},
-        {de:'Oberarme', ru:'Плечи', en:'Upper arms', p:'38 €'},
-        {de:'Arme komplett', ru:'Руки полностью', en:'Full arms', p:'65 €'},
-        {de:'Unterschenkel inkl. Knie', ru:'Голени вкл. колени', en:'Lower legs', p:'40 €'},
-        {de:'Oberschenkel', ru:'Бедра', en:'Upper legs', p:'45 €'},
-        {de:'Beine komplett', ru:'Ноги полностью', en:'Full legs', p:'70 €'},
-        {de:'Pobacken', ru:'Ягодицы', en:'Buttocks', p:'40 €'},
-        {de:'Brust', ru:'Грудь', en:'Chest', p:'35 €'},
-        {de:'Bauch', ru:'Живот', en:'Stomach', p:'40 €'},
-        {de:'Rücken oben', ru:'Спина (верх)', en:'Upper back', p:'40 €'},
-        {de:'Rücken unten', ru:'Спина (низ)', en:'Lower back', p:'35 €'},
-        {de:'Rücken komplett', ru:'Спина полностью', en:'Full back', p:'70 €'},
-      ]}
+    items:[
+      {de:'Oberlippe', ru:'Верхняя губа', en:'Upper lip', p:'14 €'},
+      {de:'Kinn', ru:'Подбородок', en:'Chin', p:'16 €'},
+      {de:'Oberlippe & Kinn', ru:'Верхняя губа и подбородок', en:'Upper lip & chin', p:'22 €'},
+      {de:'Wange', ru:'Щеки', en:'Cheeks', p:'22 €'},
+      {de:'Hals', ru:'Шея', en:'Neck', p:'28 €'},
+      {de:'Nase', ru:'Нос', en:'Nose', p:'12 €'},
+      {de:'Ohren', ru:'Уши', en:'Ears', p:'12 €'},
+      {de:'Gesicht komplett', ru:'Лицо полностью', en:'Full face', p:'44 €'},
+      {de:'Nacken', ru:'Затылок', en:'Nape', p:'28 €'},
+      {de:'Achseln', ru:'Подмышки', en:'Underarms', p:'28 €'},
+      {de:'Unterarme', ru:'Предплечья', en:'Forearms', p:'32 €'},
+      {de:'Oberarme', ru:'Плечи', en:'Upper arms', p:'38 €'},
+      {de:'Arme komplett', ru:'Руки полностью', en:'Full arms', p:'65 €'},
+      {de:'Unterschenkel inkl. Knie', ru:'Голени вкл. колени', en:'Lower legs', p:'40 €'},
+      {de:'Oberschenkel', ru:'Бедра', en:'Upper legs', p:'45 €'},
+      {de:'Beine komplett', ru:'Ноги полностью', en:'Full legs', p:'70 €'},
+      {de:'Rücken unten', ru:'Спина (низ)', en:'Lower back', p:'28 €'},
+      {de:'Rücken oben', ru:'Спина (верх)', en:'Upper back', p:'35 €'},
+      {de:'Rücken komplett', ru:'Спина полностью', en:'Full back', p:'58 €'},
+      {de:'Bikinilinie', ru:'Зона бикини', en:'Bikini line', p:'30 €'},
+      {de:'Intim inkl. Pofalte', ru:'Бикини глубокое', en:'Brazilian incl. gluteal cleft', p:'ab 60 €'},
+      {de:'Intim ohne Pofalte', ru:'Бикини (без межяг. складки)', en:'Brazilian excl. gluteal cleft', p:'ab 55 €'},
+      {de:'Pobacken', ru:'Ягодицы', en:'Buttocks', p:'40 €'},
     ]
   }
 ];
@@ -1273,7 +1228,7 @@ function unlockStep(blockId) {
 
 /* ============ BOOKING: CALENDAR ============ */
 // 1 HOUR SLOTS
-const allSlots = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
+const allSlots = ['10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
 let selectedTime = null;
 
 let calYear, calMonth;
