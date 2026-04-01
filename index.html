@@ -882,6 +882,59 @@ function buildFaq(){
   });
 }
 
+/* ============ DB PROCEDURES — Dynamic load ============ */
+let dbProcedures = null;
+
+async function loadProceduresFromDB() {
+  try {
+    ensureSDKs();
+    if (!supabaseClient) throw new Error('No client');
+    const { data, error } = await supabaseClient
+      .from('procedures')
+      .select('*')
+      .order('category_sort').order('subcategory_sort').order('sort_order');
+    if (!error && data && data.length > 0) dbProcedures = data;
+  } catch(e) { console.warn('Procedures DB error, using fallback', e); }
+  buildAccordionFromDB();
+  buildServiceCards();
+}
+
+function buildAccordionFromDB() {
+  const c = document.getElementById('accordionContainer');
+  if (!c) return;
+  if (!dbProcedures) { buildAccordion(); return; }
+  c.innerHTML = '';
+  const catMap = new Map();
+  dbProcedures.forEach(p => {
+    if (!catMap.has(p.category_id)) catMap.set(p.category_id, { meta: p, subs: new Map() });
+    const cat = catMap.get(p.category_id);
+    const subKey = p.subcategory_id || '__flat__';
+    if (!cat.subs.has(subKey)) cat.subs.set(subKey, { meta: p, items: [] });
+    cat.subs.get(subKey).items.push(p);
+  });
+  let i = 0;
+  catMap.forEach((cat) => {
+    let inner = '';
+    cat.subs.forEach((sub, subKey) => {
+      const rows = sub.items.map(it =>
+        `<div class="flex justify-between py-1.5 border-b border-cream-dark/50"><span class="font-body text-sm">${it['name_' + currentLang] || it.name_de}</span><span class="font-body text-sm font-bold text-rose whitespace-nowrap ml-4">${it.price}</span></div>`
+      ).join('');
+      if (subKey === '__flat__') {
+        inner += `<div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 px-6 pb-6 pt-1">${rows}</div>`;
+      } else {
+        const subLabel = sub.meta['subcategory_' + currentLang] || sub.meta.subcategory_de || '';
+        inner += `<div class="px-6 pt-4 pb-1 font-body text-xs font-bold text-rose/70 uppercase tracking-wider">${subLabel}</div><div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2 px-6 pb-4">${rows}</div>`;
+      }
+    });
+    const catLabel = cat.meta['category_' + currentLang] || cat.meta.category_de;
+    const div = document.createElement('div');
+    div.className = `reveal stagger-${i%4+1} bg-cream-dark/40 rounded-2xl overflow-hidden hover-lift`;
+    div.innerHTML = `<button class="w-full flex items-center justify-between px-6 py-5 text-left" onclick="toggleAccordion(this)"><span class="font-heading text-xl text-espresso">${catLabel}</span><span class="accordion-icon text-rose text-2xl font-light leading-none select-none">+</span></button><div class="accordion-body"><div>${inner}</div></div>`;
+    c.appendChild(div);
+    i++;
+  });
+}
+
 function buildServiceSelect(){
   const sel=document.getElementById('serviceSelect');
   const defTexts={de:'Behandlung wählen',ru:'Выберите услугу',en:'Choose service'};
@@ -1103,8 +1156,53 @@ let selectedServicePrice = null;
 function buildServiceCards() {
   const wrap = document.getElementById('svcPickerWrap');
   if (!wrap) return;
-  renderCategoryGrid(wrap);
+  if (dbProcedures) {
+    renderCategoryGridFromDB(wrap);
+  } else {
+    renderCategoryGrid(wrap);
+  }
 }
+
+function renderCategoryGridFromDB(wrap) {
+  wrap.innerHTML = '';
+  // Only show_in_booking items, grouped by category then subcategory
+  const procs = dbProcedures.filter(p => p.show_in_booking);
+  const catMap = new Map();
+  procs.forEach(p => {
+    if (!catMap.has(p.category_id)) catMap.set(p.category_id, { meta: p, subs: new Map() });
+    const cat = catMap.get(p.category_id);
+    const subKey = p.subcategory_id || '__flat__';
+    if (!cat.subs.has(subKey)) cat.subs.set(subKey, { meta: p, items: [] });
+    cat.subs.get(subKey).items.push(p);
+  });
+  // Convert to bookingCategories-compatible format and render
+  const dynCats = [];
+  catMap.forEach((cat, catId) => {
+    const catObj = { id: catId, de: cat.meta.category_de, ru: cat.meta.category_ru, en: cat.meta.category_en, icon: '✦' };
+    if (cat.subs.size === 1 && cat.subs.has('__flat__')) {
+      catObj.items = cat.subs.get('__flat__').items.map(p => ({ de: p.name_de, ru: p.name_ru, en: p.name_en, p: p.price }));
+    } else {
+      catObj.subs = [];
+      cat.subs.forEach((sub, subKey) => {
+        if (subKey === '__flat__') return;
+        catObj.subs.push({ id: subKey, de: sub.meta.subcategory_de, ru: sub.meta.subcategory_ru, en: sub.meta.subcategory_en,
+          items: sub.items.map(p => ({ de: p.name_de, ru: p.name_ru, en: p.name_en, p: p.price })) });
+      });
+      // also handle if there are flat items alongside subs
+      if (cat.subs.has('__flat__')) {
+        catObj.subs.unshift({ id: '__other__', de: 'Sonstige', ru: 'Прочее', en: 'Other',
+          items: cat.subs.get('__flat__').items.map(p => ({ de: p.name_de, ru: p.name_ru, en: p.name_en, p: p.price })) });
+      }
+      if (catObj.subs.length === 0) { catObj.items = []; }
+    }
+    dynCats.push(catObj);
+  });
+  // Temporarily override bookingCategories for renderCategoryGrid
+  const _orig = bookingCategories.splice(0, bookingCategories.length, ...dynCats);
+  renderCategoryGrid(wrap);
+  bookingCategories.splice(0, bookingCategories.length, ..._orig);
+}
+
 
 function renderCategoryGrid(wrap) {
   wrap.innerHTML = '';
@@ -1592,7 +1690,11 @@ function initObserver(){
   document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.hand-left,.hand-right').forEach(el=>obs.observe(el));
 }
 
-buildAccordion();buildGallery();buildReviews();buildFaq();buildServiceCards();initCalendar();initObserver();
+// Load procedures from DB (replaces static arrays), then build all
+(async function initPage() {
+  await loadProceduresFromDB();
+  buildGallery(); buildReviews(); buildFaq(); initCalendar(); initObserver();
+})();
 /* ============ SMOOTH SCROLL (LENIS) ============ */
 const lenis = new Lenis({
   duration: 1.5,

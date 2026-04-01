@@ -109,6 +109,7 @@
     <div class="flex gap-6 border-b border-gray-200 mb-8" id="adminTabs">
       <button onclick="switchTab('buchungen')" id="tabBuchungen" class="pb-3 px-2 text-sm font-semibold text-[#1C1410] border-b-2 border-[#1C1410] transition-colors" data-de="Buchungen" data-ru="Бронирования" data-en="Bookings">Buchungen</button>
       <button onclick="switchTab('kalender')" id="tabKalender" class="pb-3 px-2 text-sm font-medium text-gray-400 hover:text-gray-700 border-b-2 border-transparent transition-colors" data-de="Kalender" data-ru="Календарь" data-en="Calendar">Kalender</button>
+      <button onclick="switchTab('prozeduren')" id="tabProzeduren" class="pb-3 px-2 text-sm font-medium text-gray-400 hover:text-gray-700 border-b-2 border-transparent transition-colors" data-de="Prozeduren" data-ru="Процедуры" data-en="Procedures">Prozeduren</button>
     </div>
 
     <!-- TAB 1: BUCHUNGEN -->
@@ -292,6 +293,43 @@
       </div>
     </div> <!-- /viewKalender -->
 
+    <!-- TAB: PROZEDUREN -->
+    <div id="viewProzeduren" class="hidden">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-[#1C1410]" data-de="Prozeduren verwalten" data-ru="Управление процедурами" data-en="Manage Procedures">Prozeduren verwalten</h2>
+          <p class="text-sm text-gray-400 mt-0.5" data-de="Leistungen & Preisliste" data-ru="Услуги и прайс-лист" data-en="Services & Price List">Leistungen & Preisliste</p>
+        </div>
+        <div class="flex gap-2 flex-wrap">
+          <select id="procCategoryFilter" onchange="renderProcedures()" class="border border-gray-200 rounded-xl px-3 py-2 text-sm font-medium focus:outline-none focus:border-[#C4826A] bg-white">
+            <option value="all" data-de="Alle Kategorien" data-ru="Все категории" data-en="All categories">Alle Kategorien</option>
+          </select>
+          <button onclick="loadProcedures()" class="px-4 py-2 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 hover:bg-gray-200" data-de="↻ Aktualisieren" data-ru="↻ Обновить" data-en="↻ Refresh">↻</button>
+          <button onclick="openProcedureModal()" class="px-4 py-2 rounded-xl text-sm font-bold bg-[#1C1410] text-white hover:bg-[#C4826A] transition-colors" data-de="+ Neue Prozedur" data-ru="+ Новая процедура" data-en="+ New Procedure">+ Neue Prozedur</button>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden">
+        <div id="procLoadingState" class="p-12 text-center text-gray-400">Laden...</div>
+        <div id="procEmptyState" class="p-12 text-center text-gray-400 hidden">Keine Prozeduren gefunden</div>
+        <div id="procTableWrap" class="hidden overflow-x-auto">
+          <table class="w-full min-w-[700px]">
+            <thead class="bg-gray-50 border-b border-gray-100">
+              <tr>
+                <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Kategorie" data-ru="Категория" data-en="Category">Kategorie</th>
+                <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Subkategorie" data-ru="Субкатегория" data-en="Subcategory">Subkategorie</th>
+                <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Name (DE)" data-ru="Название (DE)" data-en="Name (DE)">Name (DE)</th>
+                <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Preis" data-ru="Цена" data-en="Price">Preis</th>
+                <th class="text-center px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide" data-de="Buchung" data-ru="Запись" data-en="Booking">Buchung</th>
+                <th class="text-left px-4 py-3 text-xs font-semibold text-gray-500 uppercase tracking-wide"></th>
+              </tr>
+            </thead>
+            <tbody id="procTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div> <!-- /viewProzeduren -->
+
   </div>
 </div>
 
@@ -372,6 +410,73 @@
   </div>
 </div>
 
+<!-- PROCEDURE MODAL -->
+<div id="procedureModal" class="hidden fixed inset-0 z-50 bg-gray-900/40 backdrop-blur-sm flex items-center justify-center p-4" onclick="if(event.target===this)closeProcedureModal()">
+  <div class="bg-white rounded-3xl p-8 w-full max-w-2xl shadow-2xl overflow-y-auto max-h-[90vh]">
+    <div class="flex justify-between items-center mb-6">
+      <h3 id="procModalTitle" class="font-bold text-xl text-gray-900" data-de="Neue Prozedur" data-ru="Новая процедура" data-en="New Procedure">Neue Prozedur</h3>
+      <button onclick="closeProcedureModal()" class="text-gray-400 hover:text-gray-700 text-lg">&times;</button>
+    </div>
+    <input type="hidden" id="procEditId">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <!-- Category -->
+      <div class="sm:col-span-2">
+        <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Kategorie ID *" data-ru="ID категории *" data-en="Category ID *">Kategorie ID *</label>
+        <div class="flex gap-2">
+          <select id="procCatIdSelect" onchange="onProcCatSelect()" class="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] bg-white">
+            <option value="__new__" data-de="+ Neue Kategorie..." data-ru="+ Новая категория..." data-en="+ New category...">+ Neue Kategorie...</option>
+          </select>
+          <input type="text" id="procCatIdNew" data-de-placeholder="z.b. nails" data-ru-placeholder="напр. nails" data-en-placeholder="e.g. nails" placeholder="z.b. nails" class="hidden flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]">
+        </div>
+      </div>
+      <div><label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase" data-de="Kategorie DE *" data-ru="Категория DE *" data-en="Category DE *">Kategorie DE *</label><input type="text" id="procCatDe" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+      <div><label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase" data-de="Kategorie RU *" data-ru="Категория RU *" data-en="Category RU *">Kategorie RU *</label><input type="text" id="procCatRu" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+      <div><label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase" data-de="Kategorie EN *" data-ru="Категория EN *" data-en="Category EN *">Kategorie EN *</label><input type="text" id="procCatEn" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+      <div><label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase" data-de="Kategorie Reihenfolge" data-ru="Порядок категории" data-en="Category order">Kategorie Reihenfolge</label><input type="number" id="procCatSort" value="0" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+      <!-- Subcategory -->
+      <div class="sm:col-span-2 border-t border-gray-100 pt-4">
+        <label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wide" data-de="Subkategorie (optional)" data-ru="Субкатегория (необязательно)" data-en="Subcategory (optional)">Subkategorie (optional)</label>
+        <div class="flex gap-2">
+          <select id="procSubIdSelect" onchange="onProcSubSelect()" class="flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A] bg-white">
+            <option value="" data-de="— keine —" data-ru="— нет —" data-en="— none —">— keine —</option>
+            <option value="__new__" data-de="+ Neue Subkategorie..." data-ru="+ Новая субкатегория..." data-en="+ New subcategory...">+ Neue Subkategorie...</option>
+          </select>
+          <input type="text" id="procSubIdNew" data-de-placeholder="z.b. classic" data-ru-placeholder="напр. classic" data-en-placeholder="e.g. classic" placeholder="z.b. classic" class="hidden flex-1 border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]">
+        </div>
+      </div>
+      <div id="subNameFields">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-2">
+          <div><label class="block text-xs font-semibold text-gray-500 mb-1 uppercase" data-de="Sub DE" data-ru="Sub DE" data-en="Sub DE">Sub DE</label><input type="text" id="procSubDe" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+          <div><label class="block text-xs font-semibold text-gray-500 mb-1 uppercase" data-de="Sub RU" data-ru="Sub RU" data-en="Sub RU">Sub RU</label><input type="text" id="procSubRu" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+          <div><label class="block text-xs font-semibold text-gray-500 mb-1 uppercase" data-de="Sub EN" data-ru="Sub EN" data-en="Sub EN">Sub EN</label><input type="text" id="procSubEn" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+        </div>
+      </div>
+      <div><label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase" data-de="Sub Reihenfolge" data-ru="Порядок субкатегории" data-en="Subcategory order">Sub Reihenfolge</label><input type="number" id="procSubSort" value="0" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+      <!-- Names -->
+      <div class="sm:col-span-2 border-t border-gray-100 pt-4">
+        <label class="block text-xs font-semibold text-gray-500 mb-2 uppercase tracking-wide" data-de="Name der Prozedur *" data-ru="Название процедуры *" data-en="Procedure name *">Name der Prozedur *</label>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div><label class="block text-xs text-gray-400 mb-1">DE *</label><input type="text" id="procNameDe" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+          <div><label class="block text-xs text-gray-400 mb-1">RU *</label><input type="text" id="procNameRu" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+          <div><label class="block text-xs text-gray-400 mb-1">EN *</label><input type="text" id="procNameEn" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+        </div>
+      </div>
+      <!-- Price + booking + sort -->
+      <div><label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase" data-de="Preis *" data-ru="Цена *" data-en="Price *">Preis *</label><input type="text" id="procPrice" placeholder="50 €" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+      <div><label class="block text-xs font-semibold text-gray-500 mb-1.5 uppercase" data-de="Reihenfolge" data-ru="Порядок" data-en="Order">Reihenfolge</label><input type="number" id="procSortOrder" value="0" class="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:border-[#C4826A]"></div>
+      <div class="sm:col-span-2 flex items-center gap-3">
+        <input type="checkbox" id="procShowInBooking" checked class="w-4 h-4 accent-[#C4826A]">
+        <label for="procShowInBooking" class="text-sm font-medium text-gray-700" data-de="In Buchungsformular anzeigen" data-ru="Показывать в форме записи" data-en="Show in booking form">In Buchungsformular anzeigen</label>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <button onclick="closeProcedureModal()" class="flex-1 py-3.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50" data-de="Abbrechen" data-ru="Отмена" data-en="Cancel">Abbrechen</button>
+      <button onclick="saveProcedure()" id="procSaveBtn" class="flex-1 py-3.5 rounded-xl bg-[#1C1410] text-sm font-semibold text-white hover:bg-[#C4826A] transition-colors shadow-md" data-de="Speichern" data-ru="Сохранить" data-en="Save">Speichern</button>
+    </div>
+  </div>
+</div>
+
+
 <!-- TOAST CONTAINER -->
 <div id="adminToastWrap" class="fixed top-5 right-5 z-[9999] flex flex-col gap-2 pointer-events-none"></div>
 
@@ -424,6 +529,7 @@ function checkPassword() {
     document.getElementById('adminPanel').classList.remove('hidden');
     loadBookings();
     loadBlockedSlots();
+    loadProcedures();
   } else {
     document.getElementById('loginError').classList.remove('hidden');
   }
@@ -441,6 +547,7 @@ if (sessionStorage.getItem('bg_admin') === '1') {
   document.getElementById('adminPanel').classList.remove('hidden');
   loadBookings();
   loadBlockedSlots();
+  loadProcedures();
 }
 
 async function loadBookings() {
@@ -919,27 +1026,29 @@ async function createBooking() {
 // ================= KALENDER ЛОГИКА =================
 
 function switchTab(tab) {
-  const tB = document.getElementById('tabBuchungen');
-  const tK = document.getElementById('tabKalender');
-  const vB = document.getElementById('viewBuchungen');
-  const vK = document.getElementById('viewKalender');
+  const tabs = { buchungen:'tabBuchungen', kalender:'tabKalender', prozeduren:'tabProzeduren' };
+  const views = { buchungen:'viewBuchungen', kalender:'viewKalender', prozeduren:'viewProzeduren' };
+  const activeClass = 'pb-3 px-2 text-sm font-semibold text-[#1C1410] border-b-2 border-[#1C1410] transition-colors';
+  const inactiveClass = 'pb-3 px-2 text-sm font-medium text-gray-400 hover:text-gray-700 border-b-2 border-transparent transition-colors';
 
-  // reset all
-  [tB, tK].forEach(t => { if(t) t.className = "pb-3 px-2 text-sm font-medium text-gray-400 hover:text-gray-700 border-b-2 border-transparent transition-colors"; });
-  if(vB) vB.classList.add('hidden');
-  if(vK) { vK.classList.add('hidden'); vK.classList.remove('flex'); }
+  Object.values(tabs).forEach(id => { const el = document.getElementById(id); if(el) el.className = inactiveClass; });
+  Object.values(views).forEach(id => {
+    const el = document.getElementById(id);
+    if(el) { el.classList.add('hidden'); el.classList.remove('flex'); }
+  });
 
-  if(tab === 'buchungen') {
-    if(tB) tB.className = "pb-3 px-2 text-sm font-semibold text-[#1C1410] border-b-2 border-[#1C1410] transition-colors";
-    if(vB) vB.classList.remove('hidden');
-  } else if(tab === 'kalender') {
-    if(tK) tK.className = "pb-3 px-2 text-sm font-semibold text-[#1C1410] border-b-2 border-[#1C1410] transition-colors";
-    if(vK) {
-      vK.classList.remove('hidden');
-      vK.classList.add('flex');
-    }
+  const tEl = document.getElementById(tabs[tab]);
+  if(tEl) tEl.className = activeClass;
+  const vEl = document.getElementById(views[tab]);
+  if(vEl) vEl.classList.remove('hidden');
+
+  if(tab === 'kalender') {
+    if(vEl) vEl.classList.add('flex');
     renderAdminCalendar();
     if(adminSelectedDateStr) renderAdminSlots(adminSelectedDateStr);
+  }
+  if(tab === 'prozeduren') {
+    loadProcedures();
   }
 }
 
@@ -1404,6 +1513,269 @@ async function toggleFullDay(dateStr, lock) {
   const msg = lock ? (currentAdminLang==='ru'?'День закрыт':'Day closed') : (currentAdminLang==='ru'?'День открыт':'Day opened');
   showAdminToast(msg);
 }
+
+// ========== PROCEDURES MANAGEMENT ==========
+let allProcedures = [];
+
+async function loadProcedures() {
+  const { data, error } = await supabaseClient
+    .from('procedures')
+    .select('*')
+    .order('category_sort').order('subcategory_sort').order('sort_order');
+  if (error) {
+    console.error('loadProcedures error:', error);
+    showAdminToast('❌ Fehler beim Laden der Prozeduren: ' + error.message);
+  }
+  allProcedures = data || [];
+  buildProcCategoryFilter();
+  if (!document.getElementById('viewProzeduren').classList.contains('hidden')) renderProcedures();
+}
+
+function buildProcCategoryFilter() {
+  const sel = document.getElementById('procCategoryFilter');
+  if (!sel) return;
+  const seen = new Set();
+  const opts = ['<option value="all">Alle Kategorien</option>'];
+  allProcedures.forEach(p => {
+    if (!seen.has(p.category_id)) {
+      seen.add(p.category_id);
+      opts.push(`<option value="${p.category_id}">${p['category_' + currentAdminLang] || p.category_de}</option>`);
+    }
+  });
+  sel.innerHTML = opts.join('');
+}
+
+function renderProcedures() {
+  const filterCat = document.getElementById('procCategoryFilter')?.value || 'all';
+  let procs = filterCat === 'all' ? allProcedures : allProcedures.filter(p => p.category_id === filterCat);
+  const loadEl = document.getElementById('procLoadingState');
+  const emptyEl = document.getElementById('procEmptyState');
+  const tableEl = document.getElementById('procTableWrap');
+  const body = document.getElementById('procTableBody');
+  if (loadEl) loadEl.classList.add('hidden');
+  if (procs.length === 0) {
+    if (emptyEl) emptyEl.classList.remove('hidden');
+    if (tableEl) tableEl.classList.add('hidden');
+    return;
+  }
+  if (emptyEl) emptyEl.classList.add('hidden');
+  if (tableEl) tableEl.classList.remove('hidden');
+  let lastCat = null;
+  body.innerHTML = procs.map(p => {
+    let catCell = '';
+    if (p.category_id !== lastCat) {
+      lastCat = p.category_id;
+      catCell = `<td class="px-4 py-3 align-top"><span class="inline-block bg-[#F5EFE8] text-[#C4826A] text-xs font-bold px-2 py-1 rounded-lg whitespace-nowrap">${p['category_' + currentAdminLang] || p.category_de}</span></td>`;
+    } else {
+      catCell = '<td class="px-4 py-3"></td>';
+    }
+    const subName = p.subcategory_id ? (p['subcategory_' + currentAdminLang] || p.subcategory_de || p.subcategory_id) : '—';
+    const bookBadge = p.show_in_booking
+      ? '<span class="text-green-600 font-bold text-xs">✓</span>'
+      : '<span class="text-gray-300 text-xs">✗</span>';
+    return `<tr class="group border-b border-gray-50 hover:bg-gray-50/60 transition-colors">
+      ${catCell}
+      <td class="px-4 py-3 text-sm text-gray-500">${subName}</td>
+      <td class="px-4 py-3">
+        <div class="text-sm font-medium text-gray-900">${p.name_de}</div>
+        <div class="text-xs text-gray-400">${p.name_ru}</div>
+      </td>
+      <td class="px-4 py-3 text-sm font-bold text-[#C4826A] whitespace-nowrap">${p.price}</td>
+      <td class="px-4 py-3 text-center">${bookBadge}</td>
+      <td class="px-4 py-3">
+        <div class="flex gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+          <button onclick="openProcedureModal('${p.id}')" class="p-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors" title="Bearbeiten">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          </button>
+          <button onclick="deleteProcedure('${p.id}')" class="p-1.5 bg-red-50 text-red-500 rounded-lg hover:bg-red-100 transition-colors" title="Löschen">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openProcedureModal(id = null) {
+  document.getElementById('procEditId').value = id || '';
+  const title = document.getElementById('procModalTitle');
+  const modal = document.getElementById('procedureModal');
+
+  // Build category select
+  const catSel = document.getElementById('procCatIdSelect');
+  const seenCats = new Map();
+  allProcedures.forEach(p => { if (!seenCats.has(p.category_id)) seenCats.set(p.category_id, p); });
+  catSel.innerHTML = '<option value="__new__">+ Neue Kategorie...</option>';
+  seenCats.forEach((p, catId) => {
+    catSel.innerHTML += `<option value="${catId}">${p['category_' + currentAdminLang] || p.category_de} (${catId})</option>`;
+  });
+
+  if (id) {
+    const p = allProcedures.find(x => x.id === id);
+    if (!p) return;
+    title.textContent = currentAdminLang === 'ru' ? 'Изменить процедуру' : 'Prozedur bearbeiten';
+    catSel.value = p.category_id;
+    document.getElementById('procCatIdNew').classList.add('hidden');
+    document.getElementById('procCatDe').value = p.category_de;
+    document.getElementById('procCatRu').value = p.category_ru;
+    document.getElementById('procCatEn').value = p.category_en;
+    document.getElementById('procCatSort').value = p.category_sort;
+    // subcategory
+    onProcCatSelect(p.category_id);
+    const subSel = document.getElementById('procSubIdSelect');
+    subSel.value = p.subcategory_id || '';
+    document.getElementById('procSubDe').value = p.subcategory_de || '';
+    document.getElementById('procSubRu').value = p.subcategory_ru || '';
+    document.getElementById('procSubEn').value = p.subcategory_en || '';
+    document.getElementById('procSubSort').value = p.subcategory_sort;
+    document.getElementById('procNameDe').value = p.name_de;
+    document.getElementById('procNameRu').value = p.name_ru;
+    document.getElementById('procNameEn').value = p.name_en;
+    document.getElementById('procPrice').value = p.price;
+    document.getElementById('procSortOrder').value = p.sort_order;
+    document.getElementById('procShowInBooking').checked = p.show_in_booking;
+  } else {
+    title.textContent = currentAdminLang === 'ru' ? 'Новая процедура' : 'Neue Prozedur';
+    catSel.value = seenCats.size ? [...seenCats.keys()][0] : '__new__';
+    onProcCatSelect();
+    ['procCatDe','procCatRu','procCatEn','procSubDe','procSubRu','procSubEn','procNameDe','procNameRu','procNameEn','procPrice'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('procCatSort').value = 0;
+    document.getElementById('procSubSort').value = 0;
+    document.getElementById('procSortOrder').value = 0;
+    document.getElementById('procShowInBooking').checked = true;
+    if (seenCats.size > 0) {
+      const firstCat = [...seenCats.values()][0];
+      document.getElementById('procCatDe').value = firstCat.category_de;
+      document.getElementById('procCatRu').value = firstCat.category_ru;
+      document.getElementById('procCatEn').value = firstCat.category_en;
+      document.getElementById('procCatSort').value = firstCat.category_sort;
+    }
+  }
+  modal.classList.remove('hidden');
+}
+
+function onProcCatSelect(forceCatId = null) {
+  const catSel = document.getElementById('procCatIdSelect');
+  const catId = forceCatId || catSel.value;
+  const newInput = document.getElementById('procCatIdNew');
+  if (catId === '__new__') {
+    newInput.classList.remove('hidden');
+    document.getElementById('procCatDe').value = '';
+    document.getElementById('procCatRu').value = '';
+    document.getElementById('procCatEn').value = '';
+  } else {
+    newInput.classList.add('hidden');
+    const p = allProcedures.find(x => x.category_id === catId);
+    if (p) {
+      document.getElementById('procCatDe').value = p.category_de;
+      document.getElementById('procCatRu').value = p.category_ru;
+      document.getElementById('procCatEn').value = p.category_en;
+      document.getElementById('procCatSort').value = p.category_sort;
+    }
+  }
+  // Rebuild sub select
+  const subSel = document.getElementById('procSubIdSelect');
+  const seenSubs = new Map();
+  allProcedures.filter(p => p.category_id === catId && p.subcategory_id).forEach(p => {
+    if (!seenSubs.has(p.subcategory_id)) seenSubs.set(p.subcategory_id, p);
+  });
+  subSel.innerHTML = '<option value="">— keine —</option><option value="__new__">+ Neue Subkategorie...</option>';
+  seenSubs.forEach((p, subId) => {
+    subSel.innerHTML += `<option value="${subId}">${p['subcategory_' + currentAdminLang] || p.subcategory_de} (${subId})</option>`;
+  });
+}
+
+function onProcSubSelect() {
+  const subSel = document.getElementById('procSubIdSelect');
+  const subId = subSel.value;
+  const newInput = document.getElementById('procSubIdNew');
+  if (subId === '__new__') {
+    newInput.classList.remove('hidden');
+    document.getElementById('procSubDe').value = '';
+    document.getElementById('procSubRu').value = '';
+    document.getElementById('procSubEn').value = '';
+  } else {
+    newInput.classList.add('hidden');
+    if (subId) {
+      const catSel = document.getElementById('procCatIdSelect');
+      const p = allProcedures.find(x => x.category_id === catSel.value && x.subcategory_id === subId);
+      if (p) {
+        document.getElementById('procSubDe').value = p.subcategory_de || '';
+        document.getElementById('procSubRu').value = p.subcategory_ru || '';
+        document.getElementById('procSubEn').value = p.subcategory_en || '';
+        document.getElementById('procSubSort').value = p.subcategory_sort;
+      }
+    } else {
+      document.getElementById('procSubDe').value = '';
+      document.getElementById('procSubRu').value = '';
+      document.getElementById('procSubEn').value = '';
+    }
+  }
+}
+
+function closeProcedureModal() {
+  document.getElementById('procedureModal').classList.add('hidden');
+}
+
+async function saveProcedure() {
+  const editId = document.getElementById('procEditId').value;
+  const catSel = document.getElementById('procCatIdSelect');
+  const subSel = document.getElementById('procSubIdSelect');
+  const catId = catSel.value === '__new__' ? document.getElementById('procCatIdNew').value.trim().toLowerCase().replace(/\s+/g,'-') : catSel.value;
+  const subIdRaw = subSel.value;
+  const subId = subIdRaw === '__new__' ? (document.getElementById('procSubIdNew').value.trim().toLowerCase().replace(/\s+/g,'-') || null) : (subIdRaw || null);
+  const payload = {
+    category_id: catId,
+    category_sort: parseInt(document.getElementById('procCatSort').value) || 0,
+    category_de: document.getElementById('procCatDe').value.trim(),
+    category_ru: document.getElementById('procCatRu').value.trim(),
+    category_en: document.getElementById('procCatEn').value.trim(),
+    subcategory_id: subId,
+    subcategory_sort: parseInt(document.getElementById('procSubSort').value) || 0,
+    subcategory_de: document.getElementById('procSubDe').value.trim() || null,
+    subcategory_ru: document.getElementById('procSubRu').value.trim() || null,
+    subcategory_en: document.getElementById('procSubEn').value.trim() || null,
+    name_de: document.getElementById('procNameDe').value.trim(),
+    name_ru: document.getElementById('procNameRu').value.trim(),
+    name_en: document.getElementById('procNameEn').value.trim(),
+    price: document.getElementById('procPrice').value.trim(),
+    show_in_booking: document.getElementById('procShowInBooking').checked,
+    sort_order: parseInt(document.getElementById('procSortOrder').value) || 0,
+  };
+  if (!payload.category_id || !payload.name_de || !payload.price) {
+    alert(currentAdminLang === 'ru' ? 'Заполните обязательные поля' : 'Bitte Pflichtfelder ausfüllen');
+    return;
+  }
+  const btn = document.getElementById('procSaveBtn');
+  btn.textContent = '...'; btn.disabled = true;
+  let error;
+  if (editId) {
+    ({ error } = await supabaseClient.from('procedures').update(payload).eq('id', editId));
+  } else {
+    ({ error } = await supabaseClient.from('procedures').insert([payload]));
+  }
+  btn.textContent = 'Speichern'; btn.disabled = false;
+  if (error) { alert('Error: ' + error.message); return; }
+  closeProcedureModal();
+  showAdminToast(currentAdminLang === 'ru' ? 'Сохранено' : 'Gespeichert');
+  await loadProcedures();
+}
+
+async function deleteProcedure(id) {
+  const ask = currentAdminLang === 'ru' ? 'Удалить процедуру?' : 'Prozedur wirklich löschen?';
+  if (!confirm(ask)) return;
+  const { error } = await supabaseClient.from('procedures').delete().eq('id', id);
+  if (!error) {
+    allProcedures = allProcedures.filter(p => p.id !== id);
+    renderProcedures();
+    showAdminToast(currentAdminLang === 'ru' ? 'Удалено' : 'Gelöscht');
+  }
+}
+
+// Realtime для процедур
+supabaseClient.channel('procedures-channel')
+  .on('postgres_changes', { event: '*', schema: 'public', table: 'procedures' }, () => loadProcedures())
+  .subscribe();
 
 // Initialize language on load
 document.addEventListener('DOMContentLoaded', () => {
